@@ -603,49 +603,50 @@ packages/apps/Settings/src/com/android/settings/biometrics/finger">
 <span class="token punctuation">}</span>
 </code></pre>
 <p>到这里都只是涉及到 UI 界面的相关逻辑，接下来的代码逻辑就稍微复杂一点了，我们仔细深挖研究。</p>
-<h2 id="3-2-FingerprintEnrollFindSensor-startLookingForFingerprint"><a href="#3-2-FingerprintEnrollFindSensor-startLookingForFingerprint" class="headerlink" title="3.2 FingerprintEnrollFindSensor.startLookingForFingerprint()"></a>3.2 FingerprintEnrollFindSensor.startLookingForFingerprint()</h2><pre><code>// packages/apps/Settings/src/com/android/settings/biometrics/fingerprint/FingerprintEnrollFindSensor.java
+<h2 id="3-2-FingerprintEnrollFindSensor-startLookingForFingerprint"><a href="#3-2-FingerprintEnrollFindSensor-startLookingForFingerprint" class="headerlink" title="3.2 FingerprintEnrollFindSensor.startLookingForFingerprint()"></a>3.2 FingerprintEnrollFindSensor.startLookingForFingerprint()</h2><pre class=" language-java"><code class="language-java"><span class="token comment" spellcheck="true">// packages/apps/Settings/src/com/android/settings/biometrics/fingerprint/FingerprintEnrollFindSensor.java</span>
 
-public class FingerprintEnrollFindSensor extends BiometricEnrollBase {
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">FingerprintEnrollFindSensor</span> <span class="token keyword">extends</span> <span class="token class-name">BiometricEnrollBase</span> <span class="token punctuation">{</span>
 
-    private FingerprintEnrollSidecar mSidecar;
-    private boolean mNextClicked;
+    <span class="token keyword">private</span> FingerprintEnrollSidecar mSidecar<span class="token punctuation">;</span>
+    <span class="token keyword">private</span> <span class="token keyword">boolean</span> mNextClicked<span class="token punctuation">;</span>
 
-    private void startLookingForFingerprint() {
-        // FingerprintEnrollSidecar 这个 fragment 的生命周期正式开启
-        mSidecar = (FingerprintEnrollSidecar) getSupportFragmentManager().findFragmentByTag(
-                FingerprintEnrollEnrolling.TAG_SIDECAR);
-        if (mSidecar == null) {
-            mSidecar = new FingerprintEnrollSidecar();
-            // 添加 FingerprintEnrollEnrolling
-            getSupportFragmentManager().beginTransaction()
-                    .add(mSidecar, FingerprintEnrollEnrolling.TAG_SIDECAR)
-                    .commitAllowingStateLoss();
-        }
+    <span class="token keyword">private</span> <span class="token keyword">void</span> <span class="token function">startLookingForFingerprint</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token comment" spellcheck="true">// FingerprintEnrollSidecar 这个 fragment 的生命周期正式开启</span>
+        mSidecar <span class="token operator">=</span> <span class="token punctuation">(</span>FingerprintEnrollSidecar<span class="token punctuation">)</span> <span class="token function">getSupportFragmentManager</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">findFragmentByTag</span><span class="token punctuation">(</span>
+                FingerprintEnrollEnrolling<span class="token punctuation">.</span>TAG_SIDECAR<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>mSidecar <span class="token operator">==</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            mSidecar <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">FingerprintEnrollSidecar</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token comment" spellcheck="true">// 添加 FingerprintEnrollEnrolling</span>
+            <span class="token function">getSupportFragmentManager</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">beginTransaction</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+                    <span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span>mSidecar<span class="token punctuation">,</span> FingerprintEnrollEnrolling<span class="token punctuation">.</span>TAG_SIDECAR<span class="token punctuation">)</span>
+                    <span class="token punctuation">.</span><span class="token function">commitAllowingStateLoss</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
 
-        // FingerprintEnrollEnrolling 实现了 BiometricEnrollSidecar.Listener 接口
-        mSidecar.setListener(new Listener() {    // 匿名内部类的方式实现接口方法
-            @Override
-            public void onEnrollmentProgressChange(int steps, int remaining) {
-                mNextClicked = true;
-                proceedToEnrolling(true /* cancelEnrollment */);
-            }
+        <span class="token comment" spellcheck="true">// FingerprintEnrollEnrolling 实现了 BiometricEnrollSidecar.Listener 接口</span>
+        mSidecar<span class="token punctuation">.</span><span class="token function">setListener</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">Listener</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>    <span class="token comment" spellcheck="true">// 匿名内部类的方式实现接口方法</span>
+            <span class="token annotation punctuation">@Override</span>
+            <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">onEnrollmentProgressChange</span><span class="token punctuation">(</span><span class="token keyword">int</span> steps<span class="token punctuation">,</span> <span class="token keyword">int</span> remaining<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                mNextClicked <span class="token operator">=</span> <span class="token boolean">true</span><span class="token punctuation">;</span>
+                <span class="token function">proceedToEnrolling</span><span class="token punctuation">(</span><span class="token boolean">true</span> <span class="token comment" spellcheck="true">/* cancelEnrollment */</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
 
-            @Override
-            public void onEnrollmentHelp(int helpMsgId, CharSequence helpString) {
-            }
+            <span class="token annotation punctuation">@Override</span>
+            <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">onEnrollmentHelp</span><span class="token punctuation">(</span><span class="token keyword">int</span> helpMsgId<span class="token punctuation">,</span> CharSequence helpString<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token punctuation">}</span>
 
-            @Override
-            public void onEnrollmentError(int errMsgId, CharSequence errString) {
-                if (mNextClicked &amp;&amp; errMsgId == FingerprintManager.FINGERPRINT_ERROR_CANCELED) {
-                    mNextClicked = false;
-                    proceedToEnrolling(false /* cancelEnrollment */);
-                }
-            }
-        });
-    }
+            <span class="token annotation punctuation">@Override</span>
+            <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">onEnrollmentError</span><span class="token punctuation">(</span><span class="token keyword">int</span> errMsgId<span class="token punctuation">,</span> CharSequence errString<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token keyword">if</span> <span class="token punctuation">(</span>mNextClicked <span class="token operator">&amp;&amp;</span> errMsgId <span class="token operator">==</span> FingerprintManager<span class="token punctuation">.</span>FINGERPRINT_ERROR_CANCELED<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                    mNextClicked <span class="token operator">=</span> <span class="token boolean">false</span><span class="token punctuation">;</span>
+                    <span class="token function">proceedToEnrolling</span><span class="token punctuation">(</span><span class="token boolean">false</span> <span class="token comment" spellcheck="true">/* cancelEnrollment */</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token punctuation">}</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
 
-}
-</code></pre><p>这里面有个重点方法：<code>onEnrollmentProgressChange()</code>，如果我们此时用手指贴在指纹传感器上，会产生反馈信息的回调，此时 <code>onEnrollmentProgressChange()</code> 方法被执行，进入执行 <code>proceedToEnrolling()</code> 方法，我们看下这个方法：</p>
+<span class="token punctuation">}</span>
+</code></pre>
+<p>这里面有个重点方法：<code>onEnrollmentProgressChange()</code>，如果我们此时用手指贴在指纹传感器上，会产生反馈信息的回调，此时 <code>onEnrollmentProgressChange()</code> 方法被执行，进入执行 <code>proceedToEnrolling()</code> 方法，我们看下这个方法：</p>
 <pre class=" language-java"><code class="language-java"><span class="token comment" spellcheck="true">// packages/apps/Settings/src/com/android/settings/biometrics/fingerprint/FingerprintEnrollFindSensor.java</span>
 
 <span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">FingerprintEnrollFindSensor</span> <span class="token keyword">extends</span> <span class="token class-name">BiometricEnrollBase</span> <span class="token punctuation">{</span>
@@ -1269,6 +1270,28 @@ public class FingerprintEnrollFindSensor extends BiometricEnrollBase {
     
 
     
+    <div class="livere-card card" data-aos="fade-up">
+    <!-- 来必力City版安装代码 -->
+    <div id="lv-container" class="card-content" data-id="city" data-uid="MTAyMC8zNzY5OS8xNDIzMA">
+        <script type="text/javascript">
+            (function (d, s) {
+                let j, e = d.getElementsByTagName(s)[0];
+                if (typeof LivereTower === 'function') {
+                    return;
+                }
+
+                j = d.createElement(s);
+                j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+                j.async = true;
+
+                e.parentNode.insertBefore(j, e);
+            })(document, 'script');
+        </script>
+        <noscript>为正常使用来必力评论功能请激活JavaScript。</noscript>
+    </div>
+    <!-- City版安装代码已完成 -->
+</div>
+    
 
     
 
@@ -1482,10 +1505,6 @@ framew</div>
     </a>
 
 
-
-    <a href="tencent://AddContact/?fromId=50&fromSubId=1&subcmd=all&uin=516749232" class="tooltipped" data-tooltip="QQ联系我: 516749232" data-position="top" data-delay="50">
-        <i class="fa fa-qq"></i>
-    </a>
 
 
 <!--

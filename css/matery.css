@@ -878,7 +878,7 @@ article .article-tags .chip {
     padding: 0 2px;
     color: #42b983;
     font-weight: 500;
-    text-decoration: underline;
+    #text-decoration: underline;
     word-wrap:break-word;
 }
 
@@ -922,7 +922,7 @@ article .article-tags .chip {
 }
 
 #articleContent table, th, td {
-    padding: 12px 13px;
+    padding: 12px 30px;
     border: 1px solid #dfe2e5;
 }
 

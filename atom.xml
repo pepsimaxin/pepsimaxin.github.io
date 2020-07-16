@@ -49,11 +49,37 @@
   </entry>
   
   <entry>
+    <title>始终存在的 &quot;内存泄漏&quot;</title>
+    <link href="https://superandroid.pro/2020/07/16/android-10-xing-neng-you-hua-xi-lie-shi-zhong-cun-zai-de-nei-cun-xie-lou/"/>
+    <id>https://superandroid.pro/2020/07/16/android-10-xing-neng-you-hua-xi-lie-shi-zhong-cun-zai-de-nei-cun-xie-lou/</id>
+    <published>2020-07-16T00:08:00.000Z</published>
+    <updated>2020-07-16T07:23:44.932Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h1 id=&quot;一、什么是内存泄漏？&quot;&gt;&lt;a href=&quot;#一、什么是内存泄漏？&quot; class=&quot;headerlink&quot; title=&quot;一、什么是内存泄漏？&quot;&gt;&lt;/a&gt;一、什么是内存泄漏？&lt;/h1&gt;&lt;p&gt;&lt;strong&gt;&lt;font color=&quot;#ff0000&quot;
+        
+      
+    
+    </summary>
+    
+      <category term="性能优化" scheme="https://superandroid.pro/categories/%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/"/>
+    
+    
+      <category term="内存泄漏" scheme="https://superandroid.pro/tags/%E5%86%85%E5%AD%98%E6%B3%84%E6%BC%8F/"/>
+    
+  </entry>
+  
+  <entry>
     <title>Service -- 超时处理机制</title>
     <link href="https://superandroid.pro/2020/07/15/android-10-xi-tong-wen-ding-xi-lie-service-chao-shi-chu-li-ji-zhi/"/>
     <id>https://superandroid.pro/2020/07/15/android-10-xi-tong-wen-ding-xi-lie-service-chao-shi-chu-li-ji-zhi/</id>
     <published>2020-07-15T00:08:00.000Z</published>
-    <updated>2020-07-16T07:04:55.159Z</updated>
+    <updated>2020-07-16T07:19:11.044Z</updated>
     
     <summary type="html">
     

@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://superandroid.pro/"/>
-  <updated>2020-07-15T13:22:19.987Z</updated>
+  <updated>2020-07-16T06:06:50.127Z</updated>
   <id>https://superandroid.pro/</id>
   
   <author>
@@ -21,7 +21,7 @@
     <link href="https://superandroid.pro/2021/01/01/thinking-in-android-android-xi-tong-kai-fa-bo-wen-jia-gou-mei-zhou-geng-xin/"/>
     <id>https://superandroid.pro/2021/01/01/thinking-in-android-android-xi-tong-kai-fa-bo-wen-jia-gou-mei-zhou-geng-xin/</id>
     <published>2021-01-01T00:08:00.000Z</published>
-    <updated>2020-07-15T13:22:19.987Z</updated>
+    <updated>2020-07-16T06:06:50.127Z</updated>
     
     <summary type="html">
     
@@ -188,6 +188,34 @@
       <category term="Activity" scheme="https://superandroid.pro/tags/Activity/"/>
     
       <category term="启动流程" scheme="https://superandroid.pro/tags/%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Activity 的 &quot; 生命周期 &quot;</title>
+    <link href="https://superandroid.pro/2020/06/15/android-10-si-da-zu-jian-xi-lie-activity-de-sheng-ming-zhou-qi/"/>
+    <id>https://superandroid.pro/2020/06/15/android-10-si-da-zu-jian-xi-lie-activity-de-sheng-ming-zhou-qi/</id>
+    <published>2020-06-15T00:08:00.000Z</published>
+    <updated>2020-07-16T06:06:02.910Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h1 id=&quot;一、Activity-Status&quot;&gt;&lt;a href=&quot;#一、Activity-Status&quot; class=&quot;headerlink&quot; title=&quot;一、Activity Status&quot;&gt;&lt;/a&gt;一、Activity Status&lt;/h1&gt;&lt;p&gt;每个
+        
+      
+    
+    </summary>
+    
+      <category term="四大组件" scheme="https://superandroid.pro/categories/%E5%9B%9B%E5%A4%A7%E7%BB%84%E4%BB%B6/"/>
+    
+    
+      <category term="Activity" scheme="https://superandroid.pro/tags/Activity/"/>
+    
+      <category term="生命周期" scheme="https://superandroid.pro/tags/%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F/"/>
     
   </entry>
   

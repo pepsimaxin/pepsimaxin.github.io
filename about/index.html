@@ -520,7 +520,7 @@ $('.bg-cover').css('background-image', 'url(/medias/banner/' + 'background.jpg)'
                 type: 'pie',
                 radius: '50%',
                 color: ['#6772e5', '#ff9e0f', '#fa755a', '#3ecf8e', '#82d3f4', '#ab47bc', '#525f7f', '#f51c47', '#26A69A'],
-                data: [{"name":"Android","value":1},{"name":"四大组件","value":3},{"name":"核心机制","value":1},{"name":"系统启动","value":4},{"name":"进程线程","value":3},{"name":"设计模式","value":1},{"name":"系统稳定性","value":1},{"name":"框架服务","value":1}],
+                data: [{"name":"四大组件","value":3},{"name":"核心机制","value":1},{"name":"框架服务","value":1},{"name":"系统启动","value":4},{"name":"进程线程","value":3},{"name":"设计模式","value":1},{"name":"系统稳定性","value":1},{"name":"Android","value":1}],
                 itemStyle: {
                     emphasis: {
                         shadowBlur: 10,
@@ -544,7 +544,7 @@ $('.bg-cover').css('background-image', 'url(/medias/banner/' + 'background.jpg)'
         xAxis: [
             {
                 type: 'category',
-                data: ["Activity","启动流程","进程创建","框架服务","核心机制","性能优化","设计模式","生命周期","AIDL","进程通信"]
+                data: ["Activity","启动流程","进程创建","生命周期","AIDL","进程通信","指纹录入","指纹识别","生物识别","Launcher"]
             }
         ],
         yAxis: [
@@ -668,30 +668,6 @@ $('.bg-cover').css('background-image', 'url(/medias/banner/' + 'background.jpg)'
         <div class="tag-chips center-align">
             
             
-            <a href="/tags/框架服务/" target="_blank">
-                <span class="chip center-align waves-effect waves-light chip-default">框架服务</span>
-            </a>
-            
-            
-            
-            <a href="/tags/核心机制/" target="_blank">
-                <span class="chip center-align waves-effect waves-light chip-default">核心机制</span>
-            </a>
-            
-            
-            
-            <a href="/tags/性能优化/" target="_blank">
-                <span class="chip center-align waves-effect waves-light chip-default">性能优化</span>
-            </a>
-            
-            
-            
-            <a href="/tags/设计模式/" target="_blank">
-                <span class="chip center-align waves-effect waves-light chip-default">设计模式</span>
-            </a>
-            
-            
-            
             <a href="/tags/Activity/" target="_blank">
                 <span class="chip center-align waves-effect waves-light chip-default">Activity</span>
             </a>
@@ -700,6 +676,12 @@ $('.bg-cover').css('background-image', 'url(/medias/banner/' + 'background.jpg)'
             
             <a href="/tags/生命周期/" target="_blank">
                 <span class="chip center-align waves-effect waves-light chip-default">生命周期</span>
+            </a>
+            
+            
+            
+            <a href="/tags/启动流程/" target="_blank">
+                <span class="chip center-align waves-effect waves-light chip-default">启动流程</span>
             </a>
             
             
@@ -716,20 +698,26 @@ $('.bg-cover').css('background-image', 'url(/medias/banner/' + 'background.jpg)'
             
             
             
-            <a href="/tags/启动流程/" target="_blank">
-                <span class="chip center-align waves-effect waves-light chip-default">启动流程</span>
+            <a href="/tags/指纹录入/" target="_blank">
+                <span class="chip center-align waves-effect waves-light chip-default">指纹录入</span>
             </a>
             
             
             
-            <a href="/tags/Zygote/" target="_blank">
-                <span class="chip center-align waves-effect waves-light chip-default">Zygote</span>
+            <a href="/tags/指纹识别/" target="_blank">
+                <span class="chip center-align waves-effect waves-light chip-default">指纹识别</span>
             </a>
             
             
             
-            <a href="/tags/init/" target="_blank">
-                <span class="chip center-align waves-effect waves-light chip-default">init</span>
+            <a href="/tags/生物识别/" target="_blank">
+                <span class="chip center-align waves-effect waves-light chip-default">生物识别</span>
+            </a>
+            
+            
+            
+            <a href="/tags/Launcher/" target="_blank">
+                <span class="chip center-align waves-effect waves-light chip-default">Launcher</span>
             </a>
             
             
@@ -746,8 +734,14 @@ $('.bg-cover').css('background-image', 'url(/medias/banner/' + 'background.jpg)'
             
             
             
-            <a href="/tags/Launcher/" target="_blank">
-                <span class="chip center-align waves-effect waves-light chip-default">Launcher</span>
+            <a href="/tags/Zygote/" target="_blank">
+                <span class="chip center-align waves-effect waves-light chip-default">Zygote</span>
+            </a>
+            
+            
+            
+            <a href="/tags/init/" target="_blank">
+                <span class="chip center-align waves-effect waves-light chip-default">init</span>
             </a>
             
             
@@ -782,20 +776,26 @@ $('.bg-cover').css('background-image', 'url(/medias/banner/' + 'background.jpg)'
             
             
             
-            <a href="/tags/指纹录入/" target="_blank">
-                <span class="chip center-align waves-effect waves-light chip-default">指纹录入</span>
+            <a href="/tags/框架服务/" target="_blank">
+                <span class="chip center-align waves-effect waves-light chip-default">框架服务</span>
             </a>
             
             
             
-            <a href="/tags/指纹识别/" target="_blank">
-                <span class="chip center-align waves-effect waves-light chip-default">指纹识别</span>
+            <a href="/tags/核心机制/" target="_blank">
+                <span class="chip center-align waves-effect waves-light chip-default">核心机制</span>
             </a>
             
             
             
-            <a href="/tags/生物识别/" target="_blank">
-                <span class="chip center-align waves-effect waves-light chip-default">生物识别</span>
+            <a href="/tags/性能优化/" target="_blank">
+                <span class="chip center-align waves-effect waves-light chip-default">性能优化</span>
+            </a>
+            
+            
+            
+            <a href="/tags/设计模式/" target="_blank">
+                <span class="chip center-align waves-effect waves-light chip-default">设计模式</span>
             </a>
             
             

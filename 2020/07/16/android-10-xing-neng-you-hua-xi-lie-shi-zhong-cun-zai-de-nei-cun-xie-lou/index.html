@@ -429,8 +429,8 @@ Sample mSample3 <span class="token operator">=</span> <span class="token keyword
 <p><strong><font color="#0000ff">✎&nbsp;正确的方式（写法二）：</font></strong></p>
 <pre class=" language-java"><code class="language-java"><span class="token comment" spellcheck="true">// 在你的 Application 中添加一个静态方法，getContext() 返回 Application 的 context</span>
 
-context <span class="token operator">=</span> <span class="token function">getApplicationContext</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+    context <span class="token operator">=</span> <span class="token function">getApplicationContext</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
 
     <span class="token comment" spellcheck="true">/**
      * 获取全局的 context
@@ -570,6 +570,7 @@ Sample sample <span class="token operator">=</span> <span class="token keyword">
 <span class="token punctuation">}</span> 
 </code></pre>
 <h2 id="2-4-非静态内部类"><a href="#2-4-非静态内部类" class="headerlink" title="2.4 非静态内部类"></a>2.4 非静态内部类</h2><p>我们先讨论下<code>非静态内部类（non static inner class）</code>和 <code>静态内部类（static inner class）</code>之间的区别。</p>
+<p><br></p>
 <table>
 <thead>
 <tr>
@@ -601,6 +602,7 @@ Sample sample <span class="token operator">=</span> <span class="token keyword">
 </tr>
 </tbody>
 </table>
+<p><br></p>
 <p>可以看到非静态内部类自动获得外部类的强引用，而且它的生命周期甚至比外部类更长，这便埋下了内存泄露的隐患。如果一个 Activity 的非静态内部类的生命周期比 Activity 更长，那么 Activity 的内存便无法被回收，也就是发生了内存泄露，而且还有可能发生难以预防的空指针问题。</p>
 <p>比如我们看以下代码：</p>
 <pre class=" language-java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">MainActivity</span> <span class="token keyword">extends</span> <span class="token class-name">AppCompatActivity</span> <span class="token punctuation">{</span>
@@ -650,7 +652,7 @@ Sample sample <span class="token operator">=</span> <span class="token keyword">
 <span class="token punctuation">}</span>
 </code></pre>
 <p>这时候 MyAsyncTask 不再持有 Activity 的强引用，即使 AsyncTask 的耗时操作还在继续，Activity 的内存也能顺利地被回收。</p>
-<h2 id="2-5-匿名类-AsyncTask"><a href="#2-5-匿名类-AsyncTask" class="headerlink" title="2.5 匿名类 / AsyncTask"></a>2.5 匿名类 / AsyncTask</h2><p>匿名类和非静态内部类最大的共同点就是<code>都持有外部类的引用</code>，因此，匿名类造成内存泄露的原因也跟静态内部类基本是一样的，下面举个几个比较常见的例子：</p>
+<h2 id="2-5-匿名类-AsyncTask"><a href="#2-5-匿名类-AsyncTask" class="headerlink" title="2.5 匿名类 / AsyncTask"></a>2.5 匿名类 / AsyncTask</h2><p>匿名类和非静态内部类最大的共同点就是<code>都持有外部类的引用</code>，因此，匿名类造成内存泄露的原因也跟静态内部类基本是一样的，下面列 举几个比较常见的例子：</p>
 <pre class=" language-java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">MainActivity</span> <span class="token keyword">extends</span> <span class="token class-name">AppCompatActivity</span> <span class="token punctuation">{</span>
 
     <span class="token keyword">private</span> Handler mHandler <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Handler</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
@@ -756,6 +758,7 @@ Sample sample <span class="token operator">=</span> <span class="token keyword">
 </code></pre>
 <p>从上面的代码中我们可以看出如何避免 Handler 内存泄漏，推荐使用 <code>静态内部类 + WeakReference</code> 这种方式，每次使用前注意判空。</p>
 <p>Java 对引用的分类有 <code>Strong reference</code>、<code>SoftReference</code>、<code>WeakReference</code>、<code>PhatomReference</code>四种。</p>
+<p><br></p>
 <table>
 <thead>
 <tr>
@@ -792,6 +795,7 @@ Sample sample <span class="token operator">=</span> <span class="token keyword">
 </tr>
 </tbody>
 </table>
+<p><br></p>
 <p>在 Android 应用的开发中，为了防止内存溢出，在处理一些占用内存大而且声明周期较长的对象时候，可以尽量应用软引用和弱引用技术。</p>
 <p>软/弱引用可以和一个引用队列（ReferenceQueue）联合使用，如果软引用所引用的对象被垃圾回收器回收，Java 虚拟机就会把这个软引用加入到与之关联的引用队列中。利用这个队列可以得知被回收的软/弱引用的对象列表，从而为缓冲器清除已失效的软/弱引用。</p>
 <h2 id="2-7-Timer-Tasks"><a href="#2-7-Timer-Tasks" class="headerlink" title="2.7 Timer Tasks"></a>2.7 Timer Tasks</h2><p>看个范例：</p>

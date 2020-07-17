@@ -49,6 +49,58 @@
   </entry>
   
   <entry>
+    <title>AsyncTask -- 内部实现原理</title>
+    <link href="https://superandroid.pro/2020/07/18/android-10-jin-cheng-xian-cheng-xi-lie-asynctask-yuan-li/"/>
+    <id>https://superandroid.pro/2020/07/18/android-10-jin-cheng-xian-cheng-xi-lie-asynctask-yuan-li/</id>
+    <published>2020-07-18T00:08:00.000Z</published>
+    <updated>2020-07-17T05:55:16.275Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h1 id=&quot;一、何为-AsyncTask&quot;&gt;&lt;a href=&quot;#一、何为-AsyncTask&quot; class=&quot;headerlink&quot; title=&quot;一、何为 AsyncTask&quot;&gt;&lt;/a&gt;一、何为
+        
+      
+    
+    </summary>
+    
+      <category term="进程线程" scheme="https://superandroid.pro/categories/%E8%BF%9B%E7%A8%8B%E7%BA%BF%E7%A8%8B/"/>
+    
+    
+      <category term="AsyncTask" scheme="https://superandroid.pro/tags/AsyncTask/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>AsyncTask -- 用法（被废弃？）</title>
+    <link href="https://superandroid.pro/2020/07/17/android-10-jin-cheng-xian-cheng-xi-lie-asynctask-yong-fa/"/>
+    <id>https://superandroid.pro/2020/07/17/android-10-jin-cheng-xian-cheng-xi-lie-asynctask-yong-fa/</id>
+    <published>2020-07-17T00:08:00.000Z</published>
+    <updated>2020-07-17T05:54:48.034Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h1 id=&quot;一、何为-AsyncTask&quot;&gt;&lt;a href=&quot;#一、何为-AsyncTask&quot; class=&quot;headerlink&quot; title=&quot;一、何为 AsyncTask&quot;&gt;&lt;/a&gt;一、何为
+        
+      
+    
+    </summary>
+    
+      <category term="进程线程" scheme="https://superandroid.pro/categories/%E8%BF%9B%E7%A8%8B%E7%BA%BF%E7%A8%8B/"/>
+    
+    
+      <category term="AsyncTask" scheme="https://superandroid.pro/tags/AsyncTask/"/>
+    
+  </entry>
+  
+  <entry>
     <title>始终存在的 &quot;内存泄漏&quot;</title>
     <link href="https://superandroid.pro/2020/07/16/android-10-xing-neng-you-hua-xi-lie-shi-zhong-cun-zai-de-nei-cun-xie-lou/"/>
     <id>https://superandroid.pro/2020/07/16/android-10-xing-neng-you-hua-xi-lie-shi-zhong-cun-zai-de-nei-cun-xie-lou/</id>

@@ -791,7 +791,7 @@ f">
 <blockquote>
 <p>从以上代码中我们可以看到，sHandler 是一个静态的 Handler 对象。我们知道创建 Handler 对象时需要当前线程的 Looper，所以我们为了以后能够通过 sHandler 将执行环境从后台线程切换到主线程（即在主线程中执行 handleMessage 方法），我们必须使用主线程的 Looper，因此必须在主线程中创建 sHandler。这也就解释了为什么必须在主线程中加载 AsyncTask 类，是为了完成 sHandler 这个静态成员的初始化工作。</p>
 </blockquote>
-<h2 id="2-8-finish"><a href="#2-8-finish" class="headerlink" title="2.8 finish()"></a>2.8 finish()</h2><pre class=" language-java"><code class="language-java"><span class="token comment" spellcheck="true">// frameworks/base/core/java/android/os/AsyncTask.java</span>
+<h2 id="2-8-AsyncTask-finish"><a href="#2-8-AsyncTask-finish" class="headerlink" title="2.8 AsyncTask.finish()"></a>2.8 AsyncTask.finish()</h2><pre class=" language-java"><code class="language-java"><span class="token comment" spellcheck="true">// frameworks/base/core/java/android/os/AsyncTask.java</span>
 
 <span class="token annotation punctuation">@Deprecated</span>
 <span class="token keyword">public</span> <span class="token keyword">abstract</span> <span class="token keyword">class</span> <span class="token class-name">AsyncTask</span><span class="token operator">&lt;</span>Params<span class="token punctuation">,</span> Progress<span class="token punctuation">,</span> Result<span class="token operator">></span> <span class="token punctuation">{</span>

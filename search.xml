@@ -35,6 +35,72 @@
     
     
     <entry>
+      <title>Android -- &quot; 技术能力 &quot; 自检表</title>
+      <link href="/2020/12/31/thinking-in-android-android-ji-zhu-neng-li-zi-jian-biao/"/>
+      <url>/2020/12/31/thinking-in-android-android-ji-zhu-neng-li-zi-jian-biao/</url>
+      
+        <content type="html"><![CDATA[<h2 id="《-Thinking-in-Android-》-–-“-Android-“"><a href="#《-Thinking-in-Android-》-–-“-Android-“" class="headerlink" title="《 Thinking in Android 》 – “ Android “"></a><center>《 Thinking in Android 》 – “ Android “</center></h2><p><br></p><table><thead><tr><th style="text-align:center"><strong> Activity </strong></th><th style="text-align:left">01. Activity 的启动流程了解吗？从点击应用图标到进入应用，Android系统都做了哪些工作，期间涉及到的进程切换有哪些？</th></tr></thead><tbody><tr><td style="text-align:center">&nbsp;</td><td style="text-align:left">02. Activity 有几种启动模式？ - - 四种模式之间有什么区别？ 应用场景是什么？</td></tr><tr><td style="text-align:center">&nbsp;</td><td style="text-align:left">03. 说说 Activity 的生命周期？</td></tr><tr><td style="text-align:center">&nbsp;</td><td style="text-align:left">04. Activity 遵循什么设计模式？</td></tr><tr><td style="text-align:center">&nbsp;</td><td style="text-align:left">05. 在 Activity 中，如果应用被杀，如何保存/恢复（数据）状态？</td></tr><tr><td style="text-align:center">&nbsp;</td><td style="text-align:left">06. 什么是冷启动？如何做启动优化？</td></tr><tr><td style="text-align:center">&nbsp;</td><td style="text-align:left">07. 如何判断一个 APP 在前台还是后台？</td></tr><tr><td style="text-align:center"><strong> Service </strong></td><td style="text-align:left">01. Service 的启动流程了解吗？ - - 从源码角度聊聊 Service 是符合启动的？</td></tr><tr><td style="text-align:center">&nbsp;</td><td style="text-align:left">02. 说说 Service 的生命周期？</td></tr><tr><td style="text-align:center">&nbsp;</td><td style="text-align:left">03. service 两种启动方式有什么区别？</td></tr><tr><td style="text-align:center">&nbsp;</td><td style="text-align:left">04. 怎么保证 service 不被杀死，保活了解吗？</td></tr><tr><td style="text-align:center"><strong> Broadcast </strong></td><td style="text-align:left">01. 说一下广播使用的方式和场景？</td></tr><tr><td style="text-align:center">&nbsp;</td><td style="text-align:left">02. 广播有几种分类？</td></tr><tr><td style="text-align:center">&nbsp;</td><td style="text-align:left">03. 广播中怎么进行网络请求？</td></tr><tr><td style="text-align:center">&nbsp;</td><td style="text-align:left">04. 什么是 LocalBroadcastReceiver？跟 BroadcastReceiver 有什么区别？</td></tr><tr><td style="text-align:center"><strong> Thread </strong></td><td style="text-align:left">01. 多线程的方式有哪些？</td></tr><tr><td style="text-align:center">&nbsp;</td><td style="text-align:left">02. 一个线程是否只有一个 Looper？如何保证一个线程只有一个 Looper？</td></tr><tr><td style="text-align:center">&nbsp;</td><td style="text-align:left">03. 说说线程池的四种初始化？</td></tr><tr><td style="text-align:center">&nbsp;</td><td style="text-align:left">04. Android 线程池的实现原理?</td></tr><tr><td style="text-align:center"><strong> AsyncTask </strong></td><td style="text-align:left">01. AsyncTask 的内部实现原理了解吗？</td></tr><tr><td style="text-align:center">&nbsp;</td><td style="text-align:left">02. AsyncTask 内部维护了一个线程池，是串行还是并行，怎么维护的？</td></tr><tr><td style="text-align:center"><strong> RecyclerView/ Listview</strong></td><td style="text-align:left">01. RecyclerView 的拖拽怎么实现的？</td></tr><tr><td style="text-align:center">&nbsp;</td><td style="text-align:left">02. RecycleView 与 listview 的区别，两者如何优化？</td></tr><tr><td style="text-align:center">&nbsp;</td><td style="text-align:left">03. 既然 RecyclerView 在很多方面能取代 ListView，Google 为什么不抛弃 ListView？</td></tr><tr><td style="text-align:center">&nbsp;</td><td style="text-align:left">04. 说说 RecyclerView 绘制步骤和复用机制？</td></tr><tr><td style="text-align:center">&nbsp;</td><td style="text-align:left">05. RecyclerView 有几层缓存，如何让两个 RecyclerView 共用一个缓存？</td></tr><tr><td style="text-align:center">&nbsp;</td><td style="text-align:left">06. listview 图片加载错乱的原理和解决方案</td></tr><tr><td style="text-align:center"><strong> Handler </strong></td><td style="text-align:left">01. 谈谈 Handler 机制，MessageQueue，Looper？</td></tr><tr><td style="text-align:center">&nbsp;</td><td style="text-align:left">02. IdleHandler 什么时候调用？</td></tr><tr><td style="text-align:center"><strong> View </strong></td><td style="text-align:left">01. 谈谈事件分发的流程？</td></tr><tr><td style="text-align:center">&nbsp;</td><td style="text-align:left">02. 说说你对自定义 View 和 ViewGroup 的理解？</td></tr><tr><td style="text-align:center">&nbsp;</td><td style="text-align:left">03. 自定义 View 需要注意哪些细节，几个步骤？怎么刷新 view？</td></tr><tr><td style="text-align:center">&nbsp;</td><td style="text-align:left">04. 聊聊 view 的绘制过程？</td></tr><tr><td style="text-align:center">&nbsp;</td><td style="text-align:left">05. 如何实现一个自定义 View？</td></tr><tr><td style="text-align:center"><strong> JNI </strong></td><td style="text-align:left">01. 讲一下 JNI 开发的过程 java怎么找到 c 函数？ – JNI 的原理</td></tr><tr><td style="text-align:center"><strong> IPC </strong></td><td style="text-align:left">01. Binder 了解吗？ - - 说说Binder的大体实现</td></tr><tr><td style="text-align:center">&nbsp;</td><td style="text-align:left">02. AIDL 了解吗？</td></tr><tr><td style="text-align:center">&nbsp;</td><td style="text-align:left">03. 说说你了解的 IPC 方法？</td></tr><tr><td style="text-align:center">&nbsp;</td><td style="text-align:left">04. Binder 有什么优势？</td></tr><tr><td style="text-align:center"><strong> Intent </strong></td><td style="text-align:left">01. 说说 Intent 的使用方法？可以传递哪些数据类型？</td></tr><tr><td style="text-align:center">&nbsp;</td><td style="text-align:left">02. 显式 Intent 和 隐式 Intent 有什么区别？</td></tr><tr><td style="text-align:center"><strong> 内存泄漏 </strong></td><td style="text-align:left">01. 说说有哪些内存泄漏的场景；</td></tr><tr><td style="text-align:center">&nbsp;</td><td style="text-align:left">02. Handler 为什么会发生内存泄漏？怎么解决？</td></tr><tr><td style="text-align:center">&nbsp;</td><td style="text-align:left">03. 内存泄漏和内存溢出有什么区别？</td></tr><tr><td style="text-align:center"><strong> ANR </strong></td><td style="text-align:left">01. 说说有哪些 ANR ？</td></tr><tr><td style="text-align:center">&nbsp;</td><td style="text-align:left">02. Android Native Crash 怎么处理？</td></tr><tr><td style="text-align:center"><strong> Other </strong></td><td style="text-align:left">01. 三级缓存了解吗？</td></tr><tr><td style="text-align:center">&nbsp;</td><td style="text-align:left">02. 说说 Android 序列化方式有哪些？区别和作用是什么？</td></tr><tr><td style="text-align:center">&nbsp;</td><td style="text-align:left">03. 当一个 TextView 的实例调用 setText() 方法后执行了什么？</td></tr><tr><td style="text-align:center">&nbsp;</td><td style="text-align:left">04. 麻烦写个单例模式？单例模式双重加锁，为什么要这样做？</td></tr><tr><td style="text-align:center">&nbsp;</td><td style="text-align:left">05. 了解异常生命周期吗？</td></tr><tr><td style="text-align:center">&nbsp;</td><td style="text-align:left">06. EventBus 源码解析，遵循什么设计模式？</td></tr><tr><td style="text-align:center">&nbsp;</td><td style="text-align:left">07. 谈谈 ClassLoader 的双亲委托？</td></tr><tr><td style="text-align:center">&nbsp;</td><td style="text-align:left">08. 谈谈 Dalvik 和 Art 区别？</td></tr><tr><td style="text-align:center">&nbsp;</td><td style="text-align:left">09. 说说你对设计模式的理解，开发过程中主要用到了哪些设计模式？</td></tr><tr><td style="text-align:center">&nbsp;</td><td style="text-align:left">10. MVC、MCP、MVVP 的区别和各种使用场景，如何选择适合自己的开发架构？</td></tr><tr><td style="text-align:center">&nbsp;</td><td style="text-align:left">11. 卡顿原理是什么，怎么判断是页面响应卡顿还是逻辑处理造成的卡顿？</td></tr><tr><td style="text-align:center">&nbsp;</td><td style="text-align:left">12. 生产者模式和消费者模式的区别？</td></tr><tr><td style="text-align:center">&nbsp;</td><td style="text-align:left">13. Android 有哪些存储数据的方式？</td></tr><tr><td style="text-align:center">&nbsp;</td><td style="text-align:left">14. 了解 SharedPrefrence 吗？</td></tr><tr><td style="text-align:center">&nbsp;</td><td style="text-align:left">14. 谈谈属性动画、补间动画、帧动画的区别和使用场景；</td></tr></tbody></table><p><br></p><h2 id="《-Thinking-in-Android-》-–-“-Java-“"><a href="#《-Thinking-in-Android-》-–-“-Java-“" class="headerlink" title="《 Thinking in Android 》 – “ Java “"></a><center>《 Thinking in Android 》 – “ Java “</center></h2><p><br></p><table><thead><tr><th style="text-align:center"><strong> Java 知识点 </strong></th><th style="text-align:left">01. 谈谈 Java 的四种引用、使用场景？</th></tr></thead><tbody><tr><td style="text-align:center">&nbsp;</td><td style="text-align:left">02. Java 抽象类和接口的区别？</td></tr><tr><td style="text-align:center">&nbsp;</td><td style="text-align:left">03. 了解 Java GC 机制吗？GC 算法有哪些？</td></tr><tr><td style="text-align:center">&nbsp;</td><td style="text-align:left">04. HashMap 的内部实现原理了解吗？</td></tr><tr><td style="text-align:center">&nbsp;</td><td style="text-align:left">05. HashMap 和 HashTable 以及 CurrentHashMap 有什么区别？</td></tr><tr><td style="text-align:center">&nbsp;</td><td style="text-align:left">06. HashMap 如果 Hash 冲突了怎么解决？</td></tr><tr><td style="text-align:center">&nbsp;</td><td style="text-align:left">07. 谈谈 synchronized、volatile、ReentrantLock 的区别？</td></tr><tr><td style="text-align:center">&nbsp;</td><td style="text-align:left">08. synchronized 修饰实例方法和修饰静态方法有啥不一样？</td></tr><tr><td style="text-align:center">&nbsp;</td><td style="text-align:left">09. 说一下 final 、finally、finalize 区别？</td></tr><tr><td style="text-align:center">&nbsp;</td><td style="text-align:left">10. Java 抽象类和接口的区别？</td></tr><tr><td style="text-align:center">&nbsp;</td><td style="text-align:left">11. 关于 sleep 、wait、yield 的区别？</td></tr><tr><td style="text-align:center">&nbsp;</td><td style="text-align:left">12. wait 的线程如何唤醒它？</td></tr></tbody></table><p><br></p><h2 id="《-Thinking-in-Android-》-–-“-数据结构-算法-“"><a href="#《-Thinking-in-Android-》-–-“-数据结构-算法-“" class="headerlink" title="《 Thinking in Android 》 – “ 数据结构/算法 “"></a><center>《 Thinking in Android 》 – “ 数据结构/算法 “</center></h2><p><br></p><table><thead><tr><th style="text-align:center"><strong> 数据结构 </strong></th><th style="text-align:left">01. 都用过那些常用的数据结构，说说对树的了解？</th></tr></thead><tbody><tr><td style="text-align:center">&nbsp;</td><td style="text-align:left">02. 写一个快排？</td></tr><tr><td style="text-align:center">&nbsp;</td><td style="text-align:left">03. 冒泡排序的链表实现知道吗？</td></tr><tr><td style="text-align:center">&nbsp;</td><td style="text-align:left">04. 链表怎么翻转？</td></tr><tr><td style="text-align:center">&nbsp;</td><td style="text-align:left">05. 计算二叉树的最大深度，要求非递归算法？</td></tr></tbody></table><p><br></p>]]></content>
+      
+      
+      <categories>
+          
+          <category> Android </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> Android </tag>
+            
+            <tag> JVM </tag>
+            
+            <tag> Java </tag>
+            
+            <tag> 数据结构 </tag>
+            
+            <tag> 算法 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>Android -- &quot; 知识点 &quot; 分析</title>
+      <link href="/2020/12/30/thinking-in-android-android-ji-zhu-neng-li-zi-jian-biao-fen-xi/"/>
+      <url>/2020/12/30/thinking-in-android-android-ji-zhu-neng-li-zi-jian-biao-fen-xi/</url>
+      
+        <content type="html"><![CDATA[<h2 id="《-Thinking-in-Android-》-–-“-Android-“"><a href="#《-Thinking-in-Android-》-–-“-Android-“" class="headerlink" title="《 Thinking in Android 》 – “ Android “"></a><center>《 Thinking in Android 》 – “ Android “</center></h2><p><br></p><hr><blockquote><ol><li><font size="3">Activity 的启动流程了解吗？从点击应用图标到进入应用，Android系统都做了哪些工作，期间涉及到的进程切换有哪些？</font></li></ol></blockquote><p>这个问题其实就是考查你了不了解 Activity 的启动流程，也就是当你点击一个 Apk 的图标，从 Launcher 开始到系统层，最后调起应用显示主界面的一整个流程，过多的技术细节这边就不探讨了，可以直接查看 <a href="https://superandroid.pro/2020/06/13/android-10-si-da-zu-jian-xi-lie-activity-de-qi-dong-liu-cheng/">【 Activity 的 “启动流程” 】</a> 一文，写的很详细，流程跟一遍下来基本上就清楚了。</p><blockquote><ol start="2"><li><font size="3">Activity 有几种启动模式？ - - 四种模式之间有什么区别？ 应用场景是什么？</font></li></ol></blockquote><blockquote><ol start="3"><li><font size="3">说说 Activity 的生命周期？</font></li></ol></blockquote><blockquote><ol start="4"><li><font size="3">Activity 遵循什么设计模式？</font></li></ol></blockquote><blockquote><ol start="5"><li><font size="3">在 Activity 中，如果应用被杀，如何保存/恢复（数据）状态？</font></li></ol></blockquote><blockquote><ol start="6"><li><font size="3">什么是冷启动？如何做启动优化？</font></li></ol></blockquote><blockquote><ol start="7"><li><font size="3">如何判断一个 APP 在前台还是后台？</font></li></ol></blockquote><hr><p>Updating …</p><p><br></p><h2 id="《-Thinking-in-Android-》-–-“-Java-“"><a href="#《-Thinking-in-Android-》-–-“-Java-“" class="headerlink" title="《 Thinking in Android 》 – “ Java “"></a><center>《 Thinking in Android 》 – “ Java “</center></h2><p><br></p><p>Updating …</p><p><br></p><h2 id="《-Thinking-in-Android-》-–-“-数据结构-算法-“"><a href="#《-Thinking-in-Android-》-–-“-数据结构-算法-“" class="headerlink" title="《 Thinking in Android 》 – “ 数据结构/算法 “"></a><center>《 Thinking in Android 》 – “ 数据结构/算法 “</center></h2><p><br></p><p>Updating …</p><p><br></p>]]></content>
+      
+      
+      <categories>
+          
+          <category> Android </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> Android </tag>
+            
+            <tag> JVM </tag>
+            
+            <tag> Java </tag>
+            
+            <tag> 数据结构 </tag>
+            
+            <tag> 算法 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>始终存在的 &quot;内存泄漏&quot;</title>
       <link href="/2020/07/16/android-10-xing-neng-you-hua-xi-lie-shi-zhong-cun-zai-de-nei-cun-xie-lou/"/>
       <url>/2020/07/16/android-10-xing-neng-you-hua-xi-lie-shi-zhong-cun-zai-de-nei-cun-xie-lou/</url>
@@ -189,6 +255,33 @@
             <tag> Activity </tag>
             
             <tag> 启动流程 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>Activity 的 &quot; 启动模式 &quot;</title>
+      <link href="/2020/06/18/android-10-si-da-zu-jian-xi-lie-activity-de-qi-dong-mo-shi/"/>
+      <url>/2020/06/18/android-10-si-da-zu-jian-xi-lie-activity-de-qi-dong-mo-shi/</url>
+      
+        <content type="html"><![CDATA[<h1 id="一、LaunchMode"><a href="#一、LaunchMode" class="headerlink" title="一、LaunchMode"></a>一、LaunchMode</h1><p>我们可以在 <code>AndroidManifest.xml</code> 中通过给 <code>&lt;activity&gt;</code> 标签指定 <strong><font color="#0000FF">android:launchMode</font></strong> 属性来选择启动模式。</p><h2 id="1-1-standard：默认启动模式"><a href="#1-1-standard：默认启动模式" class="headerlink" title="1.1 standard：默认启动模式"></a>1.1 standard：默认启动模式</h2><p>standard 是<code>活动默认的启动模式</code>，在不进行显式指定的情况下，所有活动都会自动使用这种启动模式。我们知道 Android 是使用返回栈来管理活动的，在 standard 模式下，每当启动一个新的活动，它就会在返回栈中入栈，并处于栈顶的位置。</p><p>对于使用 standard 模式的活动，系统不会在乎这个活动是否已经在返回栈中存在，每次启动都会创建该活动的一个新实例。</p><p><img src="https://s2.ax1x.com/2019/08/12/exLABQ.png" alt="standard.png"></p><h2 id="1-2-singleTop：栈顶复用模式"><a href="#1-2-singleTop：栈顶复用模式" class="headerlink" title="1.2 singleTop：栈顶复用模式"></a>1.2 singleTop：栈顶复用模式</h2><p>有没有觉得 standard 模式似乎不太合理，<strong><font color="#0000FF">活动明明已经在栈顶了，为什么再次启动的时候还要创建一次新的活动实例呢？</font></strong>当然，这只是系统默认的一种启动模式而已，我们完全可以根据自己的要求进行修改，比如说我们可以使用 <code>singleTop</code> 模式。</p><p>当活动的启动模式指定为 singleTop，在启动活动时如果发现返回栈的栈顶已经是该活动，则认为可以直接使用它，直接调用 <strong><font color="#FF0000">onNewIntent()</font></strong> 方法来实现重用，不会再创建新的活动实例。</p><p><img src="https://s2.ax1x.com/2019/08/12/exX8YR.png" alt="singleTop.png"></p><h2 id="1-3-singleTask：栈内复用模式"><a href="#1-3-singleTask：栈内复用模式" class="headerlink" title="1.3 singleTask：栈内复用模式"></a>1.3 singleTask：栈内复用模式</h2><p>使用 singleTop 模式可以很好的解决重复创建栈顶活动的问题，<strong><font color="#0000ff">但还是存在不合理的地方：如果活动处于栈顶，那么不会再重新创建一个新的实例，但如果不处于栈顶，则会重新创建</font></strong>。</p><p>所以我们自然要考虑一个问题，有没有什么方法可以让某个活动在整个应用程序的上下文中只存在一个实例呢？当然有，我们可以借助 <code>singleTask</code> 模式来实现。</p><p>当活动的启动模式指定为 singleTask，每次启动该活动时系统 <code>首先会在返回栈中检查是否存在该活动的实例</code>，如果发现已经存在则直接调用 <strong><font color="#FF0000">onNewIntent()</font></strong> 方法来实现重用实例，<strong><font color="#ff0000">活动置于栈顶，并把在这个活动之上的所有活动统统出栈</font></strong>，如果没有发现就会创建一个新的活动实例。</p><p><img src="https://s2.ax1x.com/2019/08/12/exvC5j.png" alt="singleTask.png"></p><h2 id="1-4-singleInstance：全局唯一模式"><a href="#1-4-singleInstance：全局唯一模式" class="headerlink" title="1.4 singleInstance：全局唯一模式"></a>1.4 singleInstance：全局唯一模式</h2><p><code>singleInstance</code> 模式应该算是 4 个启动模式中最特殊也最复杂的一个了。不同于以上 3 种启动模式，指定为 singleInstance 模式的活动会在一个新栈中创建该 Activity 的实例，<strong><font color="#ff0000">并让多个应用共享该栈中的 Activity 实例</font></strong>。</p><p><img src="https://s2.ax1x.com/2019/08/12/exxAFH.png" alt="singleInstance.png"></p><h1 id="二、Intent-flag"><a href="#二、Intent-flag" class="headerlink" title="二、Intent flag"></a>二、Intent flag</h1><p>在 Android 中，我们除了在清单文件 <code>AndroidManifest.xml</code> 中配置 <code>launchMode</code>（静态设置），完全可以通过设置 <strong><font color="#0000FF">Intent.setFlags(int flags)</font></strong> 来设置 Activity 的启动模式（动态设置）。</p><blockquote><p><strong><font color="#ff0000">需要注意的是：</font></strong>通过代码来设置 Activity 的启动模式的方式，优先级比清单文件设置更高。</p></blockquote><table><thead><tr><th>Flag</th><th>说明</th></tr></thead><tbody><tr><td><font color="#0000FF">FLAG_ACTIVITY_NEW_TASK</font></td><td>这个标识会使新启动的 Activity 独立创建一个 Task。</td></tr><tr><td><font color="#0000FF">FLAG_ACTIVITY_CLEAR_TOP</font></td><td>这个标识会使新启动的 Activity 检查是否存在于 Task 中，如果存在则清除其之上的 Activity，使它获得焦点，并不重新实例化一个 Activity，一般结合 FLAG_ACTIVITY_NEW_TASK 一起使用。</td></tr><tr><td><font color="#0000FF">FLAG_ACTIVITY_SINGLE_TOP</font></td><td>等同于 launcherMode 属性设置为 singleTop。</td></tr></tbody></table>]]></content>
+      
+      
+      <categories>
+          
+          <category> 四大组件 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> Activity </tag>
+            
+            <tag> 启动模式 </tag>
             
         </tags>
       

@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="https://superandroid.pro/"/>
-  <updated>2020-07-16T07:55:10.216Z</updated>
+  <updated>2020-07-16T09:23:53.846Z</updated>
   <id>https://superandroid.pro/</id>
   
   <author>
@@ -21,7 +21,7 @@
     <link href="https://superandroid.pro/2021/01/01/thinking-in-android-android-xi-tong-kai-fa-bo-wen-jia-gou-mei-zhou-geng-xin/"/>
     <id>https://superandroid.pro/2021/01/01/thinking-in-android-android-xi-tong-kai-fa-bo-wen-jia-gou-mei-zhou-geng-xin/</id>
     <published>2021-01-01T00:08:00.000Z</published>
-    <updated>2020-07-16T07:55:10.216Z</updated>
+    <updated>2020-07-16T09:23:53.846Z</updated>
     
     <summary type="html">
     
@@ -45,6 +45,74 @@
       <category term="性能优化" scheme="https://superandroid.pro/tags/%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96/"/>
     
       <category term="设计模式" scheme="https://superandroid.pro/tags/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Android -- &quot; 技术能力 &quot; 自检表</title>
+    <link href="https://superandroid.pro/2020/12/31/thinking-in-android-android-ji-zhu-neng-li-zi-jian-biao/"/>
+    <id>https://superandroid.pro/2020/12/31/thinking-in-android-android-ji-zhu-neng-li-zi-jian-biao/</id>
+    <published>2020-12-31T00:08:00.000Z</published>
+    <updated>2020-07-17T01:33:38.334Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h2 id=&quot;《-Thinking-in-Android-》-–-“-Android-“&quot;&gt;&lt;a href=&quot;#《-Thinking-in-Android-》-–-“-Android-“&quot; class=&quot;headerlink&quot; title=&quot;《 Thinking in
+        
+      
+    
+    </summary>
+    
+      <category term="Android" scheme="https://superandroid.pro/categories/Android/"/>
+    
+    
+      <category term="Android" scheme="https://superandroid.pro/tags/Android/"/>
+    
+      <category term="JVM" scheme="https://superandroid.pro/tags/JVM/"/>
+    
+      <category term="Java" scheme="https://superandroid.pro/tags/Java/"/>
+    
+      <category term="数据结构" scheme="https://superandroid.pro/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/"/>
+    
+      <category term="算法" scheme="https://superandroid.pro/tags/%E7%AE%97%E6%B3%95/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Android -- &quot; 知识点 &quot; 分析</title>
+    <link href="https://superandroid.pro/2020/12/30/thinking-in-android-android-ji-zhu-neng-li-zi-jian-biao-fen-xi/"/>
+    <id>https://superandroid.pro/2020/12/30/thinking-in-android-android-ji-zhu-neng-li-zi-jian-biao-fen-xi/</id>
+    <published>2020-12-30T00:08:00.000Z</published>
+    <updated>2020-07-17T01:39:18.891Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h2 id=&quot;《-Thinking-in-Android-》-–-“-Android-“&quot;&gt;&lt;a href=&quot;#《-Thinking-in-Android-》-–-“-Android-“&quot; class=&quot;headerlink&quot; title=&quot;《 Thinking in
+        
+      
+    
+    </summary>
+    
+      <category term="Android" scheme="https://superandroid.pro/categories/Android/"/>
+    
+    
+      <category term="Android" scheme="https://superandroid.pro/tags/Android/"/>
+    
+      <category term="JVM" scheme="https://superandroid.pro/tags/JVM/"/>
+    
+      <category term="Java" scheme="https://superandroid.pro/tags/Java/"/>
+    
+      <category term="数据结构" scheme="https://superandroid.pro/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/"/>
+    
+      <category term="算法" scheme="https://superandroid.pro/tags/%E7%AE%97%E6%B3%95/"/>
     
   </entry>
   
@@ -214,6 +282,34 @@
       <category term="Activity" scheme="https://superandroid.pro/tags/Activity/"/>
     
       <category term="启动流程" scheme="https://superandroid.pro/tags/%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Activity 的 &quot; 启动模式 &quot;</title>
+    <link href="https://superandroid.pro/2020/06/18/android-10-si-da-zu-jian-xi-lie-activity-de-qi-dong-mo-shi/"/>
+    <id>https://superandroid.pro/2020/06/18/android-10-si-da-zu-jian-xi-lie-activity-de-qi-dong-mo-shi/</id>
+    <published>2020-06-18T00:08:00.000Z</published>
+    <updated>2020-07-17T02:01:02.044Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h1 id=&quot;一、LaunchMode&quot;&gt;&lt;a href=&quot;#一、LaunchMode&quot; class=&quot;headerlink&quot; title=&quot;一、LaunchMode&quot;&gt;&lt;/a&gt;一、LaunchMode&lt;/h1&gt;&lt;p&gt;我们可以在
+        
+      
+    
+    </summary>
+    
+      <category term="四大组件" scheme="https://superandroid.pro/categories/%E5%9B%9B%E5%A4%A7%E7%BB%84%E4%BB%B6/"/>
+    
+    
+      <category term="Activity" scheme="https://superandroid.pro/tags/Activity/"/>
+    
+      <category term="启动模式" scheme="https://superandroid.pro/tags/%E5%90%AF%E5%8A%A8%E6%A8%A1%E5%BC%8F/"/>
     
   </entry>
   

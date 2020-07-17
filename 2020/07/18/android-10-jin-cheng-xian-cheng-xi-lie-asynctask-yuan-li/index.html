@@ -342,14 +342,14 @@ f">
                     
                     <div class="info-break-policy">
                         <i class="fa fa-file-word-o fa-fw"></i>&nbsp;文章字数 :&nbsp;
-                        2.6k
+                        2.7k
                     </div>
                     
 
                     
                     <div class="info-break-policy">
                         <i class="fa fa-clock-o fa-fw"></i>&nbsp;阅读时长 :&nbsp;
-                        11 分钟
+                        12 分钟
                     </div>
                     
                 
@@ -629,7 +629,7 @@ f">
 <blockquote>
 <p>又是一个疑问</p>
 </blockquote>
-<p>上面我们说过：<code>mTasks.offer()</code> 方法向任务缓存队列中添加一个任务，然后任务执行之后就开始了一系列的流程，但是，<strong><font color="#0000FF">添加了任务后也有一个执行的时机问题，也就是这个任务什么时候被执行（因为是串行执行）</font></strong>？</p>
+<p>上面我们说过：<code>mTasks.offer()</code> 方法向任务缓存队列中添加一个任务，然后任务执行之后就开始了一系列的流程，但是，<strong><font color="#0000FF">添加了任务后也有一个执行的时机问题，也就是这个任务什么时候被执行</font></strong>？</p>
 <p>在上面代码中，我们提到过一个 Runnable 类型的变量：<code>mActive</code>，再回顾一下代码：</p>
 <pre class=" language-java"><code class="language-java"><span class="token comment" spellcheck="true">// frameworks/base/core/java/android/os/AsyncTask.java</span>
 
@@ -638,7 +638,7 @@ f">
 
     <span class="token keyword">private</span> <span class="token keyword">static</span> <span class="token keyword">class</span> <span class="token class-name">SerialExecutor</span> <span class="token keyword">implements</span> <span class="token class-name">Executor</span> <span class="token punctuation">{</span>
         <span class="token keyword">final</span> ArrayDeque<span class="token operator">&lt;</span>Runnable<span class="token operator">></span> mTasks <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ArrayDeque</span><span class="token operator">&lt;</span>Runnable<span class="token operator">></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        Runnable mActive<span class="token punctuation">;</span>    <span class="token comment" spellcheck="true">// 代表了当前正在执行的 AsyncTask 对象</span>
+        Runnable mActive<span class="token punctuation">;</span>    <span class="token comment" spellcheck="true">// 代表了当前正在执行的 AsyncTask 任务</span>
 
         <span class="token keyword">public</span> <span class="token keyword">synchronized</span> <span class="token keyword">void</span> <span class="token function">execute</span><span class="token punctuation">(</span><span class="token keyword">final</span> Runnable r<span class="token punctuation">)</span> <span class="token punctuation">{</span>
             mTasks<span class="token punctuation">.</span><span class="token function">offer</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">Runnable</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
@@ -646,6 +646,8 @@ f">
                     <span class="token keyword">try</span> <span class="token punctuation">{</span>
                         r<span class="token punctuation">.</span><span class="token function">run</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
                     <span class="token punctuation">}</span> <span class="token keyword">finally</span> <span class="token punctuation">{</span>
+                        <span class="token comment" spellcheck="true">// 当前 AsyncTask 任务执行完毕后，进行下一轮执行，如果还有未执行任务的话</span>
+                        <span class="token comment" spellcheck="true">// 这一点很明显体现了 AsyncTask 是串行执行任务的，总是一个任务执行完毕才会执行下一个任务</span>
                         <span class="token function">scheduleNext</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
                     <span class="token punctuation">}</span>
                 <span class="token punctuation">}</span>
@@ -657,7 +659,7 @@ f">
 
         <span class="token keyword">protected</span> <span class="token keyword">synchronized</span> <span class="token keyword">void</span> <span class="token function">scheduleNext</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
             <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token punctuation">(</span>mActive <span class="token operator">=</span> mTasks<span class="token punctuation">.</span><span class="token function">poll</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token operator">!=</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>    <span class="token comment" spellcheck="true">// 缓存队列非空</span>
-                <span class="token comment" spellcheck="true">// 执行从缓存队列中取出的任务</span>
+                <span class="token comment" spellcheck="true">// 执行从缓存队列中取出头部的任务</span>
                 THREAD_POOL_EXECUTOR<span class="token punctuation">.</span><span class="token function">execute</span><span class="token punctuation">(</span>mActive<span class="token punctuation">)</span><span class="token punctuation">;</span>
             <span class="token punctuation">}</span>
         <span class="token punctuation">}</span>
@@ -803,6 +805,16 @@ f">
         mStatus <span class="token operator">=</span> Status<span class="token punctuation">.</span>FINISHED<span class="token punctuation">;</span>  <span class="token comment" spellcheck="true">// 表示当前 AsyncTask 对象已经执行完毕</span>
     <span class="token punctuation">}</span>
 
+<span class="token punctuation">}</span>
+</code></pre>
+<blockquote>
+<p>如果我们想在 Android 3.0 后让 AsyncTask 采用并行的方式去执行任务，怎么搞？</p>
+</blockquote>
+<pre class=" language-java"><code class="language-java"><span class="token keyword">protected</span> <span class="token keyword">void</span> <span class="token function">onCreate</span><span class="token punctuation">(</span>Bundle savedInstanceState<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">super</span><span class="token punctuation">.</span><span class="token function">onCreate</span><span class="token punctuation">(</span>savedInstanceState<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token function">setContentView</span><span class="token punctuation">(</span>R<span class="token punctuation">.</span>layout<span class="token punctuation">.</span>activity_main<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">new</span> <span class="token class-name">DownloadTask</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">execute</span><span class="token punctuation">(</span><span class="token number">100</span><span class="token punctuation">)</span><span class="token punctuation">;</span>    <span class="token comment" spellcheck="true">// 串行</span>
+    <span class="token keyword">new</span> <span class="token class-name">DownloadTask</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">executeOnExecutor</span><span class="token punctuation">(</span>AsyncTask<span class="token punctuation">.</span>THREAD_POOL_EXECUTOR<span class="token punctuation">,</span> <span class="token number">100</span><span class="token punctuation">)</span><span class="token punctuation">;</span>    <span class="token comment" spellcheck="true">// 并行</span>
 <span class="token punctuation">}</span>
 </code></pre>
 

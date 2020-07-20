@@ -49,11 +49,11 @@
   </entry>
   
   <entry>
-    <title>Handler 机制 -- 原理</title>
+    <title>再聊聊 Handler 的内部原理</title>
     <link href="https://superandroid.pro/2020/07/23/android-10-he-xin-ji-zhi-xi-lie-handler-ji-zhi-yuan-li/"/>
     <id>https://superandroid.pro/2020/07/23/android-10-he-xin-ji-zhi-xi-lie-handler-ji-zhi-yuan-li/</id>
     <published>2020-07-23T00:08:00.000Z</published>
-    <updated>2020-07-18T07:12:45.351Z</updated>
+    <updated>2020-07-20T11:24:58.273Z</updated>
     
     <summary type="html">
     
@@ -75,11 +75,11 @@
   </entry>
   
   <entry>
-    <title>Handler 机制 -- 用法</title>
+    <title>先聊聊 Handler 的使用方法</title>
     <link href="https://superandroid.pro/2020/07/20/android-10-he-xin-ji-zhi-xi-lie-handler-ji-zhi-yong-fa/"/>
     <id>https://superandroid.pro/2020/07/20/android-10-he-xin-ji-zhi-xi-lie-handler-ji-zhi-yong-fa/</id>
     <published>2020-07-20T00:08:00.000Z</published>
-    <updated>2020-07-18T07:12:51.463Z</updated>
+    <updated>2020-07-18T08:46:05.326Z</updated>
     
     <summary type="html">
     

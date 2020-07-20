@@ -4,7 +4,7 @@
 
 <head><meta name="generator" content="Hexo 3.8.0">
     <meta charset="utf-8">
-    <meta name="keywords" content="Handler 机制 -- 原理, Thinking in Android">
+    <meta name="keywords" content="再聊聊 Handler 的内部原理, Thinking in Android">
     <meta name="description" content="# 核心源码
 
 
@@ -27,7 +27,7 @@ frameworks/base/core/jav">
     <meta name="format-detection" content="telephone=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>Handler 机制 -- 原理 | Thinking in Android</title>
+    <title>再聊聊 Handler 的内部原理 | Thinking in Android</title>
     <link rel="icon" type="image/png" href="/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/font-awesome.min.css">
@@ -289,7 +289,7 @@ frameworks/base/core/jav">
             <div class="col s12 m12 l12">
                 <div class="brand">
                     <div class="description center-align post-title">
-                        Handler 机制 -- 原理
+                        再聊聊 Handler 的内部原理
                     </div>
                 </div>
             </div>
@@ -342,14 +342,14 @@ frameworks/base/core/jav">
                     
                     <div class="info-break-policy">
                         <i class="fa fa-file-word-o fa-fw"></i>&nbsp;文章字数 :&nbsp;
-                        6.1k
+                        6.5k
                     </div>
                     
 
                     
                     <div class="info-break-policy">
                         <i class="fa fa-clock-o fa-fw"></i>&nbsp;阅读时长 :&nbsp;
-                        26 分钟
+                        29 分钟
                     </div>
                     
                 
@@ -967,7 +967,78 @@ frameworks/base/core/jav">
 </code></pre>
 <p>这个移除消息的方法，采用了两个 while 循环，第一个循环是从队头开始，移除符合条件的消息，第二个循环是从头部移除完连续的满足条件的消息之后，再从队列后面继续查询是否有满足条件的消息需要被移除。</p>
 <h1 id="三、Handler"><a href="#三、Handler" class="headerlink" title="三、Handler"></a>三、Handler</h1><p>分析完 Loop、MessageQueue，接下来我们看看 Handler 类，它是怎么与 Looper 和 MessageQueue 一起搭配工作的。</p>
-<h2 id="3-1-构造函数"><a href="#3-1-构造函数" class="headerlink" title="3.1 构造函数"></a>3.1 构造函数</h2><h3 id="3-1-1-无参构造"><a href="#3-1-1-无参构造" class="headerlink" title="3.1.1 无参构造"></a>3.1.1 无参构造</h3><pre class=" language-java"><code class="language-java"><span class="token comment" spellcheck="true">// frameworks/base/core/java/android/os/Handler.java</span>
+<blockquote>
+<p>在 <a href="https://superandroid.pro/2020/07/20/android-10-he-xin-ji-zhi-xi-lie-handler-ji-zhi-yong-fa/">“ Handler 使用方法 “</a> 一文，讲解了 Handler 如何使用，有如下代码，我们就通过下面的代码，一步步跟进 Handler 的内部原理。</p>
+</blockquote>
+<h1 id="Handler-Demo"><a href="#Handler-Demo" class="headerlink" title="# Handler Demo"></a># Handler Demo</h1><pre class=" language-java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">MainActivity</span> <span class="token keyword">extends</span> <span class="token class-name">AppCompatActivity</span> <span class="token keyword">implements</span> <span class="token class-name">Button<span class="token punctuation">.</span>OnClickListener</span><span class="token punctuation">{</span>
+
+    <span class="token keyword">private</span> TextView textView <span class="token operator">=</span> null<span class="token punctuation">;</span>
+    <span class="token keyword">private</span> Button btnDownload <span class="token operator">=</span> null<span class="token punctuation">;</span>
+
+    <span class="token keyword">private</span> Handler uiHandler <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Handler</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>    <span class="token comment" spellcheck="true">// 构造 Handler，无参</span>
+
+    <span class="token comment" spellcheck="true">/*private Handler uiHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case 1:
+                    System.out.println("handleMessage thread id " + Thread.currentThread().getId());
+                    System.out.println("msg.arg1:" + msg.arg1);
+                    System.out.println("msg.arg2:" + msg.arg2);
+                    MainActivity.this.textView.setText("文件下载完成");
+                    break;
+            }
+        }
+    };*/</span>
+
+    <span class="token annotation punctuation">@Override</span>
+    <span class="token keyword">protected</span> <span class="token keyword">void</span> <span class="token function">onCreate</span><span class="token punctuation">(</span>Bundle savedInstanceState<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">super</span><span class="token punctuation">.</span><span class="token function">onCreate</span><span class="token punctuation">(</span>savedInstanceState<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token function">setContentView</span><span class="token punctuation">(</span>R<span class="token punctuation">.</span>layout<span class="token punctuation">.</span>activity_main<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        textView <span class="token operator">=</span> <span class="token function">findViewById</span><span class="token punctuation">(</span>R<span class="token punctuation">.</span>id<span class="token punctuation">.</span>textView<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        btnDownload <span class="token operator">=</span> <span class="token function">findViewById</span><span class="token punctuation">(</span>R<span class="token punctuation">.</span>id<span class="token punctuation">.</span>btnDownload<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        btnDownload<span class="token punctuation">.</span><span class="token function">setOnClickListener</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        System<span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"MainThread id "</span> <span class="token operator">+</span> Thread<span class="token punctuation">.</span><span class="token function">currentThread</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getId</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token annotation punctuation">@Override</span>
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">onClick</span><span class="token punctuation">(</span>View v<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        DownLoadThread downLoadThread <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">DownLoadThread</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        downLoadThread<span class="token punctuation">.</span><span class="token function">start</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">class</span> <span class="token class-name">DownLoadThread</span> <span class="token keyword">extends</span> <span class="token class-name">Thread</span> <span class="token punctuation">{</span>
+        <span class="token annotation punctuation">@Override</span>
+        <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">run</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">try</span> <span class="token punctuation">{</span>
+                System<span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"DownloadThread id "</span> <span class="token operator">+</span> Thread<span class="token punctuation">.</span><span class="token function">currentThread</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getId</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                System<span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"开始下载文件"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                Thread<span class="token punctuation">.</span><span class="token function">sleep</span><span class="token punctuation">(</span><span class="token number">5000</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                System<span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"下载完成"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                Runnable runnable <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Runnable</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                    <span class="token annotation punctuation">@Override</span>
+                    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">run</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                        System<span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"RunnableThread id "</span> <span class="token operator">+</span> Thread<span class="token punctuation">.</span><span class="token function">currentThread</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getId</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                        MainActivity<span class="token punctuation">.</span><span class="token keyword">this</span><span class="token punctuation">.</span>textView<span class="token punctuation">.</span><span class="token function">setText</span><span class="token punctuation">(</span><span class="token string">"文件下载完成"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                    <span class="token punctuation">}</span>
+                <span class="token punctuation">}</span><span class="token punctuation">;</span>
+
+                uiHandler<span class="token punctuation">.</span><span class="token function">post</span><span class="token punctuation">(</span>runnable<span class="token punctuation">)</span><span class="token punctuation">;</span>    <span class="token comment" spellcheck="true">// 调用 post() 方法，见 1.3</span>
+
+                <span class="token comment" spellcheck="true">/*Message msg = new Message();
+                msg.what = 1;
+                msg.arg1 = 123;
+                msg.arg2 = 456;
+
+                uiHandler.sendMessage(msg);*/</span>    <span class="token comment" spellcheck="true">// 调用 sendMessage() 方法，见 1.4</span>
+            <span class="token punctuation">}</span><span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">InterruptedException</span> e<span class="token punctuation">)</span><span class="token punctuation">{</span>
+                e<span class="token punctuation">.</span><span class="token function">printStackTrace</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<h2 id="3-1-new-Handler"><a href="#3-1-new-Handler" class="headerlink" title="3.1 new Handler()"></a>3.1 new Handler()</h2><pre class=" language-java"><code class="language-java"><span class="token comment" spellcheck="true">// frameworks/base/core/java/android/os/Handler.java</span>
 
 <span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">Handler</span> <span class="token punctuation">{</span>
 
@@ -976,17 +1047,8 @@ frameworks/base/core/jav">
         <span class="token keyword">this</span><span class="token punctuation">(</span>null<span class="token punctuation">,</span> <span class="token boolean">false</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
     <span class="token punctuation">}</span>
 
-    <span class="token annotation punctuation">@Deprecated</span>
-    <span class="token keyword">public</span> <span class="token function">Handler</span><span class="token punctuation">(</span><span class="token annotation punctuation">@Nullable</span> Callback callback<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">this</span><span class="token punctuation">(</span>callback<span class="token punctuation">,</span> <span class="token boolean">false</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-
-    <span class="token keyword">public</span> <span class="token function">Handler</span><span class="token punctuation">(</span><span class="token keyword">boolean</span> async<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">this</span><span class="token punctuation">(</span>null<span class="token punctuation">,</span> async<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-
     <span class="token comment" spellcheck="true">// 主线程调用的构造方法，主线程已经调用了 Looper.prepareMainLooper();</span>
-    <span class="token keyword">public</span> <span class="token function">Handler</span><span class="token punctuation">(</span>Callback callback<span class="token punctuation">,</span> <span class="token keyword">boolean</span> async<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">public</span> <span class="token function">Handler</span><span class="token punctuation">(</span><span class="token annotation punctuation">@Nullable</span> Callback callback<span class="token punctuation">,</span> <span class="token keyword">boolean</span> async<span class="token punctuation">)</span> <span class="token punctuation">{</span>
         <span class="token comment" spellcheck="true">// 匿名类、内部类或本地类都必须申明为 static，否则会警告可能出现内存泄露</span>
         <span class="token keyword">if</span> <span class="token punctuation">(</span>FIND_POTENTIAL_LEAKS<span class="token punctuation">)</span> <span class="token punctuation">{</span>     <span class="token comment" spellcheck="true">// 默认为 false</span>
             <span class="token keyword">final</span> Class<span class="token operator">&lt;</span><span class="token operator">?</span> <span class="token keyword">extends</span> <span class="token class-name">Handler</span><span class="token operator">></span> klass <span class="token operator">=</span> <span class="token function">getClass</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
@@ -997,77 +1059,60 @@ frameworks/base/core/jav">
             <span class="token punctuation">}</span>
         <span class="token punctuation">}</span>
 
-        <span class="token comment" spellcheck="true">// 必须先执行 Looper.prepare()，才能获取 Looper 对象，否则为null</span>
-        mLooper <span class="token operator">=</span> Looper<span class="token punctuation">.</span><span class="token function">myLooper</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        mLooper <span class="token operator">=</span> Looper<span class="token punctuation">.</span><span class="token function">myLooper</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>    <span class="token comment" spellcheck="true">// 获取当前线程的 Looper，见 1.2</span>
         <span class="token keyword">if</span> <span class="token punctuation">(</span>mLooper <span class="token operator">==</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
             <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">RuntimeException</span><span class="token punctuation">(</span>
                 <span class="token string">"Can't create handler inside thread that has not called Looper.prepare()"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
         <span class="token punctuation">}</span>
-        mQueue <span class="token operator">=</span> mLooper<span class="token punctuation">.</span>mQueue<span class="token punctuation">;</span>
+        mQueue <span class="token operator">=</span> mLooper<span class="token punctuation">.</span>mQueue<span class="token punctuation">;</span>  <span class="token comment" spellcheck="true">// 获取 MessageQueue</span>
         mCallback <span class="token operator">=</span> callback<span class="token punctuation">;</span>     <span class="token comment" spellcheck="true">// 回调方法</span>
         mAsynchronous <span class="token operator">=</span> async<span class="token punctuation">;</span>    <span class="token comment" spellcheck="true">// 设置消息是否为异步处理方式</span>
     <span class="token punctuation">}</span>
 
 <span class="token punctuation">}</span>
 </code></pre>
-<p>对于 Handler 的无参构造方法，默认采用当前线程 TLS 中的 Looper 对象，并且 callback 回调方法为 null，且消息为同步处理方式。只要执行的 Looper.prepare() 方法，那么便可以获取有效的 Looper 对象。</p>
-<h3 id="3-1-2-有参构造"><a href="#3-1-2-有参构造" class="headerlink" title="3.1.2 有参构造"></a>3.1.2 有参构造</h3><pre class=" language-java"><code class="language-java"><span class="token comment" spellcheck="true">// frameworks/base/core/java/android/os/Handler.java</span>
+<h2 id="3-2-Looper-myLooper"><a href="#3-2-Looper-myLooper" class="headerlink" title="3.2 Looper.myLooper()"></a>3.2 Looper.myLooper()</h2><pre class=" language-java"><code class="language-java"><span class="token comment" spellcheck="true">// frameworks/base/core/java/android/os/Looper.java</span>
 
-<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">Handler</span> <span class="token punctuation">{</span>
+<span class="token keyword">public</span> <span class="token keyword">final</span> <span class="token keyword">class</span> <span class="token class-name">Looper</span> <span class="token punctuation">{</span>
 
-    <span class="token keyword">public</span> <span class="token function">Handler</span><span class="token punctuation">(</span><span class="token annotation punctuation">@NonNull</span> Looper looper<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">this</span><span class="token punctuation">(</span>looper<span class="token punctuation">,</span> null<span class="token punctuation">,</span> <span class="token boolean">false</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-
-    <span class="token keyword">public</span> <span class="token function">Handler</span><span class="token punctuation">(</span><span class="token annotation punctuation">@NonNull</span> Looper looper<span class="token punctuation">,</span> <span class="token annotation punctuation">@Nullable</span> Callback callback<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">this</span><span class="token punctuation">(</span>looper<span class="token punctuation">,</span> callback<span class="token punctuation">,</span> <span class="token boolean">false</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-
-    <span class="token comment" spellcheck="true">/**
-     * 第二种构造方法，专门给子线程中创建 Handler 时使用的
-     */</span>
-    <span class="token keyword">public</span> <span class="token function">Handler</span><span class="token punctuation">(</span><span class="token annotation punctuation">@NonNull</span> Looper looper<span class="token punctuation">,</span> <span class="token annotation punctuation">@Nullable</span> Callback callback<span class="token punctuation">,</span> <span class="token keyword">boolean</span> async<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        mLooper <span class="token operator">=</span> looper<span class="token punctuation">;</span>
-        mQueue <span class="token operator">=</span> looper<span class="token punctuation">.</span>mQueue<span class="token punctuation">;</span>
-        mCallback <span class="token operator">=</span> callback<span class="token punctuation">;</span>
-        mAsynchronous <span class="token operator">=</span> async<span class="token punctuation">;</span>
+    <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token annotation punctuation">@Nullable</span> Looper <span class="token function">myLooper</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> sThreadLocal<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
     <span class="token punctuation">}</span>
 
 <span class="token punctuation">}</span>
 </code></pre>
-<p>Handler 类在构造方法中，可指定 Looper，Callback 回调方法以及消息的处理方式(同步或异步)，对于无参的 handler，默认是当前线程的 Looper。</p>
-<h2 id="3-2-Handler-post"><a href="#3-2-Handler-post" class="headerlink" title="3.2 Handler.post()"></a>3.2 Handler.post()</h2><pre class=" language-java"><code class="language-java"><span class="token comment" spellcheck="true">// frameworks/base/core/java/android/os/Handler.java</span>
+<h2 id="3-3-Handler-post"><a href="#3-3-Handler-post" class="headerlink" title="3.3 Handler.post()"></a>3.3 Handler.post()</h2><pre class=" language-java"><code class="language-java"><span class="token comment" spellcheck="true">// frameworks/base/core/java/android/os/Handler.java</span>
 
 <span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">Handler</span> <span class="token punctuation">{</span>
 
-    <span class="token comment" spellcheck="true">// 发送 Runnable 消息</span>
     <span class="token keyword">public</span> <span class="token keyword">final</span> <span class="token keyword">boolean</span> <span class="token function">post</span><span class="token punctuation">(</span><span class="token annotation punctuation">@NonNull</span> Runnable r<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-    <span class="token punctuation">{</span>
-       <span class="token comment" spellcheck="true">// 可以看到内部调用了 getPostMessage 方法，该方法传入一个 Runnable 对象，得到一个 Message 对象</span>
+        <span class="token comment" spellcheck="true">// 内部调用了 getPostMessage() 方法，该方法传入一个 Runnable 对象，得到一个 Message 对象</span>
        <span class="token keyword">return</span>  <span class="token function">sendMessageDelayed</span><span class="token punctuation">(</span><span class="token function">getPostMessage</span><span class="token punctuation">(</span>r<span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
     <span class="token punctuation">}</span>
 
-    <span class="token keyword">private</span> <span class="token keyword">static</span> Message <span class="token function">getPostMessage</span><span class="token punctuation">(</span>Runnable r<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        Message m <span class="token operator">=</span> Message<span class="token punctuation">.</span><span class="token function">obtain</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        m<span class="token punctuation">.</span>callback <span class="token operator">=</span> r<span class="token punctuation">;</span>
+    <span class="token annotation punctuation">@UnsupportedAppUsage</span>
+    <span class="token keyword">private</span> <span class="token keyword">static</span> Message <span class="token function">getPostMessage</span><span class="token punctuation">(</span>Runnable r<span class="token punctuation">,</span> Object token<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        Message m <span class="token operator">=</span> Message<span class="token punctuation">.</span><span class="token function">obtain</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>    <span class="token comment" spellcheck="true">// 创建一个 Message 对象</span>
+        m<span class="token punctuation">.</span>obj <span class="token operator">=</span> token<span class="token punctuation">;</span>
+        m<span class="token punctuation">.</span>callback <span class="token operator">=</span> r<span class="token punctuation">;</span>                  <span class="token comment" spellcheck="true">// 并将传入的 Runnable 对象赋值给 Message 的 callback 成员字段</span>
         <span class="token keyword">return</span> m<span class="token punctuation">;</span>
     <span class="token punctuation">}</span>
 
 <span class="token punctuation">}</span>
 </code></pre>
-<p>通过上面的代码我们可以看到在 getPostMessage() 方法中，我们创建了一个 Message 对象，并将传入的 Runnable 对象赋值给 Message 的 callback 成员字段，然后返回该 Message ，然后在 post 方法中该携带有 Runnable 信息的 Message 传入到 sendMessageDelayed() 方法中。</p>
-<h2 id="3-3-Handler-sendMessage"><a href="#3-3-Handler-sendMessage" class="headerlink" title="3.3 Handler.sendMessage()"></a>3.3 Handler.sendMessage()</h2><p>我们看下 sendMessage() 源码处理流程：</p>
-<pre class=" language-java"><code class="language-java"><span class="token comment" spellcheck="true">// frameworks/base/core/java/android/os/Handler.java</span>
+<h2 id="3-4-Handler-sendMessage"><a href="#3-4-Handler-sendMessage" class="headerlink" title="3.4 Handler.sendMessage()"></a>3.4 Handler.sendMessage()</h2><pre class=" language-java"><code class="language-java"><span class="token comment" spellcheck="true">// frameworks/base/core/java/android/os/Handler.java</span>
 
 <span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">Handler</span> <span class="token punctuation">{</span>
 
     <span class="token keyword">public</span> <span class="token keyword">final</span> <span class="token keyword">boolean</span> <span class="token function">sendMessage</span><span class="token punctuation">(</span><span class="token annotation punctuation">@NonNull</span> Message msg<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">return</span> <span class="token function">sendMessageDelayed</span><span class="token punctuation">(</span>msg<span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">return</span> <span class="token function">sendMessageDelayed</span><span class="token punctuation">(</span>msg<span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>    <span class="token comment" spellcheck="true">// 调用 sendMessageDelayed() 方法</span>
     <span class="token punctuation">}</span>
 
 <span class="token punctuation">}</span>
 </code></pre>
-<h2 id="3-4-Handler-sendMessageDelayed"><a href="#3-4-Handler-sendMessageDelayed" class="headerlink" title="3.4 Handler.sendMessageDelayed()"></a>3.4 Handler.sendMessageDelayed()</h2><pre class=" language-java"><code class="language-java"><span class="token comment" spellcheck="true">// frameworks/base/core/java/android/os/Handler.java</span>
+<p>所以，不管是通过 Handler 的 <code>post()</code> 方式还是 <code>sendMessage()</code> 方式发送消息，最终都是调用了 <code>sendMessageDelayed()</code> 方法。</p>
+<h2 id="3-5-Handler-sendMessageDelayed"><a href="#3-5-Handler-sendMessageDelayed" class="headerlink" title="3.5 Handler.sendMessageDelayed()"></a>3.5 Handler.sendMessageDelayed()</h2><p><code>post()</code> 方法就是将携带有 <code>Runnable</code> 信息的 <code>Message</code> 传入到 <code>sendMessageDelayed()</code> 方法中。</p>
+<pre class=" language-java"><code class="language-java"><span class="token comment" spellcheck="true">// frameworks/base/core/java/android/os/Handler.java</span>
 
 <span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">Handler</span> <span class="token punctuation">{</span>
 
@@ -1076,18 +1121,19 @@ frameworks/base/core/jav">
         <span class="token keyword">if</span> <span class="token punctuation">(</span>delayMillis <span class="token operator">&lt;</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
             delayMillis <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
         <span class="token punctuation">}</span>
-        <span class="token comment" spellcheck="true">// 最终调 sendMessageAtTime()</span>
+        <span class="token comment" spellcheck="true">// 最终调用 sendMessageAtTime() 方法</span>
         <span class="token keyword">return</span> <span class="token function">sendMessageAtTime</span><span class="token punctuation">(</span>msg<span class="token punctuation">,</span> SystemClock<span class="token punctuation">.</span><span class="token function">uptimeMillis</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">+</span> delayMillis<span class="token punctuation">)</span><span class="token punctuation">;</span>
     <span class="token punctuation">}</span>
 
 <span class="token punctuation">}</span>
 </code></pre>
-<h2 id="3-5-Handler-sendMessageAtTime"><a href="#3-5-Handler-sendMessageAtTime" class="headerlink" title="3.5 Handler.sendMessageAtTime()"></a>3.5 Handler.sendMessageAtTime()</h2><p>在 Handler 中所有可以直接或间接向消息队列发送 Message 的方法最终都调用了 sendMessageAtTime 方法，该方法的源码如下：</p>
+<h2 id="3-6-Handler-sendMessageAtTime"><a href="#3-6-Handler-sendMessageAtTime" class="headerlink" title="3.6 Handler.sendMessageAtTime()"></a>3.6 Handler.sendMessageAtTime()</h2><p>在 Handler 中所有可以直接或间接向消息队列发送 Message 的方法最终都调用了 <code>sendMessageAtTime()</code> 方法：</p>
 <pre class=" language-java"><code class="language-java"><span class="token comment" spellcheck="true">// frameworks/base/core/java/android/os/Handler.java</span>
 
 <span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">Handler</span> <span class="token punctuation">{</span>
 
     <span class="token keyword">public</span> <span class="token keyword">boolean</span> <span class="token function">sendMessageAtTime</span><span class="token punctuation">(</span>Message msg<span class="token punctuation">,</span> <span class="token keyword">long</span> uptimeMillis<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token comment" spellcheck="true">// 这里拿到的 MessageQueue 其实就是创建时的 MessageQueue，默认情况是当前线程的 Looper 对象的 MessageQueue，也可以指定</span>
         MessageQueue queue <span class="token operator">=</span> mQueue<span class="token punctuation">;</span>
         <span class="token keyword">if</span> <span class="token punctuation">(</span>queue <span class="token operator">==</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
             RuntimeException e <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">RuntimeException</span><span class="token punctuation">(</span>
@@ -1095,32 +1141,91 @@ frameworks/base/core/jav">
             Log<span class="token punctuation">.</span><span class="token function">w</span><span class="token punctuation">(</span><span class="token string">"Looper"</span><span class="token punctuation">,</span> e<span class="token punctuation">.</span><span class="token function">getMessage</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> e<span class="token punctuation">)</span><span class="token punctuation">;</span>
             <span class="token keyword">return</span> <span class="token boolean">false</span><span class="token punctuation">;</span>
         <span class="token punctuation">}</span>
+        <span class="token comment" spellcheck="true">// uptimeMillis 为 SystemClock.uptimeMillis() + delayMillis 和值</span>
+        <span class="token comment" spellcheck="true">// 调用 enqueueMessage，把消息加入到 MessageQueue 中</span>
         <span class="token keyword">return</span> <span class="token function">enqueueMessage</span><span class="token punctuation">(</span>queue<span class="token punctuation">,</span> msg<span class="token punctuation">,</span> uptimeMillis<span class="token punctuation">)</span><span class="token punctuation">;</span>
     <span class="token punctuation">}</span>
 
 <span class="token punctuation">}</span>
 </code></pre>
-<h3 id="3-6-Handler-enqueueMessage"><a href="#3-6-Handler-enqueueMessage" class="headerlink" title="3.6 Handler.enqueueMessage()"></a>3.6 Handler.enqueueMessage()</h3><pre class=" language-java"><code class="language-java"><span class="token comment" spellcheck="true">// frameworks/base/core/java/android/os/Handler.java</span>
+<h2 id="3-7-Handler-enqueueMessage"><a href="#3-7-Handler-enqueueMessage" class="headerlink" title="3.7 Handler.enqueueMessage()"></a>3.7 Handler.enqueueMessage()</h2><pre class=" language-java"><code class="language-java"><span class="token comment" spellcheck="true">// frameworks/base/core/java/android/os/Handler.java</span>
 
 <span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">Handler</span> <span class="token punctuation">{</span>
 
-    <span class="token keyword">private</span> <span class="token keyword">boolean</span> <span class="token function">enqueueMessage</span><span class="token punctuation">(</span><span class="token annotation punctuation">@NonNull</span> MessageQueue queue<span class="token punctuation">,</span> <span class="token annotation punctuation">@NonNull</span> Message msg<span class="token punctuation">,</span>
-            <span class="token keyword">long</span> uptimeMillis<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">private</span> <span class="token keyword">boolean</span> <span class="token function">enqueueMessage</span><span class="token punctuation">(</span><span class="token annotation punctuation">@NonNull</span> MessageQueue queue<span class="token punctuation">,</span> <span class="token annotation punctuation">@NonNull</span> Message msg<span class="token punctuation">,</span> <span class="token keyword">long</span> uptimeMillis<span class="token punctuation">)</span> <span class="token punctuation">{</span>
         msg<span class="token punctuation">.</span>target <span class="token operator">=</span> <span class="token keyword">this</span><span class="token punctuation">;</span>    <span class="token comment" spellcheck="true">// 将 Message 的 target 绑定为当前的 Handler</span>
         msg<span class="token punctuation">.</span>workSourceUid <span class="token operator">=</span> ThreadLocalWorkSource<span class="token punctuation">.</span><span class="token function">getUid</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 
         <span class="token keyword">if</span> <span class="token punctuation">(</span>mAsynchronous<span class="token punctuation">)</span> <span class="token punctuation">{</span>
             msg<span class="token punctuation">.</span><span class="token function">setAsynchronous</span><span class="token punctuation">(</span><span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
         <span class="token punctuation">}</span>
-        <span class="token comment" spellcheck="true">// 变量 queue 表示的是 Handler 所绑定的消息队列 MessageQueue，</span>
-        <span class="token comment" spellcheck="true">// 通过调用 queue.enqueueMessage(msg, uptimeMillis) 将 Message 放入到消息队列中</span>
+        <span class="token comment" spellcheck="true">// 通过调用 queue.enqueueMessage() 方法将 Message 放入到消息队列中，</span>
+        <span class="token comment" spellcheck="true">// 把 handler 发送的消息加入到 MessageQueue，供 Looper 去取出来处理</span>
         <span class="token keyword">return</span> queue<span class="token punctuation">.</span><span class="token function">enqueueMessage</span><span class="token punctuation">(</span>msg<span class="token punctuation">,</span> uptimeMillis<span class="token punctuation">)</span><span class="token punctuation">;</span>
     <span class="token punctuation">}</span>
 
 <span class="token punctuation">}</span>
 </code></pre>
-<h2 id="3-7-dispatchMessage"><a href="#3-7-dispatchMessage" class="headerlink" title="3.7 dispatchMessage()"></a>3.7 dispatchMessage()</h2><p>在 Looper.loop() 中，当发现有消息时，调用消息的目标 Handler，执行 dispatchMessage() 方法来分发消息。</p>
-<pre class=" language-java"><code class="language-java"><span class="token comment" spellcheck="true">// frameworks/base/core/java/android/os/Handler.java</span>
+<h2 id="3-8-MessageQueue-enqueueMessage"><a href="#3-8-MessageQueue-enqueueMessage" class="headerlink" title="3.8 MessageQueue.enqueueMessage()"></a>3.8 MessageQueue.enqueueMessage()</h2><pre class=" language-java"><code class="language-java"><span class="token comment" spellcheck="true">// frameworks/base/core/java/android/os/MessageQueue.java</span>
+
+<span class="token keyword">public</span> <span class="token keyword">final</span> <span class="token keyword">class</span> <span class="token class-name">MessageQueue</span> <span class="token punctuation">{</span>
+
+    <span class="token keyword">boolean</span> <span class="token function">enqueueMessage</span><span class="token punctuation">(</span>Message msg<span class="token punctuation">,</span> <span class="token keyword">long</span> when<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>msg<span class="token punctuation">.</span>target <span class="token operator">==</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">IllegalArgumentException</span><span class="token punctuation">(</span><span class="token string">"Message must have a target."</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        <span class="token comment" spellcheck="true">// 一个 Message，只能发送一次</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>msg<span class="token punctuation">.</span><span class="token function">isInUse</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">IllegalStateException</span><span class="token punctuation">(</span>msg <span class="token operator">+</span> <span class="token string">" This message is already in use."</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+
+        <span class="token keyword">synchronized</span> <span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>mQuitting<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                IllegalStateException e <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">IllegalStateException</span><span class="token punctuation">(</span>
+                        msg<span class="token punctuation">.</span>target <span class="token operator">+</span> <span class="token string">" sending message to a Handler on a dead thread"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                Log<span class="token punctuation">.</span><span class="token function">w</span><span class="token punctuation">(</span>TAG<span class="token punctuation">,</span> e<span class="token punctuation">.</span><span class="token function">getMessage</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> e<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                msg<span class="token punctuation">.</span><span class="token function">recycle</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token keyword">return</span> <span class="token boolean">false</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+
+            msg<span class="token punctuation">.</span><span class="token function">markInUse</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>          <span class="token comment" spellcheck="true">// 标记 Message 已经使用了</span>
+            msg<span class="token punctuation">.</span>when <span class="token operator">=</span> when<span class="token punctuation">;</span>
+            Message p <span class="token operator">=</span> mMessages<span class="token punctuation">;</span>    <span class="token comment" spellcheck="true">// 得到当前消息队列的头部</span>
+            <span class="token keyword">boolean</span> needWake<span class="token punctuation">;</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>p <span class="token operator">==</span> null <span class="token operator">||</span> when <span class="token operator">==</span> <span class="token number">0</span> <span class="token operator">||</span> when <span class="token operator">&lt;</span> p<span class="token punctuation">.</span>when<span class="token punctuation">)</span> <span class="token punctuation">{</span>    <span class="token comment" spellcheck="true">// when 为 0，表示立即处理的消息</span>
+                <span class="token comment" spellcheck="true">// New head, wake up the event queue if blocked.</span>
+                msg<span class="token punctuation">.</span>next <span class="token operator">=</span> p<span class="token punctuation">;</span>
+                mMessages <span class="token operator">=</span> msg<span class="token punctuation">;</span>
+                needWake <span class="token operator">=</span> mBlocked<span class="token punctuation">;</span>
+            <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+                <span class="token comment" spellcheck="true">// 根据需要把消息插入到消息队列的合适位置，通常是调用 xxxDelay 方法，延时发送消息</span>
+                needWake <span class="token operator">=</span> mBlocked <span class="token operator">&amp;&amp;</span> p<span class="token punctuation">.</span>target <span class="token operator">==</span> null <span class="token operator">&amp;&amp;</span> msg<span class="token punctuation">.</span><span class="token function">isAsynchronous</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                Message prev<span class="token punctuation">;</span>
+                <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token punctuation">;</span><span class="token punctuation">;</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                    prev <span class="token operator">=</span> p<span class="token punctuation">;</span>
+                    p <span class="token operator">=</span> p<span class="token punctuation">.</span>next<span class="token punctuation">;</span>
+                    <span class="token keyword">if</span> <span class="token punctuation">(</span>p <span class="token operator">==</span> null <span class="token operator">||</span> when <span class="token operator">&lt;</span> p<span class="token punctuation">.</span>when<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                        <span class="token keyword">break</span><span class="token punctuation">;</span>
+                    <span class="token punctuation">}</span>
+                    <span class="token keyword">if</span> <span class="token punctuation">(</span>needWake <span class="token operator">&amp;&amp;</span> p<span class="token punctuation">.</span><span class="token function">isAsynchronous</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                        needWake <span class="token operator">=</span> <span class="token boolean">false</span><span class="token punctuation">;</span>
+                    <span class="token punctuation">}</span>
+                <span class="token punctuation">}</span>
+                msg<span class="token punctuation">.</span>next <span class="token operator">=</span> p<span class="token punctuation">;</span> <span class="token comment" spellcheck="true">// invariant: p == prev.next    // 把消息插入到合适位置</span>
+                prev<span class="token punctuation">.</span>next <span class="token operator">=</span> msg<span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+
+            <span class="token comment" spellcheck="true">// 如果队列阻塞了，则唤醒</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>needWake<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token function">nativeWake</span><span class="token punctuation">(</span>mPtr<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span>
+        <span class="token keyword">return</span> <span class="token boolean">true</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+<span class="token punctuation">}</span>
+</code></pre>
+<h2 id="3-9-Handler-dispatchMessage"><a href="#3-9-Handler-dispatchMessage" class="headerlink" title="3.9 Handler.dispatchMessage()"></a>3.9 Handler.dispatchMessage()</h2><pre class=" language-java"><code class="language-java"><span class="token comment" spellcheck="true">// frameworks/base/core/java/android/os/Handler.java</span>
 
 <span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">Handler</span> <span class="token punctuation">{</span>
 
@@ -1138,26 +1243,30 @@ frameworks/base/core/jav">
     <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">handleMessage</span><span class="token punctuation">(</span>Message msg<span class="token punctuation">)</span> <span class="token punctuation">{</span>
     <span class="token punctuation">}</span>
 
-    <span class="token comment" spellcheck="true">/**
-     * Handle system messages here.
-     */</span>
-    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">dispatchMessage</span><span class="token punctuation">(</span>Message msg<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">dispatchMessage</span><span class="token punctuation">(</span><span class="token annotation punctuation">@NonNull</span> Message msg<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token comment" spellcheck="true">// 如果 msg.callback 不是null，则调用 handleCallback()</span>
+        <span class="token comment" spellcheck="true">// 还记得前面 post() 方法，把 Runnable 对象赋值给了 msg.callback 吗？所以，这边调用的是 Runnable.run() 方法</span>
         <span class="token keyword">if</span> <span class="token punctuation">(</span>msg<span class="token punctuation">.</span>callback <span class="token operator">!=</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token function">handleCallback</span><span class="token punctuation">(</span>msg<span class="token punctuation">)</span><span class="token punctuation">;</span>    <span class="token comment" spellcheck="true">// 如果消息体是 Runnable 就执行 run()</span>
+            <span class="token function">handleCallback</span><span class="token punctuation">(</span>msg<span class="token punctuation">)</span><span class="token punctuation">;</span>
         <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
-            <span class="token keyword">if</span> <span class="token punctuation">(</span>mCallback <span class="token operator">!=</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                <span class="token keyword">if</span> <span class="token punctuation">(</span>mCallback<span class="token punctuation">.</span><span class="token function">handleMessage</span><span class="token punctuation">(</span>msg<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>    <span class="token comment" spellcheck="true">// 当 Handler 存在 Callback 成员变量时，回调方法 Callback 里面的逻辑</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>mCallback <span class="token operator">!=</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>                   <span class="token comment" spellcheck="true">// 这是一个 Handler.Callback 的接口类型</span>
+                <span class="token keyword">if</span> <span class="token punctuation">(</span>mCallback<span class="token punctuation">.</span><span class="token function">handleMessage</span><span class="token punctuation">(</span>msg<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>    <span class="token comment" spellcheck="true">// 如果 mCallback不为空，则调用 mCallback.handleMessage() 方法</span>
                     <span class="token keyword">return</span><span class="token punctuation">;</span>
                 <span class="token punctuation">}</span>
             <span class="token punctuation">}</span>
-            <span class="token function">handleMessage</span><span class="token punctuation">(</span>msg<span class="token punctuation">)</span><span class="token punctuation">;</span>     <span class="token comment" spellcheck="true">// Handler 自身的回调方法 handleMessage()</span>
+            <span class="token function">handleMessage</span><span class="token punctuation">(</span>msg<span class="token punctuation">)</span><span class="token punctuation">;</span>    <span class="token comment" spellcheck="true">// 调用 Handler 自身的 handleMessage()，这就是我们常常重写的那个方法</span>
         <span class="token punctuation">}</span>
     <span class="token punctuation">}</span>
 
+    <span class="token comment" spellcheck="true">/**
+     * Subclasses must implement this to receive messages.
+     */</span>
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">handleMessage</span><span class="token punctuation">(</span><span class="token annotation punctuation">@NonNull</span> Message msg<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token punctuation">}</span>
 <span class="token punctuation">}</span>
 </code></pre>
 <p>首先会判断 <code>msg.callback</code> 存不存在，<code>msg.callback</code> 是 <code>Runnable</code> 类型，<strong><font color="#FF0000">如果 msg.callback 存在，那么说明该 Message 是通过执行 Handler 的 post() 系列方法将 Message 放入到消息队列中的</font></strong>，这种情况下会执行 <code>handleCallback()</code>。</p>
-<h3 id="3-7-1-handleCallback"><a href="#3-7-1-handleCallback" class="headerlink" title="3.7.1 handleCallback()"></a>3.7.1 handleCallback()</h3><p>源码如下：</p>
+<h3 id="3-9-1-handleCallback"><a href="#3-9-1-handleCallback" class="headerlink" title="3.9.1 handleCallback()"></a>3.9.1 handleCallback()</h3><p>源码如下：</p>
 <pre class=" language-java"><code class="language-java"><span class="token comment" spellcheck="true">// frameworks/base/core/java/android/os/Handler.java</span>
 
 <span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">Handler</span> <span class="token punctuation">{</span>
@@ -1168,7 +1277,7 @@ frameworks/base/core/jav">
 
 <span class="token punctuation">}</span>
 </code></pre>
-<h3 id="3-7-2-mCallback"><a href="#3-7-2-mCallback" class="headerlink" title="3.7.2 mCallback"></a>3.7.2 mCallback</h3><p>如果我们不是通过 post() 系列方法将 Message 放入到消息队列中的，那么 msg.callback 就是 null ，代码继续往下执行。</p>
+<h3 id="3-9-2-mCallback"><a href="#3-9-2-mCallback" class="headerlink" title="3.9.2 mCallback"></a>3.9.2 mCallback</h3><p>如果我们不是通过 post() 系列方法将 Message 放入到消息队列中的，那么 msg.callback 就是 null ，代码继续往下执行。</p>
 <p>接着我们会判断 Handler 的成员字段 mCallback 存不存在。mCallback 是 Hanlder.Callback 类型的，我们在上面提到过，在 Handler 的构造函数中我们可以传递 Hanlder.Callback 类型的对象，该对象需要实现 handleMessage() 方法，如果我们在构造函数中传递了该 Callback 对象，那么我们就会让 Callback 的 handleMessage() 方法来处理 Message。</p>
 <pre class=" language-java"><code class="language-java"><span class="token comment" spellcheck="true">// frameworks/base/core/java/android/os/Handler.java</span>
 
@@ -1200,7 +1309,7 @@ frameworks/base/core/jav">
 <span class="token punctuation">}</span>
 </code></pre>
 <p>综上所述，我们可以看到 Handler 提供了三种途径处理 Message ，而且处理有前后优先级之分：首先尝试让 post() 中传递的 Runnable 执行，其次尝试让 Handler 构造函数中传入的 Callback 的 handleMessage() 方法处理，最后才是让 Handler 自身的 handleMessage() 方法处理Message。</p>
-<h2 id="3-8-Callback"><a href="#3-8-Callback" class="headerlink" title="3.8 Callback"></a>3.8 Callback</h2><p>Callback 是 Handler 中的内部接口，需要实现其内部的 handleMessage() 方法，Callback 代码如下：</p>
+<h2 id="3-10-Callback"><a href="#3-10-Callback" class="headerlink" title="3.10 Callback"></a>3.10 Callback</h2><p>Callback 是 Handler 中的内部接口，需要实现其内部的 handleMessage() 方法，Callback 代码如下：</p>
 <pre class=" language-java"><code class="language-java"><span class="token comment" spellcheck="true">// frameworks/base/core/java/android/os/Handler.java</span>
 
 <span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">Handler</span> <span class="token punctuation">{</span>
@@ -1253,7 +1362,7 @@ frameworks/base/core/jav">
                     </span>
                     <a href="https://superandroid.pro" class="b-link-green">Thinking in Android</a>
                     <i class="fa fa-angle-right fa-lg fa-fw text-color"></i>
-                    <a href="/2020/07/23/android-10-he-xin-ji-zhi-xi-lie-handler-ji-zhi-yuan-li/" class="b-link-green">Handler 机制 -- 原理</a>
+                    <a href="/2020/07/23/android-10-he-xin-ji-zhi-xi-lie-handler-ji-zhi-yuan-li/" class="b-link-green">再聊聊 Handler 的内部原理</a>
                 </p>
             </div>
         </div>
@@ -1352,9 +1461,9 @@ And</div>
                 <a href="/2020/07/20/android-10-he-xin-ji-zhi-xi-lie-handler-ji-zhi-yong-fa/">
                     <div class="card-image">
                         
-                        <img src="https://s1.ax1x.com/2020/07/16/UDE9Rs.jpg" class="responsive-img" alt="Handler 机制 -- 用法">
+                        <img src="https://s1.ax1x.com/2020/07/16/UDE9Rs.jpg" class="responsive-img" alt="先聊聊 Handler 的使用方法">
                         
-                        <span class="card-title">Handler 机制 -- 用法</span>
+                        <span class="card-title">先聊聊 Handler 的使用方法</span>
                     </div>
                 </a>
                 <div class="card-content article-content">

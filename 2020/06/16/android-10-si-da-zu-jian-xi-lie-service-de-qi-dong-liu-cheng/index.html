@@ -1,0 +1,1078 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+
+
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta charset="utf-8">
+    <meta name="keywords" content="Service 的 &#34; 启动流程 &#34;, Thinking in Android">
+    <meta name="description" content="# 核心源码
+
+
+关键类
+路径
+
+
+
+
+ContextImpl.java
+frameworks/base/core/java/android/app/ContextImpl.java
+
+
+ContextWrapper.java
+framew">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="renderer" content="webkit|ie-stand|ie-comp">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>Service 的 &#34; 启动流程 &#34; | Thinking in Android</title>
+    <link rel="icon" type="image/png" href="/favicon.png">
+
+    <link rel="stylesheet" type="text/css" href="/libs/awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="/libs/materialize/materialize.min.css">
+    <link rel="stylesheet" type="text/css" href="/libs/aos/aos.css">
+    <link rel="stylesheet" type="text/css" href="/libs/animate/animate.min.css">
+    <link rel="stylesheet" type="text/css" href="/libs/lightGallery/css/lightgallery.min.css">
+    <link rel="stylesheet" type="text/css" href="/css/matery.css">
+    <link rel="stylesheet" type="text/css" href="/css/my.css">
+    <style type="text/css">
+        
+    </style>
+
+    <script src="/libs/jquery/jquery-2.2.0.min.js"></script>
+<link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css"></head>
+
+
+<body>
+
+<header class="navbar-fixed">
+    <nav id="headNav" class="bg-color-header-marco nav-transparent">
+        <div id="navContainer" class="nav-wrapper container">
+            <!--<div class="brand-logo">
+                <a href="/" class="waves-effect waves-light">
+                    
+                    <img src="/medias/logo.png" class="logo-img" alt="LOGO">
+                    
+                    <span class="logo-span">Thinking in Android</span>
+                </a>
+            </div>-->
+            
+
+<a href="#" data-target="mobile-nav" class="sidenav-trigger button-collapse"><i class="fa fa-navicon"></i></a>
+<ul class="right">
+    
+    <li class="hide-on-med-and-down">
+        <a href="/" class="waves-effect waves-light">
+            
+            <i class="fa fa-home"></i>
+            
+            <span>博客首页</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/categories" class="waves-effect waves-light">
+            
+            <i class="fa fa-bookmark"></i>
+            
+            <span>博文分类</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/tags" class="waves-effect waves-light">
+            
+            <i class="fa fa-tags"></i>
+            
+            <span>技术标签</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/categories/四大组件/" class="waves-effect waves-light">
+            
+            <i class="fa fa-cube"></i>
+            
+            <span>四大组件</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/categories/系统启动/" class="waves-effect waves-light">
+            
+            <i class="fa fa-spinner"></i>
+            
+            <span>系统启动</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/categories/框架服务/" class="waves-effect waves-light">
+            
+            <i class="fa fa-superpowers"></i>
+            
+            <span>框架服务</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/categories/核心机制/" class="waves-effect waves-light">
+            
+            <i class="fa fa-link"></i>
+            
+            <span>核心机制</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/categories/性能优化/" class="waves-effect waves-light">
+            
+            <i class="fa fa-yelp"></i>
+            
+            <span>性能优化</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/categories/设计模式/" class="waves-effect waves-light">
+            
+            <i class="fa fa-envira"></i>
+            
+            <span>设计模式</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/about" class="waves-effect waves-light">
+            
+            <i class="fa fa-user-circle-o"></i>
+            
+            <span>作者</span>
+        </a>
+    </li>
+    
+    <li>
+        <a href="#searchModal" class="modal-trigger waves-effect waves-light">
+            <i id="searchIcon" class="fa fa-search" title="检索博文"></i>
+        </a>
+    </li>
+</ul>
+
+<div id="mobile-nav" class="side-nav sidenav">
+
+    <div class="mobile-head bg-color">
+        
+        <img src="/medias/logo.png" class="logo-img circle responsive-img">
+        
+        <div class="logo-name">Thinking in Android</div>
+        <div class="logo-desc">
+            
+            One blog for recorded and shared android system development.
+            
+        </div>
+    </div>
+
+    
+
+    <ul class="menu-list mobile-menu-list">
+        
+        <li>
+            <a href="/" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-home"></i>
+                
+                博客首页
+            </a>
+        </li>
+        
+        <li>
+            <a href="/categories" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-bookmark"></i>
+                
+                博文分类
+            </a>
+        </li>
+        
+        <li>
+            <a href="/tags" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-tags"></i>
+                
+                技术标签
+            </a>
+        </li>
+        
+        <li>
+            <a href="/categories/四大组件/" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-cube"></i>
+                
+                四大组件
+            </a>
+        </li>
+        
+        <li>
+            <a href="/categories/系统启动/" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-spinner"></i>
+                
+                系统启动
+            </a>
+        </li>
+        
+        <li>
+            <a href="/categories/框架服务/" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-superpowers"></i>
+                
+                框架服务
+            </a>
+        </li>
+        
+        <li>
+            <a href="/categories/核心机制/" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-link"></i>
+                
+                核心机制
+            </a>
+        </li>
+        
+        <li>
+            <a href="/categories/性能优化/" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-yelp"></i>
+                
+                性能优化
+            </a>
+        </li>
+        
+        <li>
+            <a href="/categories/设计模式/" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-envira"></i>
+                
+                设计模式
+            </a>
+        </li>
+        
+        <li>
+            <a href="/about" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-user-circle-o"></i>
+                
+                作者
+            </a>
+        </li>
+        
+        
+    </ul>
+</div>
+
+        </div>
+
+        
+    </nav>
+
+</header>
+
+
+
+
+
+<div class="bg-cover pd-header post-cover" style="background-image: url('https://s1.ax1x.com/2020/07/14/UNEzCV.jpg')">
+    <div class="container">
+        <div class="row">
+            <div class="col s12 m12 l12">
+                <div class="brand">
+                    <div class="description center-align post-title">
+                        Service 的 &#34; 启动流程 &#34;
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<main class="container content">
+
+    
+    <!-- 文章内容详情 -->
+<div id="artDetail">
+    <div class="card">
+        <div class="card-content article-info">
+            <div class="row tag-cate">
+                <div class="col s7">
+                    
+                    <div class="article-tag">
+                        
+                            <a href="/tags/Activity/" target="_blank">
+                                <span class="chip bg-color">Activity</span>
+                            </a>
+                        
+                            <a href="/tags/启动流程/" target="_blank">
+                                <span class="chip bg-color">启动流程</span>
+                            </a>
+                        
+                    </div>
+                    
+                </div>
+                <div class="col s5 right-align">
+                    
+                    <div class="post-cate">
+                        <i class="fa fa-bookmark fa-fw icon-category"></i>
+                        
+                            <a href="/categories/四大组件/" class="post-category" target="_blank">
+                                四大组件
+                            </a>
+                        
+                    </div>
+                    
+                </div>
+            </div>
+
+            <div class="post-info">
+                <div class="post-date info-break-policy">
+                    <i class="fa fa-calendar-minus-o fa-fw"></i>&nbsp;发布日期 :&nbsp;
+                    2020-06-16
+                </div>
+
+                
+                    
+                    <div class="info-break-policy">
+                        <i class="fa fa-file-word-o fa-fw"></i>&nbsp;文章字数 :&nbsp;
+                        2k
+                    </div>
+                    
+
+                    
+                    <div class="info-break-policy">
+                        <i class="fa fa-clock-o fa-fw"></i>&nbsp;阅读时长 :&nbsp;
+                        10 分钟
+                    </div>
+                    
+                
+				
+				
+                    <div id="busuanzi_container_page_pv" class="info-break-policy">
+                        <i class="fa fa-eye fa-fw"></i>&nbsp;阅读次数 :&nbsp;
+                        <span id="busuanzi_value_page_pv"></span>
+                    </div>
+				
+            </div>
+        </div>
+		<br>
+        <hr class="clearfix">
+        <div class="card-content article-card-content">
+            <div id="articleContent">
+                <h1 id="核心源码"><a href="#核心源码" class="headerlink" title="# 核心源码"></a># 核心源码</h1><table>
+<thead>
+<tr>
+<th>关键类</th>
+<th>路径</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><font color="#D15FEE">ContextImpl.java</font></td>
+<td>frameworks/base/core/java/android/app/ContextImpl.java</td>
+</tr>
+<tr>
+<td><font color="#D15FEE">ContextWrapper.java</font></td>
+<td>frameworks/base/core/java/android/content/ContextWrapper.java</td>
+</tr>
+<tr>
+<td><font color="#D15FEE">ContextThemeWrapper.java</font></td>
+<td>frameworks/base/core/java/android/view/ContextThemeWrapper.java</td>
+</tr>
+<tr>
+<td><font color="#D15FEE">Activity.java</font></td>
+<td>frameworks/base/core/java/android/app/Activity.java</td>
+</tr>
+<tr>
+<td><font color="#D15FEE">ActivityManager.java</font></td>
+<td>frameworks/base/core/java/android/app/ActivityManager.java</td>
+</tr>
+<tr>
+<td><font color="#D15FEE">ActivityManagerService.java</font></td>
+<td>frameworks/base/services/core/java/com/android/server/am/ActivityManagerService.java</td>
+</tr>
+<tr>
+<td><font color="#D15FEE">ActiveServices.java</font></td>
+<td>frameworks/base/services/core/java/com/android/server/am/ActiveServices.java</td>
+</tr>
+<tr>
+<td><font color="#D15FEE">ActivityThread.java</font></td>
+<td>frameworks/base/core/java/android/app/ActivityThread.java</td>
+</tr>
+</tbody>
+</table>
+<p><br></p>
+<p><code>Service</code> 的启动过程相对 <code>Activity</code> 的启动过程来说简单了很多，我们都知道怎么去创建和启动一个 Service，<strong>那么你有没有从源码角度研究过 Service 启动后在系统层是如何运作的</strong>？</p>
+<h1 id="Activity-startService"><a href="#Activity-startService" class="headerlink" title="# Activity.startService()"></a># Activity.startService()</h1><p>首先我们知道：要启动一个 Service 的时候，一般都是在 Activity 中通过 <code>startService()</code> 来启动：</p>
+<pre class=" language-java"><code class="language-java">Intent intent <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Intent</span><span class="token punctuation">(</span>MainActivity<span class="token punctuation">.</span><span class="token keyword">this</span><span class="token punctuation">,</span> xxxService<span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token function">startService</span><span class="token punctuation">(</span>intent<span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre>
+<p>但是我们在 <code>Activity</code> 源码中并没有实现 <code>startService()</code> 方法，那它在哪里被调用的？找不到我们就去 <code>Activity</code> 的父类中找。</p>
+<pre class=" language-java"><code class="language-java"><span class="token comment" spellcheck="true">// frameworks/base/core/java/android/app/Activity.java</span>
+
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">Activity</span> <span class="token keyword">extends</span> <span class="token class-name">ContextThemeWrapper</span>
+        <span class="token keyword">implements</span> <span class="token class-name">LayoutInflater<span class="token punctuation">.</span>Factory2</span><span class="token punctuation">,</span>
+        Window<span class="token punctuation">.</span>Callback<span class="token punctuation">,</span> KeyEvent<span class="token punctuation">.</span>Callback<span class="token punctuation">,</span>
+        OnCreateContextMenuListener<span class="token punctuation">,</span> ComponentCallbacks2<span class="token punctuation">,</span>
+        Window<span class="token punctuation">.</span>OnWindowDismissedCallback<span class="token punctuation">,</span> WindowControllerCallback<span class="token punctuation">,</span>
+        AutofillManager<span class="token punctuation">.</span>AutofillClient<span class="token punctuation">,</span> ContentCaptureManager<span class="token punctuation">.</span>ContentCaptureClient <span class="token punctuation">{</span>
+
+<span class="token punctuation">}</span>
+
+<span class="token comment" spellcheck="true">// frameworks/base/core/java/android/view/ContextThemeWrapper.java</span>
+
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">ContextThemeWrapper</span> <span class="token keyword">extends</span> <span class="token class-name">ContextWrapper</span> <span class="token punctuation">{</span>
+
+<span class="token punctuation">}</span>
+
+<span class="token comment" spellcheck="true">// frameworks/base/core/java/android/content/ContextWrapper.java</span>
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">ContextWrapper</span> <span class="token keyword">extends</span> <span class="token class-name">Context</span> <span class="token punctuation">{</span>
+
+<span class="token punctuation">}</span>
+</code></pre>
+<p><code>Activity</code> 继承了 <code>ContextThemeWrapper</code> 类，<code>ContextThemeWrapper</code> 又继承了 <code>ContextWrapper</code> 类，<code>ContextWrapper</code> 又继承了 <code>Context</code> 类。</p>
+<h1 id="ContextWrapper-startService"><a href="#ContextWrapper-startService" class="headerlink" title="# ContextWrapper.startService()"></a># ContextWrapper.startService()</h1><p>在 <code>ContextWrapper</code> 中实现了 <code>startService()</code> 方法：</p>
+<pre class=" language-java"><code class="language-java"><span class="token comment" spellcheck="true">// frameworks/base/core/java/android/content/ContextWrapper.java</span>
+
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">ContextWrapper</span> <span class="token keyword">extends</span> <span class="token class-name">Context</span> <span class="token punctuation">{</span>
+
+    Context mBase<span class="token punctuation">;</span>
+
+    <span class="token keyword">public</span> <span class="token function">ContextWrapper</span><span class="token punctuation">(</span>Context base<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        mBase <span class="token operator">=</span> base<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token annotation punctuation">@Override</span>
+    <span class="token keyword">public</span> ComponentName <span class="token function">startService</span><span class="token punctuation">(</span>Intent service<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> mBase<span class="token punctuation">.</span><span class="token function">startService</span><span class="token punctuation">(</span>service<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+<span class="token punctuation">}</span>
+</code></pre>
+<p>所以 <code>startService()</code> 方法其实是由 <code>ContextWrapper</code> 实现的，紧接着又调用了 <code>mBase.startService()</code> 方法，<code>mBase</code> 对象是 <code>Context</code> 的子类 <code>ContextImpl</code>，所以调用最终进入 <code>ContextImpl</code> 类的 <code>startService()</code> 方法。</p>
+<h1 id="ContextImpl-startService"><a href="#ContextImpl-startService" class="headerlink" title="# ContextImpl.startService()"></a># ContextImpl.startService()</h1><pre class=" language-java"><code class="language-java"><span class="token comment" spellcheck="true">// frameworks/base/core/java/android/app/ContextImpl.java</span>
+
+<span class="token keyword">class</span> <span class="token class-name">ContextImpl</span> <span class="token keyword">extends</span> <span class="token class-name">Context</span> <span class="token punctuation">{</span>
+
+    <span class="token annotation punctuation">@Override</span>
+    <span class="token keyword">public</span> ComponentName <span class="token function">startService</span><span class="token punctuation">(</span>Intent service<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token function">warnIfCallingFromSystemProcess</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">return</span> <span class="token function">startServiceCommon</span><span class="token punctuation">(</span>service<span class="token punctuation">,</span> <span class="token boolean">false</span><span class="token punctuation">,</span> mUser<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">private</span> ComponentName <span class="token function">startServiceCommon</span><span class="token punctuation">(</span>Intent service<span class="token punctuation">,</span> <span class="token keyword">boolean</span> requireForeground<span class="token punctuation">,</span> UserHandle user<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">try</span> <span class="token punctuation">{</span>
+            <span class="token function">validateServiceIntent</span><span class="token punctuation">(</span>service<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            service<span class="token punctuation">.</span><span class="token function">prepareToLeaveProcess</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token comment" spellcheck="true">// 通过 Binder 进程间通信进入 ActivityManagerService 的 startService() 方法</span>
+            ComponentName cn <span class="token operator">=</span> ActivityManager<span class="token punctuation">.</span><span class="token function">getService</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">startService</span><span class="token punctuation">(</span>
+                mMainThread<span class="token punctuation">.</span><span class="token function">getApplicationThread</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> service<span class="token punctuation">,</span> service<span class="token punctuation">.</span><span class="token function">resolveTypeIfNeeded</span><span class="token punctuation">(</span>
+                    <span class="token function">getContentResolver</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">,</span> requireForeground<span class="token punctuation">,</span> <span class="token function">getOpPackageName</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> user<span class="token punctuation">.</span><span class="token function">getIdentifier</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+
+            <span class="token keyword">return</span> cn<span class="token punctuation">;</span>
+        <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">RemoteException</span> e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">throw</span> e<span class="token punctuation">.</span><span class="token function">rethrowFromSystemServer</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+
+<span class="token punctuation">}</span>
+</code></pre>
+<h1 id="ActivityManager-getService"><a href="#ActivityManager-getService" class="headerlink" title="# ActivityManager.getService()"></a># ActivityManager.getService()</h1><pre class=" language-java"><code class="language-java"><span class="token comment" spellcheck="true">// frameworks/base/core/java/android/app/ActivityManager.java</span>
+
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">ActivityManager</span> <span class="token punctuation">{</span>
+
+    <span class="token annotation punctuation">@UnsupportedAppUsage</span>
+    <span class="token keyword">public</span> <span class="token keyword">static</span> IActivityManager <span class="token function">getService</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> IActivityManagerSingleton<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token annotation punctuation">@UnsupportedAppUsage</span>
+    <span class="token keyword">private</span> <span class="token keyword">static</span> <span class="token keyword">final</span> Singleton<span class="token operator">&lt;</span>IActivityManager<span class="token operator">></span> IActivityManagerSingleton <span class="token operator">=</span>
+            <span class="token keyword">new</span> <span class="token class-name">Singleton</span><span class="token operator">&lt;</span>IActivityManager<span class="token operator">></span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token annotation punctuation">@Override</span>
+                <span class="token keyword">protected</span> IActivityManager <span class="token function">create</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                    <span class="token keyword">final</span> IBinder b <span class="token operator">=</span> ServiceManager<span class="token punctuation">.</span><span class="token function">getService</span><span class="token punctuation">(</span>Context<span class="token punctuation">.</span>ACTIVITY_SERVICE<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                    <span class="token keyword">final</span> IActivityManager am <span class="token operator">=</span> IActivityManager<span class="token punctuation">.</span>Stub<span class="token punctuation">.</span><span class="token function">asInterface</span><span class="token punctuation">(</span>b<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                    <span class="token keyword">return</span> am<span class="token punctuation">;</span>
+                <span class="token punctuation">}</span>
+            <span class="token punctuation">}</span><span class="token punctuation">;</span>
+
+<span class="token punctuation">}</span>
+</code></pre>
+<h1 id="ActivityManagerService-startService"><a href="#ActivityManagerService-startService" class="headerlink" title="# ActivityManagerService.startService()"></a># ActivityManagerService.startService()</h1><p>接下来就执行到 <code>ActivityManagerService</code> 的 <code>startService()</code> 方法：</p>
+<pre class=" language-java"><code class="language-java"><span class="token comment" spellcheck="true">// frameworks/base/services/core/java/com/android/server/am/ActivityManagerService.java</span>
+
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">ActivityManagerService</span> <span class="token keyword">extends</span> <span class="token class-name">IActivityManager<span class="token punctuation">.</span>Stub</span>
+        <span class="token keyword">implements</span> <span class="token class-name">Watchdog<span class="token punctuation">.</span>Monitor</span><span class="token punctuation">,</span> BatteryStatsImpl<span class="token punctuation">.</span>BatteryCallback <span class="token punctuation">{</span>
+
+    <span class="token keyword">final</span> ActiveServices mServices<span class="token punctuation">;</span>
+
+    <span class="token keyword">public</span> ComponentName <span class="token function">startService</span><span class="token punctuation">(</span>IApplicationThread caller<span class="token punctuation">,</span> Intent service<span class="token punctuation">,</span>
+            String resolvedType<span class="token punctuation">,</span> <span class="token keyword">boolean</span> requireForeground<span class="token punctuation">,</span> String callingPackage<span class="token punctuation">,</span> <span class="token keyword">int</span> userId<span class="token punctuation">)</span>
+            <span class="token keyword">throws</span> TransactionTooLargeException <span class="token punctuation">{</span>
+        <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+
+        <span class="token keyword">synchronized</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">final</span> <span class="token keyword">int</span> callingPid <span class="token operator">=</span> Binder<span class="token punctuation">.</span><span class="token function">getCallingPid</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">final</span> <span class="token keyword">int</span> callingUid <span class="token operator">=</span> Binder<span class="token punctuation">.</span><span class="token function">getCallingUid</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">final</span> <span class="token keyword">long</span> origId <span class="token operator">=</span> Binder<span class="token punctuation">.</span><span class="token function">clearCallingIdentity</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            ComponentName res<span class="token punctuation">;</span>
+            <span class="token keyword">try</span> <span class="token punctuation">{</span>
+                <span class="token comment" spellcheck="true">// 调用 ActiveServices 的 startServiceLocked() 方法</span>
+                res <span class="token operator">=</span> mServices<span class="token punctuation">.</span><span class="token function">startServiceLocked</span><span class="token punctuation">(</span>caller<span class="token punctuation">,</span> service<span class="token punctuation">,</span> resolvedType<span class="token punctuation">,</span> callingPid<span class="token punctuation">,</span>
+                            callingUid<span class="token punctuation">,</span> requireForeground<span class="token punctuation">,</span> callingPackage<span class="token punctuation">,</span> userId<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span> <span class="token keyword">finally</span> <span class="token punctuation">{</span>
+                Binder<span class="token punctuation">.</span><span class="token function">restoreCallingIdentity</span><span class="token punctuation">(</span>origId<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+            <span class="token keyword">return</span> res<span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+
+<span class="token punctuation">}</span>
+</code></pre>
+<h1 id="ActiveServices-startServiceLocked"><a href="#ActiveServices-startServiceLocked" class="headerlink" title="# ActiveServices.startServiceLocked()"></a># ActiveServices.startServiceLocked()</h1><pre class=" language-java"><code class="language-java"><span class="token comment" spellcheck="true">// frameworks/base/services/core/java/com/android/server/am/ActiveServices.java</span>
+
+<span class="token keyword">public</span> <span class="token keyword">final</span> <span class="token keyword">class</span> <span class="token class-name">ActiveServices</span> <span class="token punctuation">{</span>
+
+    ComponentName <span class="token function">startServiceLocked</span><span class="token punctuation">(</span>IApplicationThread caller<span class="token punctuation">,</span> Intent service<span class="token punctuation">,</span> String resolvedType<span class="token punctuation">,</span>
+            <span class="token keyword">int</span> callingPid<span class="token punctuation">,</span> <span class="token keyword">int</span> callingUid<span class="token punctuation">,</span> <span class="token keyword">boolean</span> fgRequired<span class="token punctuation">,</span> String callingPackage<span class="token punctuation">,</span> <span class="token keyword">final</span> <span class="token keyword">int</span> userId<span class="token punctuation">)</span>
+            <span class="token keyword">throws</span> TransactionTooLargeException <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> <span class="token function">startServiceLocked</span><span class="token punctuation">(</span>caller<span class="token punctuation">,</span> service<span class="token punctuation">,</span> resolvedType<span class="token punctuation">,</span> callingPid<span class="token punctuation">,</span> callingUid<span class="token punctuation">,</span> fgRequired<span class="token punctuation">,</span>
+                callingPackage<span class="token punctuation">,</span> userId<span class="token punctuation">,</span> <span class="token boolean">false</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    ComponentName <span class="token function">startServiceLocked</span><span class="token punctuation">(</span>IApplicationThread caller<span class="token punctuation">,</span> Intent service<span class="token punctuation">,</span> String resolvedType<span class="token punctuation">,</span>
+            <span class="token keyword">int</span> callingPid<span class="token punctuation">,</span> <span class="token keyword">int</span> callingUid<span class="token punctuation">,</span> <span class="token keyword">boolean</span> fgRequired<span class="token punctuation">,</span> String callingPackage<span class="token punctuation">,</span>
+            <span class="token keyword">final</span> <span class="token keyword">int</span> userId<span class="token punctuation">,</span> <span class="token keyword">boolean</span> allowBackgroundActivityStarts<span class="token punctuation">)</span>
+            <span class="token keyword">throws</span> TransactionTooLargeException <span class="token punctuation">{</span>
+        <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+
+        <span class="token comment" spellcheck="true">// 解析 AndroidManifest.xml 文件中配置 Service 的 intent-filter 相关内容信息</span>
+        ServiceLookupResult res <span class="token operator">=</span> <span class="token function">retrieveServiceLocked</span><span class="token punctuation">(</span>service<span class="token punctuation">,</span> null<span class="token punctuation">,</span> resolvedType<span class="token punctuation">,</span> callingPackage<span class="token punctuation">,</span>
+                    callingPid<span class="token punctuation">,</span> callingUid<span class="token punctuation">,</span> userId<span class="token punctuation">,</span> <span class="token boolean">true</span><span class="token punctuation">,</span> callerFg<span class="token punctuation">,</span> <span class="token boolean">false</span><span class="token punctuation">,</span> <span class="token boolean">false</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>res <span class="token operator">==</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">return</span> null<span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+
+        ServiceRecord r <span class="token operator">=</span> res<span class="token punctuation">.</span>record<span class="token punctuation">;</span>
+        <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+
+        <span class="token comment" spellcheck="true">// 调用 startServiceInnerLocked() 方法</span>
+        ComponentName cmp <span class="token operator">=</span> <span class="token function">startServiceInnerLocked</span><span class="token punctuation">(</span>smap<span class="token punctuation">,</span> service<span class="token punctuation">,</span> r<span class="token punctuation">,</span> callerFg<span class="token punctuation">,</span> addToStarting<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">return</span> cmp<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+<span class="token punctuation">}</span>
+</code></pre>
+<p>通过 <code>retrieveServiceLocked()</code> 方法来解析 <code>AndroidManifest.xml</code> 文件中配置 Service 的 <code>intent-filter</code> 相关内容信息。</p>
+<p>当解析完 <code>Service</code> 的 <code>intent-filter</code> 相关内容信息后，解析的结果会保存在 <code>res.record</code> 变量中。而 res 变量是一个 <code>ServiceLookupResult</code> 类型的对象，它的 record 变量则是一个 <code>ServiceRecord</code> 类型对象，用来表示一个 <code>Service</code>。</p>
+<h1 id="ActiveServices-startServiceInnerLocked"><a href="#ActiveServices-startServiceInnerLocked" class="headerlink" title="# ActiveServices.startServiceInnerLocked()"></a># ActiveServices.startServiceInnerLocked()</h1><p>ActiveServices 的 startServiceLocked()  方法最后调用了 <code>startServiceInnerLocked()</code> 方法：</p>
+<pre class=" language-java"><code class="language-java"><span class="token comment" spellcheck="true">// frameworks/base/services/core/java/com/android/server/am/ActiveServices.java</span>
+
+<span class="token keyword">public</span> <span class="token keyword">final</span> <span class="token keyword">class</span> <span class="token class-name">ActiveServices</span> <span class="token punctuation">{</span>
+
+    ComponentName <span class="token function">startServiceInnerLocked</span><span class="token punctuation">(</span>ServiceMap smap<span class="token punctuation">,</span> Intent service<span class="token punctuation">,</span> ServiceRecord r<span class="token punctuation">,</span>
+            <span class="token keyword">boolean</span> callerFg<span class="token punctuation">,</span> <span class="token keyword">boolean</span> addToStarting<span class="token punctuation">)</span> <span class="token keyword">throws</span> TransactionTooLargeException <span class="token punctuation">{</span>
+        <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+
+        <span class="token comment" spellcheck="true">// 调用 bringUpServiceLocked() 方法</span>
+        String error <span class="token operator">=</span> <span class="token function">bringUpServiceLocked</span><span class="token punctuation">(</span>r<span class="token punctuation">,</span> service<span class="token punctuation">.</span><span class="token function">getFlags</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> callerFg<span class="token punctuation">,</span> <span class="token boolean">false</span><span class="token punctuation">,</span> <span class="token boolean">false</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<h1 id="ActiveServices-bringUpServiceLocked"><a href="#ActiveServices-bringUpServiceLocked" class="headerlink" title="# ActiveServices.bringUpServiceLocked()"></a># ActiveServices.bringUpServiceLocked()</h1><p>调用 <code>bringUpServiceLocked()</code> 方法进一步处理：</p>
+<pre class=" language-java"><code class="language-java"><span class="token comment" spellcheck="true">// frameworks/base/services/core/java/com/android/server/am/ActiveServices.java</span>
+
+<span class="token keyword">public</span> <span class="token keyword">final</span> <span class="token keyword">class</span> <span class="token class-name">ActiveServices</span> <span class="token punctuation">{</span>
+
+    <span class="token keyword">private</span> String <span class="token function">bringUpServiceLocked</span><span class="token punctuation">(</span>ServiceRecord r<span class="token punctuation">,</span> <span class="token keyword">int</span> intentFlags<span class="token punctuation">,</span> <span class="token keyword">boolean</span> execInFg<span class="token punctuation">,</span>
+            <span class="token keyword">boolean</span> whileRestarting<span class="token punctuation">,</span> <span class="token keyword">boolean</span> permissionsReviewRequired<span class="token punctuation">)</span>
+            <span class="token keyword">throws</span> TransactionTooLargeException <span class="token punctuation">{</span>
+        <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+
+        ProcessRecord app<span class="token punctuation">;</span>
+
+        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>isolated<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            app <span class="token operator">=</span> mAm<span class="token punctuation">.</span><span class="token function">getProcessRecordLocked</span><span class="token punctuation">(</span>procName<span class="token punctuation">,</span> r<span class="token punctuation">.</span>appInfo<span class="token punctuation">.</span>uid<span class="token punctuation">,</span> <span class="token boolean">false</span><span class="token punctuation">)</span><span class="token punctuation">;</span>    <span class="token comment" spellcheck="true">// 获取 app 对象</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>DEBUG_MU<span class="token punctuation">)</span> Slog<span class="token punctuation">.</span><span class="token function">v</span><span class="token punctuation">(</span>TAG_MU<span class="token punctuation">,</span> <span class="token string">"bringUpServiceLocked: appInfo.uid="</span> <span class="token operator">+</span> r<span class="token punctuation">.</span>appInfo<span class="token punctuation">.</span>uid <span class="token operator">+</span> <span class="token string">" app="</span> <span class="token operator">+</span> app<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>app <span class="token operator">!=</span> null <span class="token operator">&amp;&amp;</span> app<span class="token punctuation">.</span>thread <span class="token operator">!=</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token keyword">try</span> <span class="token punctuation">{</span>
+                    app<span class="token punctuation">.</span><span class="token function">addPackage</span><span class="token punctuation">(</span>r<span class="token punctuation">.</span>appInfo<span class="token punctuation">.</span>packageName<span class="token punctuation">,</span> r<span class="token punctuation">.</span>appInfo<span class="token punctuation">.</span>longVersionCode<span class="token punctuation">,</span> mAm<span class="token punctuation">.</span>mProcessStats<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                    <span class="token comment" spellcheck="true">// 运行 service 的进程已经启动，调用 realStartServiceLocked() 方法</span>
+                    <span class="token function">realStartServiceLocked</span><span class="token punctuation">(</span>r<span class="token punctuation">,</span> app<span class="token punctuation">,</span> execInFg<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                    <span class="token keyword">return</span> null<span class="token punctuation">;</span>
+                <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">TransactionTooLargeException</span> e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                    <span class="token keyword">throw</span> e<span class="token punctuation">;</span>
+                <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">RemoteException</span> e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                    Slog<span class="token punctuation">.</span><span class="token function">w</span><span class="token punctuation">(</span>TAG<span class="token punctuation">,</span> <span class="token string">"Exception when starting service "</span> <span class="token operator">+</span> r<span class="token punctuation">.</span>shortInstanceName<span class="token punctuation">,</span> e<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token punctuation">}</span>
+
+                <span class="token comment" spellcheck="true">// If a dead object exception was thrown -- fall through to</span>
+                <span class="token comment" spellcheck="true">// restart the application.</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+            <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+
+        <span class="token punctuation">}</span>
+
+        <span class="token comment" spellcheck="true">// Not running -- get it started, and enqueue this service record</span>
+        <span class="token comment" spellcheck="true">// to be executed when the app comes up.</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>app <span class="token operator">==</span> null <span class="token operator">&amp;&amp;</span> <span class="token operator">!</span>permissionsReviewRequired<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token punctuation">(</span>app <span class="token operator">=</span> mAm<span class="token punctuation">.</span><span class="token function">startProcessLocked</span><span class="token punctuation">(</span>procName<span class="token punctuation">,</span> r<span class="token punctuation">.</span>appInfo<span class="token punctuation">,</span> <span class="token boolean">true</span><span class="token punctuation">,</span> intentFlags<span class="token punctuation">,</span>
+                    hostingRecord<span class="token punctuation">,</span> <span class="token boolean">false</span><span class="token punctuation">,</span> isolated<span class="token punctuation">,</span> <span class="token boolean">false</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token operator">==</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                String msg <span class="token operator">=</span> <span class="token string">"Unable to launch app "</span>
+                        <span class="token operator">+</span> r<span class="token punctuation">.</span>appInfo<span class="token punctuation">.</span>packageName <span class="token operator">+</span> <span class="token string">"/"</span>
+                        <span class="token operator">+</span> r<span class="token punctuation">.</span>appInfo<span class="token punctuation">.</span>uid <span class="token operator">+</span> <span class="token string">" for service "</span>
+                        <span class="token operator">+</span> r<span class="token punctuation">.</span>intent<span class="token punctuation">.</span><span class="token function">getIntent</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token string">": process is bad"</span><span class="token punctuation">;</span>
+                Slog<span class="token punctuation">.</span><span class="token function">w</span><span class="token punctuation">(</span>TAG<span class="token punctuation">,</span> msg<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token function">bringDownServiceLocked</span><span class="token punctuation">(</span>r<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token keyword">return</span> msg<span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>isolated<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                r<span class="token punctuation">.</span>isolatedProc <span class="token operator">=</span> app<span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span>
+        <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+
+        <span class="token keyword">return</span> null<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+<span class="token punctuation">}</span>
+</code></pre>
+<p><code>bringUpServiceLocked()</code> 方法首先通过 <code>getProcessRecordLocked()</code> 方法去获取 app 对象，它是一个 <code>ProcessRecord</code> 类型的对象，如果它不为空，说明 <code>Service</code> 要运行的进程已经存在。</p>
+<blockquote>
+<p>Service 运行的进程有两种：</p>
+</blockquote>
+<p>（1）一种是默认的，即运行在 Activity 启动 Service 的那个进程里，也就是说在哪个进程里调用了 startService() 方法，启动的 service 就运行在哪个进程里。</p>
+<p>（2）一种是给 Service 一个单独的进程运行，比如在 AndroidManifest 文件里配置了如下内容：</p>
+<pre class=" language-xml"><code class="language-xml">//
+
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>manifest</span> <span class="token attr-name"><span class="token namespace">xmlns:</span>android</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>http://schemas.android.com/apk/res/android<span class="token punctuation">"</span></span>
+        <span class="token attr-name">package</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>com.android.documentsui<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>application</span>
+        <span class="token attr-name"><span class="token namespace">android:</span>name</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>.DocumentsApplication<span class="token punctuation">"</span></span>
+        <span class="token attr-name"><span class="token namespace">android:</span>label</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>@string/app_label<span class="token punctuation">"</span></span>
+        <span class="token attr-name"><span class="token namespace">android:</span>icon</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>@drawable/app_icon<span class="token punctuation">"</span></span>
+        <span class="token attr-name"><span class="token namespace">android:</span>supportsRtl</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>true<span class="token punctuation">"</span></span>
+        <span class="token attr-name"><span class="token namespace">android:</span>allowBackup</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>true<span class="token punctuation">"</span></span>
+        <span class="token attr-name"><span class="token namespace">android:</span>backupAgent</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>.prefs.BackupAgent<span class="token punctuation">"</span></span>
+        <span class="token attr-name"><span class="token namespace">android:</span>fullBackupOnly</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>false<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+
+        <span class="token comment" spellcheck="true">&lt;!-- Run FileOperationService in a separate process so that we can use FileLock class to
+            wait until jumbo clip is done writing to disk before reading it. See ClipStorage for
+            details. --></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>service</span>
+            <span class="token attr-name"><span class="token namespace">android:</span>name</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>.services.FileOperationService<span class="token punctuation">"</span></span>
+            <span class="token attr-name"><span class="token namespace">android:</span>exported</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>false<span class="token punctuation">"</span></span>
+            <span class="token attr-name"><span class="token namespace">android:</span>process</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>:com.android.documentsui.services<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>service</span><span class="token punctuation">></span></span>
+
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>application</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>manifest</span><span class="token punctuation">></span></span>
+</code></pre>
+<p>在这段配置里有 <code>android:process=&quot;xxx&quot;</code> 声明，这个声明用来实现 service 单独运行在  “xxx”  进程里。这样做的好处是，<code>即使应用程序无法工作，由于 service 单独运行在一个进程里，所以会继续工作</code>。</p>
+<p>回到前面的方法，如果变量 app 为空，就代表 service 要运行的进程还没有启动，于是调用 <code>startProcessLocked()</code> 方法去启动一个新的进程。</p>
+<p>如果 app 不为空，采用默认的方式启动 Service，最终调用到 <code>realStartServiceLocked()</code> 方法：</p>
+<h1 id="ActiveServices-realStartServiceLocked"><a href="#ActiveServices-realStartServiceLocked" class="headerlink" title="# ActiveServices.realStartServiceLocked()"></a># ActiveServices.realStartServiceLocked()</h1><pre class=" language-java"><code class="language-java"><span class="token comment" spellcheck="true">// frameworks/base/services/core/java/com/android/server/am/ActiveServices.java</span>
+
+<span class="token keyword">public</span> <span class="token keyword">final</span> <span class="token keyword">class</span> <span class="token class-name">ActiveServices</span> <span class="token punctuation">{</span>
+
+    <span class="token keyword">private</span> <span class="token keyword">final</span> <span class="token keyword">void</span> <span class="token function">realStartServiceLocked</span><span class="token punctuation">(</span>ServiceRecord r<span class="token punctuation">,</span>
+            ProcessRecord app<span class="token punctuation">,</span> <span class="token keyword">boolean</span> execInFg<span class="token punctuation">)</span> <span class="token keyword">throws</span> RemoteException <span class="token punctuation">{</span>
+        <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+
+        <span class="token keyword">try</span> <span class="token punctuation">{</span>
+            <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+
+            app<span class="token punctuation">.</span>thread<span class="token punctuation">.</span><span class="token function">scheduleCreateService</span><span class="token punctuation">(</span>r<span class="token punctuation">,</span> r<span class="token punctuation">.</span>serviceInfo<span class="token punctuation">,</span>
+                    mAm<span class="token punctuation">.</span><span class="token function">compatibilityInfoForPackage</span><span class="token punctuation">(</span>r<span class="token punctuation">.</span>serviceInfo<span class="token punctuation">.</span>applicationInfo<span class="token punctuation">)</span><span class="token punctuation">,</span> app<span class="token punctuation">.</span><span class="token function">getReportedProcState</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+
+        <span class="token punctuation">}</span>
+        <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+
+    <span class="token punctuation">}</span>
+
+<span class="token punctuation">}</span>
+</code></pre>
+<p>在这个方法中，app 对象的 <code>thread</code> 变量是一个 <code>ApplicationThread</code> <code>Binder</code> 对象，调用它的 <code>scheduleCreateService()</code> 方法之后，会进入客户端的 <code>ActivityThread</code> 中。</p>
+<h1 id="ActivityThread-scheduleCreateService"><a href="#ActivityThread-scheduleCreateService" class="headerlink" title="# ActivityThread.scheduleCreateService()"></a># ActivityThread.scheduleCreateService()</h1><pre class=" language-java"><code class="language-java"><span class="token comment" spellcheck="true">// frameworks/base/core/java/android/app/ActivityThread.java</span>
+
+<span class="token keyword">public</span> <span class="token keyword">final</span> <span class="token keyword">class</span> <span class="token class-name">ActivityThread</span> <span class="token keyword">extends</span> <span class="token class-name">ClientTransactionHandler</span> <span class="token punctuation">{</span>
+
+    <span class="token comment" spellcheck="true">// ApplicationThread 是一个 Binder</span>
+    <span class="token keyword">private</span> <span class="token keyword">class</span> <span class="token class-name">ApplicationThread</span> <span class="token keyword">extends</span> <span class="token class-name">IApplicationThread<span class="token punctuation">.</span>Stub</span> <span class="token punctuation">{</span>
+
+        <span class="token keyword">public</span> <span class="token keyword">final</span> <span class="token keyword">void</span> <span class="token function">scheduleCreateService</span><span class="token punctuation">(</span>IBinder token<span class="token punctuation">,</span>
+                ServiceInfo info<span class="token punctuation">,</span> CompatibilityInfo compatInfo<span class="token punctuation">,</span> <span class="token keyword">int</span> processState<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token function">updateProcessState</span><span class="token punctuation">(</span>processState<span class="token punctuation">,</span> <span class="token boolean">false</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            CreateServiceData s <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">CreateServiceData</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            s<span class="token punctuation">.</span>token <span class="token operator">=</span> token<span class="token punctuation">;</span>
+            s<span class="token punctuation">.</span>info <span class="token operator">=</span> info<span class="token punctuation">;</span>
+            s<span class="token punctuation">.</span>compatInfo <span class="token operator">=</span> compatInfo<span class="token punctuation">;</span>
+
+            <span class="token function">sendMessage</span><span class="token punctuation">(</span>H<span class="token punctuation">.</span>CREATE_SERVICE<span class="token punctuation">,</span> s<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+
+    <span class="token punctuation">}</span>
+
+<span class="token punctuation">}</span>
+</code></pre>
+<p><code>ApplicationThread</code> 的 <code>scheduleCreateService()</code> 方法通过调用 <code>sendMessage() 方法来发送一个 msg 消息</code>，当 Handler 接收到了 msg 消息之后，它会调用 <code>handleCreateService()</code> 方法来做进一步处理。</p>
+<h1 id="H-handleMessage"><a href="#H-handleMessage" class="headerlink" title="# H.handleMessage()"></a># H.handleMessage()</h1><pre class=" language-java"><code class="language-java"><span class="token comment" spellcheck="true">// frameworks/base/core/java/android/app/ActivityThread.java</span>
+
+<span class="token keyword">public</span> <span class="token keyword">final</span> <span class="token keyword">class</span> <span class="token class-name">ActivityThread</span> <span class="token keyword">extends</span> <span class="token class-name">ClientTransactionHandler</span> <span class="token punctuation">{</span>
+
+    <span class="token keyword">class</span> <span class="token class-name">H</span> <span class="token keyword">extends</span> <span class="token class-name">Handler</span> <span class="token punctuation">{</span>
+
+        <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">handleMessage</span><span class="token punctuation">(</span>Message msg<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">switch</span> <span class="token punctuation">(</span>msg<span class="token punctuation">.</span>what<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+
+                <span class="token keyword">case</span> CREATE_SERVICE<span class="token operator">:</span>
+                    Trace<span class="token punctuation">.</span><span class="token function">traceBegin</span><span class="token punctuation">(</span>Trace<span class="token punctuation">.</span>TRACE_TAG_ACTIVITY_MANAGER<span class="token punctuation">,</span> <span class="token punctuation">(</span><span class="token string">"serviceCreate: "</span> <span class="token operator">+</span> String<span class="token punctuation">.</span><span class="token function">valueOf</span><span class="token punctuation">(</span>msg<span class="token punctuation">.</span>obj<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                    <span class="token function">handleCreateService</span><span class="token punctuation">(</span><span class="token punctuation">(</span>CreateServiceData<span class="token punctuation">)</span>msg<span class="token punctuation">.</span>obj<span class="token punctuation">)</span><span class="token punctuation">;</span>    <span class="token comment" spellcheck="true">// 调用 handleCreateService() 方法</span>
+                    Trace<span class="token punctuation">.</span><span class="token function">traceEnd</span><span class="token punctuation">(</span>Trace<span class="token punctuation">.</span>TRACE_TAG_ACTIVITY_MANAGER<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                    <span class="token keyword">break</span><span class="token punctuation">;</span>
+
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span>
+
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<h1 id="ActivityThread-handleCreateService"><a href="#ActivityThread-handleCreateService" class="headerlink" title="# ActivityThread.handleCreateService()"></a># ActivityThread.handleCreateService()</h1><pre class=" language-java"><code class="language-java"><span class="token comment" spellcheck="true">// frameworks/base/core/java/android/app/ActivityThread.java</span>
+
+<span class="token keyword">public</span> <span class="token keyword">final</span> <span class="token keyword">class</span> <span class="token class-name">ActivityThread</span> <span class="token keyword">extends</span> <span class="token class-name">ClientTransactionHandler</span> <span class="token punctuation">{</span>
+
+    <span class="token keyword">private</span> <span class="token keyword">void</span> <span class="token function">handleCreateService</span><span class="token punctuation">(</span>CreateServiceData data<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+
+        LoadedApk packageInfo <span class="token operator">=</span> <span class="token function">getPackageInfoNoCheck</span><span class="token punctuation">(</span>data<span class="token punctuation">.</span>info<span class="token punctuation">.</span>applicationInfo<span class="token punctuation">,</span> data<span class="token punctuation">.</span>compatInfo<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        Service service <span class="token operator">=</span> null<span class="token punctuation">;</span>
+        <span class="token keyword">try</span> <span class="token punctuation">{</span>
+            java<span class="token punctuation">.</span>lang<span class="token punctuation">.</span>ClassLoader cl <span class="token operator">=</span> packageInfo<span class="token punctuation">.</span><span class="token function">getClassLoader</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            service <span class="token operator">=</span> packageInfo<span class="token punctuation">.</span><span class="token function">getAppFactory</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">instantiateService</span><span class="token punctuation">(</span>cl<span class="token punctuation">,</span> data<span class="token punctuation">.</span>info<span class="token punctuation">.</span>name<span class="token punctuation">,</span> data<span class="token punctuation">.</span>intent<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">Exception</span> e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>mInstrumentation<span class="token punctuation">.</span><span class="token function">onException</span><span class="token punctuation">(</span>service<span class="token punctuation">,</span> e<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">RuntimeException</span><span class="token punctuation">(</span>
+                    <span class="token string">"Unable to instantiate service "</span> <span class="token operator">+</span> data<span class="token punctuation">.</span>info<span class="token punctuation">.</span>name
+                    <span class="token operator">+</span> <span class="token string">": "</span> <span class="token operator">+</span> e<span class="token punctuation">.</span><span class="token function">toString</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> e<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span>
+
+        <span class="token keyword">try</span> <span class="token punctuation">{</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>localLOGV<span class="token punctuation">)</span> Slog<span class="token punctuation">.</span><span class="token function">v</span><span class="token punctuation">(</span>TAG<span class="token punctuation">,</span> <span class="token string">"Creating service "</span> <span class="token operator">+</span> data<span class="token punctuation">.</span>info<span class="token punctuation">.</span>name<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+            ContextImpl context <span class="token operator">=</span> ContextImpl<span class="token punctuation">.</span><span class="token function">createAppContext</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">,</span> packageInfo<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            context<span class="token punctuation">.</span><span class="token function">setOuterContext</span><span class="token punctuation">(</span>service<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+            Application app <span class="token operator">=</span> packageInfo<span class="token punctuation">.</span><span class="token function">makeApplication</span><span class="token punctuation">(</span><span class="token boolean">false</span><span class="token punctuation">,</span> mInstrumentation<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            service<span class="token punctuation">.</span><span class="token function">attach</span><span class="token punctuation">(</span>context<span class="token punctuation">,</span> <span class="token keyword">this</span><span class="token punctuation">,</span> data<span class="token punctuation">.</span>info<span class="token punctuation">.</span>name<span class="token punctuation">,</span> data<span class="token punctuation">.</span>token<span class="token punctuation">,</span> app<span class="token punctuation">,</span> ActivityManager<span class="token punctuation">.</span><span class="token function">getService</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            service<span class="token punctuation">.</span><span class="token function">onCreate</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>    <span class="token comment" spellcheck="true">// 进入 Service.onCreate() 方法</span>
+            mServices<span class="token punctuation">.</span><span class="token function">put</span><span class="token punctuation">(</span>data<span class="token punctuation">.</span>token<span class="token punctuation">,</span> service<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">try</span> <span class="token punctuation">{</span>
+                ActivityManager<span class="token punctuation">.</span><span class="token function">getService</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">serviceDoneExecuting</span><span class="token punctuation">(</span>
+                        data<span class="token punctuation">.</span>token<span class="token punctuation">,</span> SERVICE_DONE_EXECUTING_ANON<span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">RemoteException</span> e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token keyword">throw</span> e<span class="token punctuation">.</span><span class="token function">rethrowFromSystemServer</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">Exception</span> e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>mInstrumentation<span class="token punctuation">.</span><span class="token function">onException</span><span class="token punctuation">(</span>service<span class="token punctuation">,</span> e<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">RuntimeException</span><span class="token punctuation">(</span>
+                    <span class="token string">"Unable to create service "</span> <span class="token operator">+</span> data<span class="token punctuation">.</span>info<span class="token punctuation">.</span>name
+                    <span class="token operator">+</span> <span class="token string">": "</span> <span class="token operator">+</span> e<span class="token punctuation">.</span><span class="token function">toString</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> e<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+
+<span class="token punctuation">}</span>
+</code></pre>
+<p>在 <code>ActivityThread</code> 类的 <code>handleCreateService()</code> 方法中，首先通过 <code>ClassLoader</code> 类把 Service 加载进来，而参数 <code>data.info.name</code> 表示这个 <code>Service</code> 的名字，<code>instantiateService()</code> 方法是创建一个 Service 实例。接着，<code>创建一个 Context 对象</code>，作为上下文环境之用。</p>
+<p><code>handleCreateService()</code> 方法最后调用了 <code>service 的 onCreate() 方法</code>，当这个方法被调用之后，<code>就会进入应用程序里 Service 的 onCreate() 方法</code>。</p>
+<p>至此，Service 的启动就分析完毕，这个过程与启动 Activity 相比简单了很多。</p>
+
+            </div>
+            <hr>
+
+            
+
+            <!--<link rel="stylesheet" type="text/css" href="/libs/share/css/share.min.css">
+
+<div id="article-share">
+    
+    <div class="social-share" data-disabled="qzone" data-wechat-qrcode-helper="<p>微信里点“发现”->“扫一扫”二维码便可查看分享。</p>"></div>
+    
+</div>
+
+<script src="/libs/share/js/social-share.min.js"></script>-->
+
+            <div class="reprint">
+                <p>
+                    <span class="reprint-tip">
+                        <i class="fa fa-exclamation-circle"></i>&nbsp;&nbsp;转载请注明:
+                    </span>
+                    <a href="https://superandroid.pro" class="b-link-green">Thinking in Android</a>
+                    <i class="fa fa-angle-right fa-lg fa-fw text-color"></i>
+                    <a href="/2020/06/16/android-10-si-da-zu-jian-xi-lie-service-de-qi-dong-liu-cheng/" class="b-link-green">Service 的 &#34; 启动流程 &#34;</a>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    <!--
+
+<article id="prenext-posts" class="prev-next articles">
+    <div class="row article-row">
+        
+        <div class="article col s12 m6 overflow-policy" data-aos="fade-up">
+            <div class="article-badge left-badge text-color">
+                <i class="fa fa-chevron-left"></i>&nbsp;上一篇</div>
+            <div class="card">
+                <a href="/2020/06/20/android-10-si-da-zu-jian-xi-lie-broadcast-fen-lei/">
+                    <div class="card-image">
+                        
+                        <img src="https://s1.ax1x.com/2020/07/14/UNEzCV.jpg" class="responsive-img" alt="Broadcast -- " 品种 "和" 用法 "">
+                        
+                        <span class="card-title">Broadcast -- " 品种 "和" 用法 "</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">BroadcastReceiver 是 Android 系统的四大组件之一，本质上就是一个全局的监听器，用于监听系统全局的广播消息，可以方便的实现系统中不同组件之间的通信。
+广播一般有两种注册方式，分别为：&quot; 动态注册 &quot</div>
+                    <div class="publish-info">
+                        <span class="publish-date">
+                            <i class="fa fa-clock-o fa-fw icon-date"></i>2020-06-20
+                        </span>
+                        <span class="publish-author">
+                            
+                            <i class="fa fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/四大组件/" class="post-category" target="_blank">
+                                    四大组件
+                                </a>
+                            
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/Broadcast/" target="_blank">
+                        <span class="chip bg-color">Broadcast</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+        
+        <div class="article col s12 m6 overflow-policy" data-aos="fade-up">
+            <div class="article-badge right-badge text-color">
+                下一篇&nbsp;<i class="fa fa-chevron-right"></i>
+            </div>
+            <div class="card">
+                <a href="/2020/06/13/android-10-si-da-zu-jian-xi-lie-activity-de-qi-dong-mo-shi/">
+                    <div class="card-image">
+                        
+                        <img src="https://s1.ax1x.com/2020/07/14/UNEzCV.jpg" class="responsive-img" alt="Activity 的 " 启动模式 "">
+                        
+                        <span class="card-title">Activity 的 " 启动模式 "</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">一、LaunchMode我们可以在 AndroidManifest.xml 中通过给 &lt;activity&gt; 标签指定 android:launchMode 属性来选择启动模式。
+1.1 standard：默认启动模式standa</div>
+                    <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="fa fa-clock-o fa-fw icon-date"></i>2020-06-13
+                            </span>
+                        <span class="publish-author">
+                            
+                            <i class="fa fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/四大组件/" class="post-category" target="_blank">
+                                    四大组件
+                                </a>
+                            
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/Activity/" target="_blank">
+                        <span class="chip bg-color">Activity</span>
+                    </a>
+                    
+                    <a href="/tags/启动模式/" target="_blank">
+                        <span class="chip bg-color">启动模式</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+    </div>
+</article>-->
+</div>
+
+
+<script>
+    $('#articleContent').on('copy', function (e) {
+        // IE8 or earlier browser is 'undefined'
+        if (typeof window.getSelection === 'undefined') return;
+
+        var selection = window.getSelection();
+        // if the selection is short let's not annoy our users.
+        if (('' + selection).length < Number.parseInt('120')) {
+            return;
+        }
+
+        // create a div outside of the visible area and fill it with the selected text.
+        var bodyElement = document.getElementsByTagName('body')[0];
+        var newdiv = document.createElement('div');
+        newdiv.style.position = 'absolute';
+        newdiv.style.left = '-99999px';
+        bodyElement.appendChild(newdiv);
+        newdiv.appendChild(selection.getRangeAt(0).cloneContents());
+
+        // we need a <pre> tag workaround.
+        // otherwise the text inside "pre" loses all the line breaks!
+        if (selection.getRangeAt(0).commonAncestorContainer.nodeName === 'PRE') {
+            newdiv.innerHTML = "<pre>" + newdiv.innerHTML + "</pre>";
+        }
+
+        var url = document.location.href;
+        newdiv.innerHTML += '<br />'
+            + '来源: Thinking in Android<br />'
+            + '作者: Marco<br />'
+            + '链接: <a href="' + url + '">' + url + '</a><br />'
+            + '本文章著作权归作者所有，任何形式的转载都请注明出处。';
+
+        selection.selectAllChildren(newdiv);
+        window.setTimeout(function () {bodyElement.removeChild(newdiv);}, 200);
+    });
+</script>
+
+    
+
+</main>
+
+
+<footer class="page-footer bg-color-foot-marco">
+    <div class="container row center-align">
+        <div class="col s12 m8 l8 copy-right">
+		    &copy; 2018 - 2020&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;In-depth analysis of Android system source code &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<i class="fa fa-graduation-cap" aria-hidden="true"></i>&nbsp;&nbsp;Marco<br>
+            
+			
+                
+                <span id="busuanzi_container_site_pv">
+                    Total visits to this site: <span id="busuanzi_value_site_pv"></span> ,&nbsp;
+                </span>
+				<span id="busuanzi_container_site_uv">
+                    Total visitor: <span id="busuanzi_value_site_uv"></span> .
+                </span>
+			
+		</div>
+        <div class="col s12 m4 l4 social-link social-statis">
+    <a href="https://github.com/pepsimaxin/pepsimaxin.github.io" class="tooltipped" target="_blank" data-tooltip="访问我的GitHub" data-position="top" data-delay="50">
+        <i class="fa fa-github"></i>
+    </a>
+
+
+
+    <a href="mailto:pepsimaxin@163.com" class="tooltipped" target="_blank" data-tooltip="邮件联系我" data-position="top" data-delay="50">
+        <i class="fa fa-envelope"></i>
+    </a>
+
+
+
+
+<!--
+    <a href="https://blog.csdn.net/pepsimaxin" class="tooltipped" data-tooltip="访问我的CSDN" data-position="top" data-delay="50">
+        <i class="fa fa-chain-broken"></i>
+    </a>
+-->
+
+
+    <a href="/atom.xml" class="tooltipped" target="_blank" data-tooltip="RSS 订阅" data-position="top" data-delay="50">
+        <i class="fa fa-rss"></i>
+    </a>
+</div>
+    </div>
+</footer>
+
+<!--<div class="progress-bar"></div>-->
+
+<!-- 搜索遮罩框 -->
+<div id="searchModal" class="modal">
+    <div class="modal-content">
+        <div class="search-header">
+            <span class="title"><i class="fa fa-search"></i>&nbsp;&nbsp;检索博文</span>
+            <input type="search" id="searchInput" name="s" placeholder="请输入搜索的技术关键字" class="search-input">
+        </div>
+        <div id="searchResult"></div>
+    </div>
+</div>
+
+<script src="/js/search.js"></script>
+<script type="text/javascript">
+$(function () {
+    searchFunc("/" + "search.xml", 'searchInput', 'searchResult');
+});
+</script>
+<!-- 回到顶部按钮 -->
+<!--<div id="backTop" class="top-scroll">
+    <a class="btn-floating btn-large waves-effect waves-light" href="#!">
+        <i class="fa fa-angle-up"></i>
+    </a>
+</div>-->
+
+
+<script src="/libs/materialize/materialize.min.js"></script>
+<script src="/libs/masonry/masonry.pkgd.min.js"></script>
+<script src="/libs/aos/aos.js"></script>
+<script src="/libs/scrollprogress/scrollProgress.min.js"></script>
+<script src="/libs/lightGallery/js/lightgallery-all.min.js"></script>
+<script src="/js/matery.js"></script>
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+
+
+
+
+    <script async src="/libs/others/busuanzi.pure.mini.js"></script>
+
+
+</body>
+</html>

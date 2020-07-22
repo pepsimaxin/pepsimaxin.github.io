@@ -1,0 +1,928 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+
+
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta charset="utf-8">
+    <meta name="keywords" content="Broadcast -- &#34; 品种 &#34;和&#34; 用法 &#34;, Thinking in Android">
+    <meta name="description" content="BroadcastReceiver 是 Android 系统的四大组件之一，本质上就是一个全局的监听器，用于监听系统全局的广播消息，可以方便的实现系统中不同组件之间的通信。
+广播一般有两种注册方式，分别为：&amp;quot; 动态注册 &amp;quot">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="renderer" content="webkit|ie-stand|ie-comp">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>Broadcast -- &#34; 品种 &#34;和&#34; 用法 &#34; | Thinking in Android</title>
+    <link rel="icon" type="image/png" href="/favicon.png">
+
+    <link rel="stylesheet" type="text/css" href="/libs/awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="/libs/materialize/materialize.min.css">
+    <link rel="stylesheet" type="text/css" href="/libs/aos/aos.css">
+    <link rel="stylesheet" type="text/css" href="/libs/animate/animate.min.css">
+    <link rel="stylesheet" type="text/css" href="/libs/lightGallery/css/lightgallery.min.css">
+    <link rel="stylesheet" type="text/css" href="/css/matery.css">
+    <link rel="stylesheet" type="text/css" href="/css/my.css">
+    <style type="text/css">
+        
+    </style>
+
+    <script src="/libs/jquery/jquery-2.2.0.min.js"></script>
+<link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css"></head>
+
+
+<body>
+
+<header class="navbar-fixed">
+    <nav id="headNav" class="bg-color-header-marco nav-transparent">
+        <div id="navContainer" class="nav-wrapper container">
+            <!--<div class="brand-logo">
+                <a href="/" class="waves-effect waves-light">
+                    
+                    <img src="/medias/logo.png" class="logo-img" alt="LOGO">
+                    
+                    <span class="logo-span">Thinking in Android</span>
+                </a>
+            </div>-->
+            
+
+<a href="#" data-target="mobile-nav" class="sidenav-trigger button-collapse"><i class="fa fa-navicon"></i></a>
+<ul class="right">
+    
+    <li class="hide-on-med-and-down">
+        <a href="/" class="waves-effect waves-light">
+            
+            <i class="fa fa-home"></i>
+            
+            <span>博客首页</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/categories" class="waves-effect waves-light">
+            
+            <i class="fa fa-bookmark"></i>
+            
+            <span>博文分类</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/tags" class="waves-effect waves-light">
+            
+            <i class="fa fa-tags"></i>
+            
+            <span>技术标签</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/categories/四大组件/" class="waves-effect waves-light">
+            
+            <i class="fa fa-cube"></i>
+            
+            <span>四大组件</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/categories/系统启动/" class="waves-effect waves-light">
+            
+            <i class="fa fa-spinner"></i>
+            
+            <span>系统启动</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/categories/框架服务/" class="waves-effect waves-light">
+            
+            <i class="fa fa-superpowers"></i>
+            
+            <span>框架服务</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/categories/核心机制/" class="waves-effect waves-light">
+            
+            <i class="fa fa-link"></i>
+            
+            <span>核心机制</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/categories/性能优化/" class="waves-effect waves-light">
+            
+            <i class="fa fa-yelp"></i>
+            
+            <span>性能优化</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/categories/设计模式/" class="waves-effect waves-light">
+            
+            <i class="fa fa-envira"></i>
+            
+            <span>设计模式</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/about" class="waves-effect waves-light">
+            
+            <i class="fa fa-user-circle-o"></i>
+            
+            <span>作者</span>
+        </a>
+    </li>
+    
+    <li>
+        <a href="#searchModal" class="modal-trigger waves-effect waves-light">
+            <i id="searchIcon" class="fa fa-search" title="检索博文"></i>
+        </a>
+    </li>
+</ul>
+
+<div id="mobile-nav" class="side-nav sidenav">
+
+    <div class="mobile-head bg-color">
+        
+        <img src="/medias/logo.png" class="logo-img circle responsive-img">
+        
+        <div class="logo-name">Thinking in Android</div>
+        <div class="logo-desc">
+            
+            One blog for recorded and shared android system development.
+            
+        </div>
+    </div>
+
+    
+
+    <ul class="menu-list mobile-menu-list">
+        
+        <li>
+            <a href="/" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-home"></i>
+                
+                博客首页
+            </a>
+        </li>
+        
+        <li>
+            <a href="/categories" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-bookmark"></i>
+                
+                博文分类
+            </a>
+        </li>
+        
+        <li>
+            <a href="/tags" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-tags"></i>
+                
+                技术标签
+            </a>
+        </li>
+        
+        <li>
+            <a href="/categories/四大组件/" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-cube"></i>
+                
+                四大组件
+            </a>
+        </li>
+        
+        <li>
+            <a href="/categories/系统启动/" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-spinner"></i>
+                
+                系统启动
+            </a>
+        </li>
+        
+        <li>
+            <a href="/categories/框架服务/" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-superpowers"></i>
+                
+                框架服务
+            </a>
+        </li>
+        
+        <li>
+            <a href="/categories/核心机制/" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-link"></i>
+                
+                核心机制
+            </a>
+        </li>
+        
+        <li>
+            <a href="/categories/性能优化/" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-yelp"></i>
+                
+                性能优化
+            </a>
+        </li>
+        
+        <li>
+            <a href="/categories/设计模式/" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-envira"></i>
+                
+                设计模式
+            </a>
+        </li>
+        
+        <li>
+            <a href="/about" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-user-circle-o"></i>
+                
+                作者
+            </a>
+        </li>
+        
+        
+    </ul>
+</div>
+
+        </div>
+
+        
+    </nav>
+
+</header>
+
+
+
+
+
+<div class="bg-cover pd-header post-cover" style="background-image: url('https://s1.ax1x.com/2020/07/14/UNEzCV.jpg')">
+    <div class="container">
+        <div class="row">
+            <div class="col s12 m12 l12">
+                <div class="brand">
+                    <div class="description center-align post-title">
+                        Broadcast -- &#34; 品种 &#34;和&#34; 用法 &#34;
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<main class="container content">
+
+    
+    <!-- 文章内容详情 -->
+<div id="artDetail">
+    <div class="card">
+        <div class="card-content article-info">
+            <div class="row tag-cate">
+                <div class="col s7">
+                    
+                    <div class="article-tag">
+                        
+                            <a href="/tags/Broadcast/" target="_blank">
+                                <span class="chip bg-color">Broadcast</span>
+                            </a>
+                        
+                    </div>
+                    
+                </div>
+                <div class="col s5 right-align">
+                    
+                    <div class="post-cate">
+                        <i class="fa fa-bookmark fa-fw icon-category"></i>
+                        
+                            <a href="/categories/四大组件/" class="post-category" target="_blank">
+                                四大组件
+                            </a>
+                        
+                    </div>
+                    
+                </div>
+            </div>
+
+            <div class="post-info">
+                <div class="post-date info-break-policy">
+                    <i class="fa fa-calendar-minus-o fa-fw"></i>&nbsp;发布日期 :&nbsp;
+                    2020-06-20
+                </div>
+
+                
+                    
+                    <div class="info-break-policy">
+                        <i class="fa fa-file-word-o fa-fw"></i>&nbsp;文章字数 :&nbsp;
+                        1.9k
+                    </div>
+                    
+
+                    
+                    <div class="info-break-policy">
+                        <i class="fa fa-clock-o fa-fw"></i>&nbsp;阅读时长 :&nbsp;
+                        7 分钟
+                    </div>
+                    
+                
+				
+				
+                    <div id="busuanzi_container_page_pv" class="info-break-policy">
+                        <i class="fa fa-eye fa-fw"></i>&nbsp;阅读次数 :&nbsp;
+                        <span id="busuanzi_value_page_pv"></span>
+                    </div>
+				
+            </div>
+        </div>
+		<br>
+        <hr class="clearfix">
+        <div class="card-content article-card-content">
+            <div id="articleContent">
+                <p><strong>BroadcastReceiver</strong> 是 Android 系统的四大组件之一，本质上就是一个全局的监听器，用于监听系统全局的广播消息，可以方便的实现系统中不同组件之间的通信。</p>
+<p>广播一般有两种注册方式，分别为：<code>&quot; 动态注册 &quot;</code> 和 <code>&quot; 静态注册 &quot;</code>，直接看代码示范！</p>
+<h1 id="一、动态注册（跟随-Activity-的生命周期）"><a href="#一、动态注册（跟随-Activity-的生命周期）" class="headerlink" title="一、动态注册（跟随 Activity 的生命周期）"></a>一、动态注册（跟随 Activity 的生命周期）</h1><p>新建一个 BroadcastTest 项目，修改 MainActivity ：</p>
+<pre class=" language-java"><code class="language-java"><span class="token keyword">package</span> com<span class="token punctuation">.</span>example<span class="token punctuation">.</span>marco<span class="token punctuation">.</span>broadcasttest<span class="token punctuation">;</span>
+
+<span class="token keyword">import</span> android<span class="token punctuation">.</span>content<span class="token punctuation">.</span>BroadcastReceiver<span class="token punctuation">;</span>
+<span class="token keyword">import</span> android<span class="token punctuation">.</span>content<span class="token punctuation">.</span>Context<span class="token punctuation">;</span>
+<span class="token keyword">import</span> android<span class="token punctuation">.</span>content<span class="token punctuation">.</span>Intent<span class="token punctuation">;</span>
+<span class="token keyword">import</span> android<span class="token punctuation">.</span>content<span class="token punctuation">.</span>IntentFilter<span class="token punctuation">;</span>
+<span class="token keyword">import</span> android<span class="token punctuation">.</span>support<span class="token punctuation">.</span>v7<span class="token punctuation">.</span>app<span class="token punctuation">.</span>AppCompatActivity<span class="token punctuation">;</span>
+<span class="token keyword">import</span> android<span class="token punctuation">.</span>os<span class="token punctuation">.</span>Bundle<span class="token punctuation">;</span>
+<span class="token keyword">import</span> android<span class="token punctuation">.</span>widget<span class="token punctuation">.</span>Toast<span class="token punctuation">;</span>
+
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">MainActivity</span> <span class="token keyword">extends</span> <span class="token class-name">AppCompatActivity</span> <span class="token punctuation">{</span>
+
+    <span class="token keyword">private</span> IntentFilter intentFilter<span class="token punctuation">;</span>
+
+    <span class="token keyword">private</span> NetworkChangeReceiver networkChangeReceiver<span class="token punctuation">;</span>
+
+    <span class="token annotation punctuation">@Override</span>
+    <span class="token keyword">protected</span> <span class="token keyword">void</span> <span class="token function">onCreate</span><span class="token punctuation">(</span>Bundle savedInstanceState<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">super</span><span class="token punctuation">.</span><span class="token function">onCreate</span><span class="token punctuation">(</span>savedInstanceState<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token function">setContentView</span><span class="token punctuation">(</span>R<span class="token punctuation">.</span>layout<span class="token punctuation">.</span>activity_main<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        intentFilter <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">IntentFilter</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        intentFilter<span class="token punctuation">.</span><span class="token function">addAction</span><span class="token punctuation">(</span><span class="token string">"android.net.conn.CONNECTIVITY_CHANGE"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        networkChangeReceiver <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">NetworkChangeReceiver</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token function">registerReceiver</span><span class="token punctuation">(</span>networkChangeReceiver<span class="token punctuation">,</span> intentFilter<span class="token punctuation">)</span><span class="token punctuation">;</span>    <span class="token comment" spellcheck="true">// 注册广播</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token annotation punctuation">@Override</span>
+    <span class="token keyword">protected</span> <span class="token keyword">void</span> <span class="token function">onDestroy</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">super</span><span class="token punctuation">.</span><span class="token function">onDestroy</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token function">unregisterReceiver</span><span class="token punctuation">(</span>networkChangeReceiver<span class="token punctuation">)</span><span class="token punctuation">;</span>                <span class="token comment" spellcheck="true">// 注销广播</span>
+    <span class="token punctuation">}</span>
+
+
+    <span class="token keyword">private</span> <span class="token keyword">class</span> <span class="token class-name">NetworkChangeReceiver</span> <span class="token keyword">extends</span> <span class="token class-name">BroadcastReceiver</span> <span class="token punctuation">{</span>
+        <span class="token annotation punctuation">@Override</span>
+        <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">onReceive</span><span class="token punctuation">(</span>Context context<span class="token punctuation">,</span> Intent intent<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            Toast<span class="token punctuation">.</span><span class="token function">makeText</span><span class="token punctuation">(</span>context<span class="token punctuation">,</span> <span class="token string">"network changes"</span><span class="token punctuation">,</span> Toast<span class="token punctuation">.</span>LENGTH_LONG<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">show</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<p><code>动态注册</code> 的广播接收器可以自由地控制注册与注销，在灵活性方面有很大的优势，但是！！！它也存在一个缺点：<code>必须要在程序启动之后才能接收到广播</code>，因为注册的逻辑是写在 onCreate() 方法中的。那么有没有什么方法可以让程序在未启动的情况下就能接收到广播呢？这就是我们即将看到的 <code>静态注册</code> ！</p>
+<p><br></p>
+<h1 id="二、静态注册（注册完成后一直运行）"><a href="#二、静态注册（注册完成后一直运行）" class="headerlink" title="二、静态注册（注册完成后一直运行）"></a>二、静态注册（注册完成后一直运行）</h1><p>（1）新建一个 BroadcastReceiver：</p>
+<pre class=" language-java"><code class="language-java"><span class="token keyword">package</span> com<span class="token punctuation">.</span>example<span class="token punctuation">.</span>marco<span class="token punctuation">.</span>broadcasttest<span class="token punctuation">;</span>
+
+<span class="token keyword">import</span> android<span class="token punctuation">.</span>content<span class="token punctuation">.</span>BroadcastReceiver<span class="token punctuation">;</span>
+<span class="token keyword">import</span> android<span class="token punctuation">.</span>content<span class="token punctuation">.</span>Context<span class="token punctuation">;</span>
+<span class="token keyword">import</span> android<span class="token punctuation">.</span>content<span class="token punctuation">.</span>Intent<span class="token punctuation">;</span>
+<span class="token keyword">import</span> android<span class="token punctuation">.</span>widget<span class="token punctuation">.</span>Toast<span class="token punctuation">;</span>
+
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">BootCompleteReceiver</span> <span class="token keyword">extends</span> <span class="token class-name">BroadcastReceiver</span> <span class="token punctuation">{</span>
+
+    <span class="token annotation punctuation">@Override</span>
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">onReceive</span><span class="token punctuation">(</span>Context context<span class="token punctuation">,</span> Intent intent<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        Toast<span class="token punctuation">.</span><span class="token function">makeText</span><span class="token punctuation">(</span>context<span class="token punctuation">,</span> <span class="token string">"Boot Complete"</span><span class="token punctuation">,</span> Toast<span class="token punctuation">.</span>LENGTH_LONG<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">show</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<p>（2）静态广播接收器一定要在 AndroidManifest.xml 文件中注册才可以使用，如果你使用 Android Studio 快捷方式创建了这个广播接收器，那么系统会自动在 AndroidManifest.xml 中注册好这个广播接收器：</p>
+<pre class=" language-xml"><code class="language-xml"><span class="token prolog">&lt;?xml version="1.0" encoding="utf-8"?></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>manifest</span> <span class="token attr-name"><span class="token namespace">xmlns:</span>android</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>http://schemas.android.com/apk/res/android<span class="token punctuation">"</span></span>
+    <span class="token attr-name">package</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>com.example.marco.broadcasttest<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>application</span>
+        <span class="token attr-name"><span class="token namespace">android:</span>allowBackup</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>true<span class="token punctuation">"</span></span>
+        <span class="token attr-name"><span class="token namespace">android:</span>icon</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>@mipmap/ic_launcher<span class="token punctuation">"</span></span>
+        <span class="token attr-name"><span class="token namespace">android:</span>label</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>@string/app_name<span class="token punctuation">"</span></span>
+        <span class="token attr-name"><span class="token namespace">android:</span>roundIcon</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>@mipmap/ic_launcher_round<span class="token punctuation">"</span></span>
+        <span class="token attr-name"><span class="token namespace">android:</span>supportsRtl</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>true<span class="token punctuation">"</span></span>
+        <span class="token attr-name"><span class="token namespace">android:</span>theme</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>@style/AppTheme<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>activity</span> <span class="token attr-name"><span class="token namespace">android:</span>name</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>.MainActivity<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>intent-filter</span><span class="token punctuation">></span></span>
+                <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>action</span> <span class="token attr-name"><span class="token namespace">android:</span>name</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>android.intent.action.MAIN<span class="token punctuation">"</span></span> <span class="token punctuation">/></span></span>
+
+                <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>category</span> <span class="token attr-name"><span class="token namespace">android:</span>name</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>android.intent.category.LAUNCHER<span class="token punctuation">"</span></span> <span class="token punctuation">/></span></span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>intent-filter</span><span class="token punctuation">></span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>activity</span><span class="token punctuation">></span></span>
+
+        &lt;receiver
+            android:name=".BootCompleteReceiver"
+            android:enabled="true"                  // 是否启用这个广播接收器
+            android:exported="true"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>receiver</span><span class="token punctuation">></span></span>     // 是否允许这个广播接收器接收本程序以外的广播
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>application</span><span class="token punctuation">></span></span>
+
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>manifest</span><span class="token punctuation">></span></span>
+</code></pre>
+<p>（3）此时广播接收器还未能接收到开机广播，需要添加 Action 和 权限：</p>
+<pre class=" language-xml"><code class="language-xml"><span class="token prolog">&lt;?xml version="1.0" encoding="utf-8"?></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>manifest</span> <span class="token attr-name"><span class="token namespace">xmlns:</span>android</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>http://schemas.android.com/apk/res/android<span class="token punctuation">"</span></span>
+    <span class="token attr-name">package</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>com.example.marco.broadcasttest<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+
+    // 添加权限
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>uses-permission</span> <span class="token attr-name"><span class="token namespace">android:</span>name</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>android.permission.RECEIVE_BOOT_COMPLETED<span class="token punctuation">"</span></span> <span class="token punctuation">/></span></span>
+
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>application</span>
+        <span class="token attr-name"><span class="token namespace">android:</span>allowBackup</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>true<span class="token punctuation">"</span></span>
+        <span class="token attr-name"><span class="token namespace">android:</span>icon</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>@mipmap/ic_launcher<span class="token punctuation">"</span></span>
+        <span class="token attr-name"><span class="token namespace">android:</span>label</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>@string/app_name<span class="token punctuation">"</span></span>
+        <span class="token attr-name"><span class="token namespace">android:</span>roundIcon</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>@mipmap/ic_launcher_round<span class="token punctuation">"</span></span>
+        <span class="token attr-name"><span class="token namespace">android:</span>supportsRtl</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>true<span class="token punctuation">"</span></span>
+        <span class="token attr-name"><span class="token namespace">android:</span>theme</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>@style/AppTheme<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>activity</span> <span class="token attr-name"><span class="token namespace">android:</span>name</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>.MainActivity<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>intent-filter</span><span class="token punctuation">></span></span>
+                <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>action</span> <span class="token attr-name"><span class="token namespace">android:</span>name</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>android.intent.action.MAIN<span class="token punctuation">"</span></span> <span class="token punctuation">/></span></span>
+
+                <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>category</span> <span class="token attr-name"><span class="token namespace">android:</span>name</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>android.intent.category.LAUNCHER<span class="token punctuation">"</span></span> <span class="token punctuation">/></span></span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>intent-filter</span><span class="token punctuation">></span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>activity</span><span class="token punctuation">></span></span>
+
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>receiver</span>
+            <span class="token attr-name"><span class="token namespace">android:</span>name</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>.BootCompleteReceiver<span class="token punctuation">"</span></span>
+            <span class="token attr-name"><span class="token namespace">android:</span>enabled</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>true<span class="token punctuation">"</span></span>
+            <span class="token attr-name"><span class="token namespace">android:</span>exported</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>true<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+            // 添加相应的 Action
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>intent-filter</span><span class="token punctuation">></span></span>
+                <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>action</span> <span class="token attr-name"><span class="token namespace">android:</span>name</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>android.intent.action.BOOT_COMPLETED<span class="token punctuation">"</span></span> <span class="token punctuation">/></span></span>
+            <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>intent-filter</span><span class="token punctuation">></span></span>
+        <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>receiver</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>application</span><span class="token punctuation">></span></span>
+
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>manifest</span><span class="token punctuation">></span></span>
+</code></pre>
+<p><br></p>
+<h1 id="三、你知道的广播有几种？"><a href="#三、你知道的广播有几种？" class="headerlink" title="三、你知道的广播有几种？"></a>三、你知道的广播有几种？</h1><h2 id="3-1-普通广播（NormalBroadcast）"><a href="#3-1-普通广播（NormalBroadcast）" class="headerlink" title="3.1 普通广播（NormalBroadcast）"></a>3.1 普通广播（NormalBroadcast）</h2><p>普通广播是一种完全 <code>异步执行</code> 的广播，在广播发出之后，所有的广播接收器 <code>几乎会同时接收到这条广播消息</code>。此类广播效率较高而且 <code>不能截断</code>。</p>
+<p><img src="https://s1.ax1x.com/2020/07/22/U7s87d.png" alt="NormalBroadcast.png"></p>
+<blockquote>
+<p>发送广播方式如下：</p>
+</blockquote>
+<pre class=" language-java"><code class="language-java">    <span class="token comment" spellcheck="true">// 发送端</span>
+    Intent intent <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Intent</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    intent<span class="token punctuation">.</span><span class="token function">setAction</span><span class="token punctuation">(</span>BROADCAST_ACTION<span class="token punctuation">)</span><span class="token punctuation">;</span>    <span class="token comment" spellcheck="true">// 对应 BroadcastReceiver 中 intentFilter 的 action</span>
+    <span class="token function">sendBroadcast</span><span class="token punctuation">(</span>intent<span class="token punctuation">)</span><span class="token punctuation">;</span>                 <span class="token comment" spellcheck="true">// 发送广播</span>
+
+    <span class="token comment" spellcheck="true">// 接收端</span>
+    <span class="token comment" spellcheck="true">// 广播接收器静态注册</span>
+    <span class="token operator">&lt;</span>receiver 
+        android<span class="token operator">:</span>name<span class="token operator">=</span><span class="token string">".MyBroadcastReceiver"</span> <span class="token operator">></span>              <span class="token comment" spellcheck="true">// 此广播接收者类是 MyBroadcastReceiver</span>
+        <span class="token operator">&lt;</span>intent<span class="token operator">-</span>filter<span class="token operator">></span>
+            <span class="token operator">&lt;</span>action android<span class="token operator">:</span>name<span class="token operator">=</span><span class="token string">"BROADCAST_ACTION"</span> <span class="token operator">/</span><span class="token operator">></span>
+        <span class="token operator">&lt;</span><span class="token operator">/</span>intent<span class="token operator">-</span>filter<span class="token operator">></span>
+    <span class="token operator">&lt;</span><span class="token operator">/</span>receiver<span class="token operator">></span>
+</code></pre>
+<h2 id="3-2-有序广播（OrderedBroadcast）"><a href="#3-2-有序广播（OrderedBroadcast）" class="headerlink" title="3.2 有序广播（OrderedBroadcast）"></a>3.2 有序广播（OrderedBroadcast）</h2><p>有序广播是一种 <code>同步执行</code> 的广播，广播发出之后，优先级高的广播接收器就可以先接收到广播消息，执行完该广播接收器的逻辑后，可以选择 <code>截断正在传递的广播或者继续传递</code>，如果广播消息被截断，之后的广播接收器则无法收到广播消息。有序广播中的 “ 有序 “是针对广播接收者而言的。有序广播的定义过程与普通广播无异，只是其发送方式变为：<code>sendOrderedBroadcast()</code>。</p>
+<p><img src="https://s1.ax1x.com/2020/07/22/U7gTsK.png" alt="OrderedBroadcast.png"></p>
+<blockquote>
+<p>发送广播方式如下：</p>
+</blockquote>
+<pre class=" language-java"><code class="language-java">    <span class="token comment" spellcheck="true">// 定义优先级的方式 1</span>
+    <span class="token operator">&lt;</span>receiver 
+        android<span class="token operator">:</span>name<span class="token operator">=</span><span class="token string">".MyBroadcastReceiver"</span> <span class="token operator">></span>
+        <span class="token operator">&lt;</span><span class="token operator">!</span><span class="token operator">--</span> priority 优先级：数字越高优先级越高 <span class="token operator">--</span><span class="token operator">></span>
+        <span class="token operator">&lt;</span>intent<span class="token operator">-</span>filter android<span class="token operator">:</span>priority<span class="token operator">=</span><span class="token string">"2"</span><span class="token operator">></span>
+            <span class="token operator">&lt;</span>action android<span class="token operator">:</span>name<span class="token operator">=</span><span class="token string">"BROADCAST_ACTION2"</span> <span class="token operator">/</span><span class="token operator">></span>
+        <span class="token operator">&lt;</span><span class="token operator">/</span>intent<span class="token operator">-</span>filter<span class="token operator">></span>
+        <span class="token operator">&lt;</span>intent<span class="token operator">-</span>filter android<span class="token operator">:</span>priority<span class="token operator">=</span><span class="token string">"1"</span><span class="token operator">></span>
+            <span class="token operator">&lt;</span>action android<span class="token operator">:</span>name<span class="token operator">=</span><span class="token string">"BROADCAST_ACTION1"</span> <span class="token operator">/</span><span class="token operator">></span>
+        <span class="token operator">&lt;</span><span class="token operator">/</span>intent<span class="token operator">-</span>filter<span class="token operator">></span>
+    <span class="token operator">&lt;</span><span class="token operator">/</span>receiver<span class="token operator">></span>
+
+    <span class="token comment" spellcheck="true">// 定义优先级的方式 2</span>
+    IntentFilter intentFilter <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">IntentFilter</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    intentFilter<span class="token punctuation">.</span><span class="token function">setAction</span><span class="token punctuation">(</span>BROADCAST_ACTION2<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    intentFilter<span class="token punctuation">.</span><span class="token function">setPriority</span><span class="token punctuation">(</span><span class="token number">2</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token function">registerReceiver</span><span class="token punctuation">(</span>mBroadcastReceiver<span class="token punctuation">,</span> intentFilter<span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre>
+<p>有序广播可以调用 <code>abortBroadcast()</code> 方法终止广播，一旦终止后面接收者就无法接受广播。</p>
+<h2 id="3-3-系统广播（SystemBroadcast）"><a href="#3-3-系统广播（SystemBroadcast）" class="headerlink" title="3.3 系统广播（SystemBroadcast）"></a>3.3 系统广播（SystemBroadcast）</h2><p>Android 中内置了多个 <code>系统广播</code> ：只要涉及到手机的基本操作（如开机、网络状态变化、拍照等等），都会发出相应的广播。每个广播都有特定的 <code>Intent - Filter</code>（包括具体的 <code>action</code>）。</p>
+<p>例如（不完全举例）：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">系统操作</th>
+<th style="text-align:left">action</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><font color="#D15FEE">监听网络变化</font></td>
+<td style="text-align:left">android.net.conn.CONNECTIVITY_CHANGE</td>
+</tr>
+<tr>
+<td style="text-align:left"><font color="#D15FEE">关闭或打开飞行模式</font></td>
+<td style="text-align:left">Intent.ACTION_AIRPLANE_MODE_CHANGED</td>
+</tr>
+<tr>
+<td style="text-align:left"><font color="#D15FEE">充电时或电量发生变化</font></td>
+<td style="text-align:left">Intent.ACTION_BATTERY_CHANGED</td>
+</tr>
+<tr>
+<td style="text-align:left"><font color="#D15FEE">电池电量低</font></td>
+<td style="text-align:left">Intent.ACTION_BATTERY_LOW</td>
+</tr>
+<tr>
+<td style="text-align:left"><font color="#D15FEE">系统启动完成后</font></td>
+<td style="text-align:left">Intent.ACTION_BOOT_COMPLETED</td>
+</tr>
+<tr>
+<td style="text-align:left"><font color="#D15FEE">插入耳机时</font></td>
+<td style="text-align:left">Intent.ACTION_HEADSET_PLUG</td>
+</tr>
+<tr>
+<td style="text-align:left"><font color="#D15FEE">插入外部储存装置</font></td>
+<td style="text-align:left">Intent.ACTION_MEDIA_CHECKING</td>
+</tr>
+<tr>
+<td style="text-align:left"><font color="#D15FEE">成功安装 APK</font></td>
+<td style="text-align:left">Intent.ACTION_PACKAGE_ADDED</td>
+</tr>
+<tr>
+<td style="text-align:left"><font color="#D15FEE">成功删除 APK</font></td>
+<td style="text-align:left">Intent.ACTION_PACKAGE_REMOVED</td>
+</tr>
+<tr>
+<td style="text-align:left"><font color="#D15FEE">重启设备</font></td>
+<td style="text-align:left">Intent.ACTION_REBOOT</td>
+</tr>
+<tr>
+<td style="text-align:left"><font color="#D15FEE">屏幕关闭</font></td>
+<td style="text-align:left">Intent.ACTION_SCREEN_OFF</td>
+</tr>
+<tr>
+<td style="text-align:left"><font color="#D15FEE">屏幕打开</font></td>
+<td style="text-align:left">Intent.ACTION_SCREEN_ON</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>发送广播方式如下：</p>
+</blockquote>
+<p>当使用系统广播时，只需要在注册广播接收者时定义相关的 action 即可，并不需要手动发送广播，当系统有相关操作时会自动进行系统广播。</p>
+<h2 id="3-4-App应用内广播（LocalBroadcast）"><a href="#3-4-App应用内广播（LocalBroadcast）" class="headerlink" title="3.4 App应用内广播（LocalBroadcast）"></a>3.4 App应用内广播（LocalBroadcast）</h2><p>Android 中的广播可以跨进程甚至跨 App 直接通信，且注册是 exported 对于有 intent-filter 的情况下默认值是 true，由此将可能出现安全隐患如下：</p>
+<p>1、其他 App 可能会针对性的发出与当前 App intent-filter 相匹配的广播，由此导致当前 App 不断接收到广播并处理；</p>
+<p>2、其他 App 可以注册与当前 App 一致的 intent-filter 用于接收广播，获取广播具体信息。</p>
+<p>无论哪种情形，这些安全隐患都确实是存在的。由此，最常见的增加安全性的方案是：</p>
+<p>1、对于同一 App 内部发送和接收广播，将 exported 属性人为设置成 false，使得非本 App 内部发出的此广播不被接收；</p>
+<p>2、在广播发送和接收时，都增加上相应的 permission，用于权限验证；</p>
+<p>3、发送广播时，指定特定广播接收器所在的包名，具体是通过 intent.setPackage(packageName) 指定在，这样此广播将只会发送到此包中的 App 内与之相匹配的有效广播接收器中。</p>
+<p>相比于全局广播(普通广播)，App应用内广播优势体现在：</p>
+<p>1、安全性更高；</p>
+<p>2、更加高效；</p>
+<blockquote>
+<p>发送广播方式如下：</p>
+</blockquote>
+<pre class=" language-java"><code class="language-java">    <span class="token comment" spellcheck="true">//registerReceiver(mBroadcastReceiver, intentFilter);</span>
+    <span class="token comment" spellcheck="true">// 注册应用内广播接收器</span>
+    localBroadcastManager <span class="token operator">=</span> LocalBroadcastManager<span class="token punctuation">.</span><span class="token function">getInstance</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    localBroadcastManager<span class="token punctuation">.</span><span class="token function">registerReceiver</span><span class="token punctuation">(</span>mBroadcastReceiver<span class="token punctuation">,</span> intentFilter<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token comment" spellcheck="true">// unregisterReceiver(mBroadcastReceiver);</span>
+    <span class="token comment" spellcheck="true">// 取消注册应用内广播接收器</span>
+    localBroadcastManager<span class="token punctuation">.</span><span class="token function">unregisterReceiver</span><span class="token punctuation">(</span>mBroadcastReceiver<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    Intent intent <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Intent</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    intent<span class="token punctuation">.</span><span class="token function">setAction</span><span class="token punctuation">(</span>BROADCAST_ACTION<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token comment" spellcheck="true">// sendBroadcast(intent);</span>
+    <span class="token comment" spellcheck="true">// 发送应用内广播</span>
+    localBroadcastManager<span class="token punctuation">.</span><span class="token function">sendBroadcast</span><span class="token punctuation">(</span>intent<span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre>
+<p>对于 LocalBroadcastManager 方式发送的应用内广播，只能通过 LocalBroadcastManager 动态注册，不能静态注册。</p>
+<h2 id="3-5-粘性广播（StickyBroadcast）"><a href="#3-5-粘性广播（StickyBroadcast）" class="headerlink" title="3.5 粘性广播（StickyBroadcast）"></a>3.5 粘性广播（StickyBroadcast）</h2><p>在 android 5.0/api 21中 deprecated，不再推荐使用，相应的还有粘性有序广播，同样已经 deprecated。</p>
+
+            </div>
+            <hr>
+
+            
+
+            <!--<link rel="stylesheet" type="text/css" href="/libs/share/css/share.min.css">
+
+<div id="article-share">
+    
+    <div class="social-share" data-disabled="qzone" data-wechat-qrcode-helper="<p>微信里点“发现”->“扫一扫”二维码便可查看分享。</p>"></div>
+    
+</div>
+
+<script src="/libs/share/js/social-share.min.js"></script>-->
+
+            <div class="reprint">
+                <p>
+                    <span class="reprint-tip">
+                        <i class="fa fa-exclamation-circle"></i>&nbsp;&nbsp;转载请注明:
+                    </span>
+                    <a href="https://superandroid.pro" class="b-link-green">Thinking in Android</a>
+                    <i class="fa fa-angle-right fa-lg fa-fw text-color"></i>
+                    <a href="/2020/06/20/android-10-si-da-zu-jian-xi-lie-broadcast-fen-lei/" class="b-link-green">Broadcast -- &#34; 品种 &#34;和&#34; 用法 &#34;</a>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    <!--
+
+<article id="prenext-posts" class="prev-next articles">
+    <div class="row article-row">
+        
+        <div class="article col s12 m6 overflow-policy" data-aos="fade-up">
+            <div class="article-badge left-badge text-color">
+                <i class="fa fa-chevron-left"></i>&nbsp;上一篇</div>
+            <div class="card">
+                <a href="/2021/01/01/thinking-in-android-android-xi-tong-kai-fa-bo-wen-jia-gou-mei-zhou-geng-xin/">
+                    <div class="card-image">
+                        
+                        <img src="/medias/featureimages/android.gif" class="responsive-img" alt="博文架构（Android 10.0）">
+                        
+                        <span class="card-title">博文架构（Android 10.0）</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">《 Thinking in Android 》 – “系统启动” 系列
+
+
+
+【系统启动】
+
+State
+Code
+
+
+
+
+init
+【 Android 10 系统启动 】系列 – init（天字一号进程）
+Update 05.01
+And</div>
+                    <div class="publish-info">
+                        <span class="publish-date">
+                            <i class="fa fa-clock-o fa-fw icon-date"></i>2021-01-01
+                        </span>
+                        <span class="publish-author">
+                            
+                            <i class="fa fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/Android/" class="post-category" target="_blank">
+                                    Android
+                                </a>
+                            
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/框架服务/" target="_blank">
+                        <span class="chip bg-color">框架服务</span>
+                    </a>
+                    
+                    <a href="/tags/核心机制/" target="_blank">
+                        <span class="chip bg-color">核心机制</span>
+                    </a>
+                    
+                    <a href="/tags/性能优化/" target="_blank">
+                        <span class="chip bg-color">性能优化</span>
+                    </a>
+                    
+                    <a href="/tags/设计模式/" target="_blank">
+                        <span class="chip bg-color">设计模式</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+        
+        <div class="article col s12 m6 overflow-policy" data-aos="fade-up">
+            <div class="article-badge right-badge text-color">
+                下一篇&nbsp;<i class="fa fa-chevron-right"></i>
+            </div>
+            <div class="card">
+                <a href="/2020/06/16/android-10-si-da-zu-jian-xi-lie-service-de-qi-dong-liu-cheng/">
+                    <div class="card-image">
+                        
+                        <img src="https://s1.ax1x.com/2020/07/14/UNEzCV.jpg" class="responsive-img" alt="Service 的 " 启动流程 "">
+                        
+                        <span class="card-title">Service 的 " 启动流程 "</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text"># 核心源码
+
+
+关键类
+路径
+
+
+
+
+ContextImpl.java
+frameworks/base/core/java/android/app/ContextImpl.java
+
+
+ContextWrapper.java
+framew</div>
+                    <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="fa fa-clock-o fa-fw icon-date"></i>2020-06-16
+                            </span>
+                        <span class="publish-author">
+                            
+                            <i class="fa fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/四大组件/" class="post-category" target="_blank">
+                                    四大组件
+                                </a>
+                            
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/Activity/" target="_blank">
+                        <span class="chip bg-color">Activity</span>
+                    </a>
+                    
+                    <a href="/tags/启动流程/" target="_blank">
+                        <span class="chip bg-color">启动流程</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+    </div>
+</article>-->
+</div>
+
+
+<script>
+    $('#articleContent').on('copy', function (e) {
+        // IE8 or earlier browser is 'undefined'
+        if (typeof window.getSelection === 'undefined') return;
+
+        var selection = window.getSelection();
+        // if the selection is short let's not annoy our users.
+        if (('' + selection).length < Number.parseInt('120')) {
+            return;
+        }
+
+        // create a div outside of the visible area and fill it with the selected text.
+        var bodyElement = document.getElementsByTagName('body')[0];
+        var newdiv = document.createElement('div');
+        newdiv.style.position = 'absolute';
+        newdiv.style.left = '-99999px';
+        bodyElement.appendChild(newdiv);
+        newdiv.appendChild(selection.getRangeAt(0).cloneContents());
+
+        // we need a <pre> tag workaround.
+        // otherwise the text inside "pre" loses all the line breaks!
+        if (selection.getRangeAt(0).commonAncestorContainer.nodeName === 'PRE') {
+            newdiv.innerHTML = "<pre>" + newdiv.innerHTML + "</pre>";
+        }
+
+        var url = document.location.href;
+        newdiv.innerHTML += '<br />'
+            + '来源: Thinking in Android<br />'
+            + '作者: Marco<br />'
+            + '链接: <a href="' + url + '">' + url + '</a><br />'
+            + '本文章著作权归作者所有，任何形式的转载都请注明出处。';
+
+        selection.selectAllChildren(newdiv);
+        window.setTimeout(function () {bodyElement.removeChild(newdiv);}, 200);
+    });
+</script>
+
+    
+
+</main>
+
+
+<footer class="page-footer bg-color-foot-marco">
+    <div class="container row center-align">
+        <div class="col s12 m8 l8 copy-right">
+		    &copy; 2018 - 2020&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;In-depth analysis of Android system source code &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<i class="fa fa-graduation-cap" aria-hidden="true"></i>&nbsp;&nbsp;Marco<br>
+            
+			
+                
+                <span id="busuanzi_container_site_pv">
+                    Total visits to this site: <span id="busuanzi_value_site_pv"></span> ,&nbsp;
+                </span>
+				<span id="busuanzi_container_site_uv">
+                    Total visitor: <span id="busuanzi_value_site_uv"></span> .
+                </span>
+			
+		</div>
+        <div class="col s12 m4 l4 social-link social-statis">
+    <a href="https://github.com/pepsimaxin/pepsimaxin.github.io" class="tooltipped" target="_blank" data-tooltip="访问我的GitHub" data-position="top" data-delay="50">
+        <i class="fa fa-github"></i>
+    </a>
+
+
+
+    <a href="mailto:pepsimaxin@163.com" class="tooltipped" target="_blank" data-tooltip="邮件联系我" data-position="top" data-delay="50">
+        <i class="fa fa-envelope"></i>
+    </a>
+
+
+
+
+<!--
+    <a href="https://blog.csdn.net/pepsimaxin" class="tooltipped" data-tooltip="访问我的CSDN" data-position="top" data-delay="50">
+        <i class="fa fa-chain-broken"></i>
+    </a>
+-->
+
+
+    <a href="/atom.xml" class="tooltipped" target="_blank" data-tooltip="RSS 订阅" data-position="top" data-delay="50">
+        <i class="fa fa-rss"></i>
+    </a>
+</div>
+    </div>
+</footer>
+
+<!--<div class="progress-bar"></div>-->
+
+<!-- 搜索遮罩框 -->
+<div id="searchModal" class="modal">
+    <div class="modal-content">
+        <div class="search-header">
+            <span class="title"><i class="fa fa-search"></i>&nbsp;&nbsp;检索博文</span>
+            <input type="search" id="searchInput" name="s" placeholder="请输入搜索的技术关键字" class="search-input">
+        </div>
+        <div id="searchResult"></div>
+    </div>
+</div>
+
+<script src="/js/search.js"></script>
+<script type="text/javascript">
+$(function () {
+    searchFunc("/" + "search.xml", 'searchInput', 'searchResult');
+});
+</script>
+<!-- 回到顶部按钮 -->
+<!--<div id="backTop" class="top-scroll">
+    <a class="btn-floating btn-large waves-effect waves-light" href="#!">
+        <i class="fa fa-angle-up"></i>
+    </a>
+</div>-->
+
+
+<script src="/libs/materialize/materialize.min.js"></script>
+<script src="/libs/masonry/masonry.pkgd.min.js"></script>
+<script src="/libs/aos/aos.js"></script>
+<script src="/libs/scrollprogress/scrollProgress.min.js"></script>
+<script src="/libs/lightGallery/js/lightgallery-all.min.js"></script>
+<script src="/js/matery.js"></script>
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+
+
+
+
+    <script async src="/libs/others/busuanzi.pure.mini.js"></script>
+
+
+</body>
+</html>

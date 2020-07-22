@@ -1,0 +1,1174 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+
+
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta charset="utf-8">
+    <meta name="keywords" content="“ 应用门户 ” -- Launcher, Thinking in Android">
+    <meta name="description" content="# 核心源码
+
+
+关键类
+路径
+
+
+
+
+SystemServer.java
+frameworks/base/services/java/com/android/server/SystemServer.java
+
+
+ActivityManag">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="renderer" content="webkit|ie-stand|ie-comp">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>“ 应用门户 ” -- Launcher | Thinking in Android</title>
+    <link rel="icon" type="image/png" href="/favicon.png">
+
+    <link rel="stylesheet" type="text/css" href="/libs/awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="/libs/materialize/materialize.min.css">
+    <link rel="stylesheet" type="text/css" href="/libs/aos/aos.css">
+    <link rel="stylesheet" type="text/css" href="/libs/animate/animate.min.css">
+    <link rel="stylesheet" type="text/css" href="/libs/lightGallery/css/lightgallery.min.css">
+    <link rel="stylesheet" type="text/css" href="/css/matery.css">
+    <link rel="stylesheet" type="text/css" href="/css/my.css">
+    <style type="text/css">
+        
+    </style>
+
+    <script src="/libs/jquery/jquery-2.2.0.min.js"></script>
+<link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css"></head>
+
+
+<body>
+
+<header class="navbar-fixed">
+    <nav id="headNav" class="bg-color-header-marco nav-transparent">
+        <div id="navContainer" class="nav-wrapper container">
+            <!--<div class="brand-logo">
+                <a href="/" class="waves-effect waves-light">
+                    
+                    <img src="/medias/logo.png" class="logo-img" alt="LOGO">
+                    
+                    <span class="logo-span">Thinking in Android</span>
+                </a>
+            </div>-->
+            
+
+<a href="#" data-target="mobile-nav" class="sidenav-trigger button-collapse"><i class="fa fa-navicon"></i></a>
+<ul class="right">
+    
+    <li class="hide-on-med-and-down">
+        <a href="/" class="waves-effect waves-light">
+            
+            <i class="fa fa-home"></i>
+            
+            <span>博客首页</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/categories" class="waves-effect waves-light">
+            
+            <i class="fa fa-bookmark"></i>
+            
+            <span>博文分类</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/tags" class="waves-effect waves-light">
+            
+            <i class="fa fa-tags"></i>
+            
+            <span>技术标签</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/categories/四大组件/" class="waves-effect waves-light">
+            
+            <i class="fa fa-cube"></i>
+            
+            <span>四大组件</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/categories/系统启动/" class="waves-effect waves-light">
+            
+            <i class="fa fa-spinner"></i>
+            
+            <span>系统启动</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/categories/框架服务/" class="waves-effect waves-light">
+            
+            <i class="fa fa-superpowers"></i>
+            
+            <span>框架服务</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/categories/核心机制/" class="waves-effect waves-light">
+            
+            <i class="fa fa-link"></i>
+            
+            <span>核心机制</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/categories/性能优化/" class="waves-effect waves-light">
+            
+            <i class="fa fa-yelp"></i>
+            
+            <span>性能优化</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/categories/设计模式/" class="waves-effect waves-light">
+            
+            <i class="fa fa-envira"></i>
+            
+            <span>设计模式</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/about" class="waves-effect waves-light">
+            
+            <i class="fa fa-user-circle-o"></i>
+            
+            <span>作者</span>
+        </a>
+    </li>
+    
+    <li>
+        <a href="#searchModal" class="modal-trigger waves-effect waves-light">
+            <i id="searchIcon" class="fa fa-search" title="检索博文"></i>
+        </a>
+    </li>
+</ul>
+
+<div id="mobile-nav" class="side-nav sidenav">
+
+    <div class="mobile-head bg-color">
+        
+        <img src="/medias/logo.png" class="logo-img circle responsive-img">
+        
+        <div class="logo-name">Thinking in Android</div>
+        <div class="logo-desc">
+            
+            One blog for recorded and shared android system development.
+            
+        </div>
+    </div>
+
+    
+
+    <ul class="menu-list mobile-menu-list">
+        
+        <li>
+            <a href="/" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-home"></i>
+                
+                博客首页
+            </a>
+        </li>
+        
+        <li>
+            <a href="/categories" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-bookmark"></i>
+                
+                博文分类
+            </a>
+        </li>
+        
+        <li>
+            <a href="/tags" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-tags"></i>
+                
+                技术标签
+            </a>
+        </li>
+        
+        <li>
+            <a href="/categories/四大组件/" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-cube"></i>
+                
+                四大组件
+            </a>
+        </li>
+        
+        <li>
+            <a href="/categories/系统启动/" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-spinner"></i>
+                
+                系统启动
+            </a>
+        </li>
+        
+        <li>
+            <a href="/categories/框架服务/" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-superpowers"></i>
+                
+                框架服务
+            </a>
+        </li>
+        
+        <li>
+            <a href="/categories/核心机制/" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-link"></i>
+                
+                核心机制
+            </a>
+        </li>
+        
+        <li>
+            <a href="/categories/性能优化/" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-yelp"></i>
+                
+                性能优化
+            </a>
+        </li>
+        
+        <li>
+            <a href="/categories/设计模式/" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-envira"></i>
+                
+                设计模式
+            </a>
+        </li>
+        
+        <li>
+            <a href="/about" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-user-circle-o"></i>
+                
+                作者
+            </a>
+        </li>
+        
+        
+    </ul>
+</div>
+
+        </div>
+
+        
+    </nav>
+
+</header>
+
+
+
+
+
+<div class="bg-cover pd-header post-cover" style="background-image: url('https://s1.ax1x.com/2020/07/13/UYLiSf.jpg')">
+    <div class="container">
+        <div class="row">
+            <div class="col s12 m12 l12">
+                <div class="brand">
+                    <div class="description center-align post-title">
+                        “ 应用门户 ” -- Launcher
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<main class="container content">
+
+    
+    <!-- 文章内容详情 -->
+<div id="artDetail">
+    <div class="card">
+        <div class="card-content article-info">
+            <div class="row tag-cate">
+                <div class="col s7">
+                    
+                    <div class="article-tag">
+                        
+                            <a href="/tags/Launcher/" target="_blank">
+                                <span class="chip bg-color">Launcher</span>
+                            </a>
+                        
+                    </div>
+                    
+                </div>
+                <div class="col s5 right-align">
+                    
+                    <div class="post-cate">
+                        <i class="fa fa-bookmark fa-fw icon-category"></i>
+                        
+                            <a href="/categories/系统启动/" class="post-category" target="_blank">
+                                系统启动
+                            </a>
+                        
+                    </div>
+                    
+                </div>
+            </div>
+
+            <div class="post-info">
+                <div class="post-date info-break-policy">
+                    <i class="fa fa-calendar-minus-o fa-fw"></i>&nbsp;发布日期 :&nbsp;
+                    2020-03-20
+                </div>
+
+                
+                    
+                    <div class="info-break-policy">
+                        <i class="fa fa-file-word-o fa-fw"></i>&nbsp;文章字数 :&nbsp;
+                        1.8k
+                    </div>
+                    
+
+                    
+                    <div class="info-break-policy">
+                        <i class="fa fa-clock-o fa-fw"></i>&nbsp;阅读时长 :&nbsp;
+                        10 分钟
+                    </div>
+                    
+                
+				
+				
+                    <div id="busuanzi_container_page_pv" class="info-break-policy">
+                        <i class="fa fa-eye fa-fw"></i>&nbsp;阅读次数 :&nbsp;
+                        <span id="busuanzi_value_page_pv"></span>
+                    </div>
+				
+            </div>
+        </div>
+		<br>
+        <hr class="clearfix">
+        <div class="card-content article-card-content">
+            <div id="articleContent">
+                <h1 id="核心源码"><a href="#核心源码" class="headerlink" title="# 核心源码"></a># 核心源码</h1><table>
+<thead>
+<tr>
+<th style="text-align:left">关键类</th>
+<th style="text-align:left">路径</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><font color="#D15FEE">SystemServer.java</font></td>
+<td style="text-align:left">frameworks/base/services/java/com/android/server/SystemServer.java</td>
+</tr>
+<tr>
+<td style="text-align:left"><font color="#D15FEE">ActivityManagerService.java</font></td>
+<td style="text-align:left">frameworks/base/services/core/java/com/android/server/am/ActivityManagerService.java</td>
+</tr>
+<tr>
+<td style="text-align:left"><font color="#D15FEE">ActivityStack.java</font></td>
+<td style="text-align:left">frameworks/base/services/core/java/com/android/server/am/ActivityStack.java</td>
+</tr>
+<tr>
+<td style="text-align:left"><font color="#D15FEE">ActivityTaskManagerService.java</font></td>
+<td style="text-align:left">frameworks/base/services/core/java/com/android/server/wm/ActivityTaskManagerService.java</td>
+</tr>
+<tr>
+<td style="text-align:left"><font color="#D15FEE">RootActivityContainer.java</font></td>
+<td style="text-align:left">frameworks/base/services/core/java/com/android/server/wm/RootActivityContainer.java</td>
+</tr>
+<tr>
+<td style="text-align:left"><font color="#D15FEE">Launcher.java</font></td>
+<td style="text-align:left">packages/apps/Launcher3/src/com/android/launcher3/Launcher.java</td>
+</tr>
+<tr>
+<td style="text-align:left"><font color="#D15FEE">LauncherModel.java</font></td>
+<td style="text-align:left">packages/apps/Launcher3/src/com/android/launcher3/LauncherModel.java</td>
+</tr>
+<tr>
+<td style="text-align:left"><font color="#D15FEE">LauncherAppState.java</font></td>
+<td style="text-align:left">packages/apps/Launcher3/src/com/android/launcher3/LauncherAppState.java</td>
+</tr>
+<tr>
+<td style="text-align:left"><font color="#D15FEE">LoaderTask.java</font></td>
+<td style="text-align:left">packages/apps/Launcher3/src/com/android/launcher3/model/LoaderTask.java</td>
+</tr>
+</tbody>
+</table>
+<p><br></p>
+<h1 id="一、Launcher-启动流程"><a href="#一、Launcher-启动流程" class="headerlink" title="一、Launcher 启动流程"></a>一、Launcher 启动流程</h1><p>Android 系统启动的最后一步是启动一个 <code>Home 应用程序</code>，这个应用程序用来显示系统中已经安装的应用程序，我们称呼这个应用程序为 <code>Launcher</code>。</p>
+<p>应用程序 Launcher 在启动过程中会请求 <code>PackageManagerService 返回系统中已经安装的应用程序的信息</code>，并将这些信息封装成一个 <code>快捷图标</code> 列表显示在系统屏幕上，这样用户可以通过点击这些快捷图标来启动相应的应用程序了。</p>
+<h2 id="1-1-SystemServer-startOtherServices"><a href="#1-1-SystemServer-startOtherServices" class="headerlink" title="1.1 SystemServer.startOtherServices()"></a>1.1 SystemServer.startOtherServices()</h2><pre class=" language-java"><code class="language-java"><span class="token comment" spellcheck="true">// frameworks/base/services/java/com/android/server/SystemServer.java</span>
+
+<span class="token keyword">public</span> <span class="token keyword">final</span> <span class="token keyword">class</span> <span class="token class-name">SystemServer</span> <span class="token punctuation">{</span>
+
+    <span class="token keyword">private</span> ActivityManagerService mActivityManagerService<span class="token punctuation">;</span>
+
+    <span class="token keyword">private</span> <span class="token keyword">void</span> <span class="token function">startOtherServices</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+
+        mActivityManagerService<span class="token punctuation">.</span><span class="token function">systemReady</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">-</span><span class="token operator">></span> <span class="token punctuation">{</span>    <span class="token comment" spellcheck="true">// 调用 ActivityManagerService 的 systemReady() 方法</span>
+            Slog<span class="token punctuation">.</span><span class="token function">i</span><span class="token punctuation">(</span>TAG<span class="token punctuation">,</span> <span class="token string">"Making services ready"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+
+        <span class="token punctuation">}</span>
+        <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+
+    <span class="token punctuation">}</span>
+
+<span class="token punctuation">}</span>
+</code></pre>
+<p>在 <code>startOtherServices()</code> 方法中，会调用 <code>ActivityManagerService</code> 的 <code>systemReady()</code> 方法。</p>
+<h2 id="1-2-ActivityManagerService-systemReady"><a href="#1-2-ActivityManagerService-systemReady" class="headerlink" title="1.2 ActivityManagerService.systemReady()"></a>1.2 ActivityManagerService.systemReady()</h2><pre class=" language-java"><code class="language-java"><span class="token comment" spellcheck="true">// frameworks/base/services/core/java/com/android/server/am/ActivityManagerService.java</span>
+
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">ActivityManagerService</span> <span class="token keyword">extends</span> <span class="token class-name">IActivityManager<span class="token punctuation">.</span>Stub</span>
+        <span class="token keyword">implements</span> <span class="token class-name">Watchdog<span class="token punctuation">.</span>Monitor</span><span class="token punctuation">,</span> BatteryStatsImpl<span class="token punctuation">.</span>BatteryCallback <span class="token punctuation">{</span>
+
+    <span class="token annotation punctuation">@VisibleForTesting</span>
+    <span class="token keyword">public</span> ActivityTaskManagerInternal mAtmInternal<span class="token punctuation">;</span>
+
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">systemReady</span><span class="token punctuation">(</span><span class="token keyword">final</span> Runnable goingCallback<span class="token punctuation">,</span> TimingsTraceLog traceLog<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+
+        <span class="token keyword">synchronized</span> <span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+
+            <span class="token comment" spellcheck="true">// 调用 resumeTopActivities() 方法，这是一个抽象方法</span>
+            mAtmInternal<span class="token punctuation">.</span><span class="token function">resumeTopActivities</span><span class="token punctuation">(</span><span class="token boolean">false</span> <span class="token comment" spellcheck="true">/* scheduleIdle */</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            mUserController<span class="token punctuation">.</span><span class="token function">sendUserSwitchBroadcasts</span><span class="token punctuation">(</span><span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">,</span> currentUserId<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+
+        <span class="token punctuation">}</span>
+        <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+
+    <span class="token punctuation">}</span>
+
+<span class="token punctuation">}</span>    
+</code></pre>
+<h2 id="1-3-ActivityTaskManagerService-resumeTopActivities"><a href="#1-3-ActivityTaskManagerService-resumeTopActivities" class="headerlink" title="1.3 ActivityTaskManagerService.resumeTopActivities()"></a>1.3 ActivityTaskManagerService.resumeTopActivities()</h2><p><code>resumeTopActivities()</code> 方法由 <code>ActivityTaskManagerService</code> 的内部类 <code>LocalService</code> 实现。</p>
+<pre class=" language-java"><code class="language-java"><span class="token comment" spellcheck="true">// frameworks/base/services/core/java/com/android/server/wm/ActivityTaskManagerService.java</span>
+
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">ActivityTaskManagerService</span> <span class="token keyword">extends</span> <span class="token class-name">IActivityTaskManager<span class="token punctuation">.</span>Stub</span> <span class="token punctuation">{</span>
+
+    RootActivityContainer mRootActivityContainer<span class="token punctuation">;</span>
+
+    <span class="token keyword">final</span> <span class="token keyword">class</span> <span class="token class-name">LocalService</span> <span class="token keyword">extends</span> <span class="token class-name">ActivityTaskManagerInternal</span> <span class="token punctuation">{</span>
+        <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+
+        <span class="token annotation punctuation">@Override</span>
+        <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">resumeTopActivities</span><span class="token punctuation">(</span><span class="token keyword">boolean</span> scheduleIdle<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">synchronized</span> <span class="token punctuation">(</span>mGlobalLock<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token comment" spellcheck="true">// 调用 RootActivityContainer 的 resumeFocusedStacksTopActivities() 方法</span>
+                mRootActivityContainer<span class="token punctuation">.</span><span class="token function">resumeFocusedStacksTopActivities</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token keyword">if</span> <span class="token punctuation">(</span>scheduleIdle<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                    mStackSupervisor<span class="token punctuation">.</span><span class="token function">scheduleIdleLocked</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token punctuation">}</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span>
+        <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+
+    <span class="token punctuation">}</span>
+
+<span class="token punctuation">}</span>
+</code></pre>
+<h2 id="1-4-RootActivityContainer-resumeFocusedStacksTopActivities"><a href="#1-4-RootActivityContainer-resumeFocusedStacksTopActivities" class="headerlink" title="1.4 RootActivityContainer.resumeFocusedStacksTopActivities()"></a>1.4 RootActivityContainer.resumeFocusedStacksTopActivities()</h2><pre class=" language-java"><code class="language-java"><span class="token comment" spellcheck="true">// frameworks/base/services/core/java/com/android/server/wm/RootActivityContainer.java</span>
+
+<span class="token keyword">class</span> <span class="token class-name">RootActivityContainer</span> <span class="token keyword">extends</span> <span class="token class-name">ConfigurationContainer</span>
+        <span class="token keyword">implements</span> <span class="token class-name">DisplayManager<span class="token punctuation">.</span>DisplayListener</span> <span class="token punctuation">{</span>
+
+    <span class="token keyword">boolean</span> <span class="token function">resumeFocusedStacksTopActivities</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> <span class="token function">resumeFocusedStacksTopActivities</span><span class="token punctuation">(</span>null<span class="token punctuation">,</span> null<span class="token punctuation">,</span> null<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">boolean</span> <span class="token function">resumeFocusedStacksTopActivities</span><span class="token punctuation">(</span>
+            ActivityStack targetStack<span class="token punctuation">,</span> ActivityRecord target<span class="token punctuation">,</span> ActivityOptions targetOptions<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+
+        <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">int</span> displayNdx <span class="token operator">=</span> mActivityDisplays<span class="token punctuation">.</span><span class="token function">size</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">;</span> displayNdx <span class="token operator">>=</span> <span class="token number">0</span><span class="token punctuation">;</span> <span class="token operator">--</span>displayNdx<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">boolean</span> resumedOnDisplay <span class="token operator">=</span> <span class="token boolean">false</span><span class="token punctuation">;</span>
+            <span class="token keyword">final</span> ActivityDisplay display <span class="token operator">=</span> mActivityDisplays<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span>displayNdx<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+
+            <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>resumedOnDisplay<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token keyword">final</span> ActivityStack focusedStack <span class="token operator">=</span> display<span class="token punctuation">.</span><span class="token function">getFocusedStack</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token keyword">if</span> <span class="token punctuation">(</span>focusedStack <span class="token operator">!=</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                    <span class="token comment" spellcheck="true">// 调用 resumeTopActivityUncheckedLocked() 方法</span>
+                    focusedStack<span class="token punctuation">.</span><span class="token function">resumeTopActivityUncheckedLocked</span><span class="token punctuation">(</span>target<span class="token punctuation">,</span> targetOptions<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token punctuation">}</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span>
+
+        <span class="token keyword">return</span> result<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+<span class="token punctuation">}</span>
+</code></pre>
+<h2 id="1-5-ActivityStack-resumeTopActivityUncheckedLocked"><a href="#1-5-ActivityStack-resumeTopActivityUncheckedLocked" class="headerlink" title="1.5 ActivityStack.resumeTopActivityUncheckedLocked()"></a>1.5 ActivityStack.resumeTopActivityUncheckedLocked()</h2><pre class=" language-java"><code class="language-java"><span class="token comment" spellcheck="true">// frameworks/base/services/core/java/com/android/server/wm/ActivityStack.java</span>
+
+<span class="token keyword">class</span> <span class="token class-name">ActivityStack</span> <span class="token keyword">extends</span> <span class="token class-name">ConfigurationContainer</span> <span class="token punctuation">{</span>
+
+    <span class="token keyword">boolean</span> <span class="token function">resumeTopActivityUncheckedLocked</span><span class="token punctuation">(</span>ActivityRecord prev<span class="token punctuation">,</span> ActivityOptions options<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>mInResumeTopActivity<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token comment" spellcheck="true">// Don't even start recursing.</span>
+            <span class="token keyword">return</span> <span class="token boolean">false</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+
+        <span class="token keyword">boolean</span> result <span class="token operator">=</span> <span class="token boolean">false</span><span class="token punctuation">;</span>
+        <span class="token keyword">try</span> <span class="token punctuation">{</span>
+            <span class="token comment" spellcheck="true">// Protect against recursion.</span>
+            mInResumeTopActivity <span class="token operator">=</span> <span class="token boolean">true</span><span class="token punctuation">;</span>
+            result <span class="token operator">=</span> <span class="token function">resumeTopActivityInnerLocked</span><span class="token punctuation">(</span>prev<span class="token punctuation">,</span> options<span class="token punctuation">)</span><span class="token punctuation">;</span>  <span class="token comment" spellcheck="true">// 调用 resumeTopActivityInnerLocked() 方法</span>
+
+            <span class="token keyword">final</span> ActivityRecord next <span class="token operator">=</span> <span class="token function">topRunningActivityLocked</span><span class="token punctuation">(</span><span class="token boolean">true</span> <span class="token comment" spellcheck="true">/* focusableOnly */</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>next <span class="token operator">==</span> null <span class="token operator">||</span> <span class="token operator">!</span>next<span class="token punctuation">.</span><span class="token function">canTurnScreenOn</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token function">checkReadyForSleep</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span> <span class="token keyword">finally</span> <span class="token punctuation">{</span>
+            mInResumeTopActivity <span class="token operator">=</span> <span class="token boolean">false</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+
+        <span class="token keyword">return</span> result<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+<span class="token punctuation">}</span>
+</code></pre>
+<h2 id="1-6-ActivityStack-resumeTopActivityInnerLocked"><a href="#1-6-ActivityStack-resumeTopActivityInnerLocked" class="headerlink" title="1.6 ActivityStack.resumeTopActivityInnerLocked()"></a>1.6 ActivityStack.resumeTopActivityInnerLocked()</h2><pre class=" language-java"><code class="language-java"><span class="token comment" spellcheck="true">// frameworks/base/services/core/java/com/android/server/am/ActivityStack.java</span>
+
+<span class="token keyword">class</span> <span class="token class-name">ActivityStack</span> <span class="token keyword">extends</span> <span class="token class-name">ConfigurationContainer</span> <span class="token punctuation">{</span>
+
+    <span class="token keyword">private</span> <span class="token keyword">boolean</span> <span class="token function">resumeTopActivityInnerLocked</span><span class="token punctuation">(</span>ActivityRecord prev<span class="token punctuation">,</span> ActivityOptions options<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+
+        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>hasRunningActivity<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token comment" spellcheck="true">// There are no activities left in the stack, let's look somewhere else.</span>
+            <span class="token keyword">return</span> <span class="token function">resumeNextFocusableActivityWhenStackIsEmpty</span><span class="token punctuation">(</span>prev<span class="token punctuation">,</span> options<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+
+    <span class="token punctuation">}</span>
+
+<span class="token punctuation">}</span>
+</code></pre>
+<h2 id="1-7-ActivityStack-resumeNextFocusableActivityWhenStackIsEmpty"><a href="#1-7-ActivityStack-resumeNextFocusableActivityWhenStackIsEmpty" class="headerlink" title="1.7 ActivityStack.resumeNextFocusableActivityWhenStackIsEmpty()"></a>1.7 ActivityStack.resumeNextFocusableActivityWhenStackIsEmpty()</h2><pre class=" language-java"><code class="language-java"><span class="token comment" spellcheck="true">// frameworks/base/services/core/java/com/android/server/am/ActivityStack.java</span>
+
+<span class="token keyword">class</span> <span class="token class-name">ActivityStack</span> <span class="token keyword">extends</span> <span class="token class-name">ConfigurationContainer</span> <span class="token punctuation">{</span>
+
+    <span class="token keyword">protected</span> <span class="token keyword">final</span> RootActivityContainer mRootActivityContainer<span class="token punctuation">;</span>
+
+    <span class="token keyword">private</span> <span class="token keyword">boolean</span> <span class="token function">resumeNextFocusableActivityWhenStackIsEmpty</span><span class="token punctuation">(</span>ActivityRecord prev<span class="token punctuation">,</span>
+            ActivityOptions options<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">final</span> String reason <span class="token operator">=</span> <span class="token string">"noMoreActivities"</span><span class="token punctuation">;</span>
+
+        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span><span class="token function">isActivityTypeHome</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">final</span> ActivityStack nextFocusedStack <span class="token operator">=</span> <span class="token function">adjustFocusToNextFocusableStack</span><span class="token punctuation">(</span>reason<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>nextFocusedStack <span class="token operator">!=</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token keyword">return</span> mRootActivityContainer<span class="token punctuation">.</span><span class="token function">resumeFocusedStacksTopActivities</span><span class="token punctuation">(</span>nextFocusedStack<span class="token punctuation">,</span>
+                        prev<span class="token punctuation">,</span> null <span class="token comment" spellcheck="true">/* targetOptions */</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token punctuation">}</span>
+            <span class="token punctuation">}</span>
+
+        <span class="token comment" spellcheck="true">// If the current stack is a home stack, or if focus didn't switch to a different stack -</span>
+        <span class="token comment" spellcheck="true">// just start up the Launcher...</span>
+        ActivityOptions<span class="token punctuation">.</span><span class="token function">abort</span><span class="token punctuation">(</span>options<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>DEBUG_STATES<span class="token punctuation">)</span> Slog<span class="token punctuation">.</span><span class="token function">d</span><span class="token punctuation">(</span>TAG_STATES<span class="token punctuation">,</span>
+                <span class="token string">"resumeNextFocusableActivityWhenStackIsEmpty: "</span> <span class="token operator">+</span> reason <span class="token operator">+</span> <span class="token string">", go home"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment" spellcheck="true">// 调用 resumeHomeActivity() 方法</span>
+        <span class="token keyword">return</span> mRootActivityContainer<span class="token punctuation">.</span><span class="token function">resumeHomeActivity</span><span class="token punctuation">(</span>prev<span class="token punctuation">,</span> reason<span class="token punctuation">,</span> mDisplayId<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+<span class="token punctuation">}</span>
+</code></pre>
+<h2 id="1-8-RootActivityContainer-resumeHomeActivity"><a href="#1-8-RootActivityContainer-resumeHomeActivity" class="headerlink" title="1.8 RootActivityContainer.resumeHomeActivity()"></a>1.8 RootActivityContainer.resumeHomeActivity()</h2><pre class=" language-java"><code class="language-java"><span class="token comment" spellcheck="true">// frameworks/base/services/core/java/com/android/server/wm/RootActivityContainer.java</span>
+
+<span class="token keyword">class</span> <span class="token class-name">RootActivityContainer</span> <span class="token keyword">extends</span> <span class="token class-name">ConfigurationContainer</span>
+        <span class="token keyword">implements</span> <span class="token class-name">DisplayManager<span class="token punctuation">.</span>DisplayListener</span> <span class="token punctuation">{</span>
+
+    <span class="token keyword">boolean</span> <span class="token function">resumeHomeActivity</span><span class="token punctuation">(</span>ActivityRecord prev<span class="token punctuation">,</span> String reason<span class="token punctuation">,</span> <span class="token keyword">int</span> displayId<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>mService<span class="token punctuation">.</span><span class="token function">isBooting</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">&amp;&amp;</span> <span class="token operator">!</span>mService<span class="token punctuation">.</span><span class="token function">isBooted</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token comment" spellcheck="true">// Not ready yet!</span>
+            <span class="token keyword">return</span> <span class="token boolean">false</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>displayId <span class="token operator">==</span> INVALID_DISPLAY<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            displayId <span class="token operator">=</span> DEFAULT_DISPLAY<span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+
+        <span class="token keyword">final</span> ActivityRecord r <span class="token operator">=</span> <span class="token function">getActivityDisplay</span><span class="token punctuation">(</span>displayId<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getHomeActivity</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">final</span> String myReason <span class="token operator">=</span> reason <span class="token operator">+</span> <span class="token string">" resumeHomeActivity"</span><span class="token punctuation">;</span>
+
+        <span class="token comment" spellcheck="true">// Only resume home activity if isn't finishing.</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>r <span class="token operator">!=</span> null <span class="token operator">&amp;&amp;</span> <span class="token operator">!</span>r<span class="token punctuation">.</span>finishing<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            r<span class="token punctuation">.</span><span class="token function">moveFocusableActivityToTop</span><span class="token punctuation">(</span>myReason<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">return</span> <span class="token function">resumeFocusedStacksTopActivities</span><span class="token punctuation">(</span>r<span class="token punctuation">.</span><span class="token function">getActivityStack</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> prev<span class="token punctuation">,</span> null<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        <span class="token comment" spellcheck="true">// 调用 startHomeOnDisplay() 方法</span>
+        <span class="token keyword">return</span> <span class="token function">startHomeOnDisplay</span><span class="token punctuation">(</span>mCurrentUser<span class="token punctuation">,</span> myReason<span class="token punctuation">,</span> displayId<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+<span class="token punctuation">}</span>
+</code></pre>
+<h2 id="1-9-RootActivityContainer-startHomeOnDisplay"><a href="#1-9-RootActivityContainer-startHomeOnDisplay" class="headerlink" title="1.9 RootActivityContainer.startHomeOnDisplay()"></a>1.9 RootActivityContainer.startHomeOnDisplay()</h2><pre class=" language-java"><code class="language-java"><span class="token comment" spellcheck="true">// frameworks/base/services/core/java/com/android/server/wm/RootActivityContainer.java</span>
+
+<span class="token keyword">class</span> <span class="token class-name">RootActivityContainer</span> <span class="token keyword">extends</span> <span class="token class-name">ConfigurationContainer</span>
+        <span class="token keyword">implements</span> <span class="token class-name">DisplayManager<span class="token punctuation">.</span>DisplayListener</span> <span class="token punctuation">{</span>
+
+    ActivityTaskManagerService mService<span class="token punctuation">;</span>
+
+    <span class="token keyword">boolean</span> <span class="token function">startHomeOnDisplay</span><span class="token punctuation">(</span><span class="token keyword">int</span> userId<span class="token punctuation">,</span> String reason<span class="token punctuation">,</span> <span class="token keyword">int</span> displayId<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> <span class="token function">startHomeOnDisplay</span><span class="token punctuation">(</span>userId<span class="token punctuation">,</span> reason<span class="token punctuation">,</span> displayId<span class="token punctuation">,</span> <span class="token boolean">false</span> <span class="token comment" spellcheck="true">/* allowInstrumenting */</span><span class="token punctuation">,</span>
+                <span class="token boolean">false</span> <span class="token comment" spellcheck="true">/* fromHomeKey */</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    <span class="token keyword">boolean</span> <span class="token function">startHomeOnDisplay</span><span class="token punctuation">(</span><span class="token keyword">int</span> userId<span class="token punctuation">,</span> String reason<span class="token punctuation">,</span> <span class="token keyword">int</span> displayId<span class="token punctuation">,</span> <span class="token keyword">boolean</span> allowInstrumenting<span class="token punctuation">,</span>
+            <span class="token keyword">boolean</span> fromHomeKey<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+
+        <span class="token comment" spellcheck="true">// Updates the home component of the intent.</span>
+        homeIntent<span class="token punctuation">.</span><span class="token function">setComponent</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">ComponentName</span><span class="token punctuation">(</span>aInfo<span class="token punctuation">.</span>applicationInfo<span class="token punctuation">.</span>packageName<span class="token punctuation">,</span> aInfo<span class="token punctuation">.</span>name<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        homeIntent<span class="token punctuation">.</span><span class="token function">setFlags</span><span class="token punctuation">(</span>homeIntent<span class="token punctuation">.</span><span class="token function">getFlags</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">|</span> FLAG_ACTIVITY_NEW_TASK<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+
+        <span class="token comment" spellcheck="true">// 启动 Launcher</span>
+        mService<span class="token punctuation">.</span><span class="token function">getActivityStartController</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">startHomeActivity</span><span class="token punctuation">(</span>homeIntent<span class="token punctuation">,</span> aInfo<span class="token punctuation">,</span> myReason<span class="token punctuation">,</span>
+                displayId<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">return</span> <span class="token boolean">true</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+<span class="token punctuation">}</span>
+</code></pre>
+<p><br></p>
+<h1 id="二、应用图标显示流程"><a href="#二、应用图标显示流程" class="headerlink" title="二、应用图标显示流程"></a>二、应用图标显示流程</h1><p>接下来我们看看 <code>Launcher</code> 是如何加载并显示所有已安装 <code>Apk</code> 的：</p>
+<h2 id="2-1-Launcher-onCreate"><a href="#2-1-Launcher-onCreate" class="headerlink" title="2.1 Launcher.onCreate()"></a>2.1 Launcher.onCreate()</h2><pre class=" language-java"><code class="language-java"><span class="token comment" spellcheck="true">// packages/apps/Launcher3/src/com/android/launcher3/Launcher.java</span>
+
+<span class="token comment" spellcheck="true">/**
+ * Default launcher application.
+ */</span>
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">Launcher</span> <span class="token keyword">extends</span> <span class="token class-name">BaseDraggingActivity</span> <span class="token keyword">implements</span> <span class="token class-name">LauncherExterns</span><span class="token punctuation">,</span>
+       LauncherModel<span class="token punctuation">.</span>Callbacks<span class="token punctuation">,</span> LauncherProviderChangeListener<span class="token punctuation">,</span> UserEventDelegate<span class="token punctuation">,</span>
+       InvariantDeviceProfile<span class="token punctuation">.</span>OnIDPChangeListener <span class="token punctuation">{</span>
+
+    <span class="token annotation punctuation">@Override</span>
+    <span class="token keyword">protected</span> <span class="token keyword">void</span> <span class="token function">onCreate</span><span class="token punctuation">(</span>Bundle savedInstanceState<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+
+        LauncherAppState app <span class="token operator">=</span> LauncherAppState<span class="token punctuation">.</span><span class="token function">getInstance</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+
+        mModel <span class="token operator">=</span> app<span class="token punctuation">.</span><span class="token function">setLauncher</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">)</span><span class="token punctuation">;</span>    <span class="token comment" spellcheck="true">// 调用 setLauncher() 方法</span>
+        <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+
+        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>mModel<span class="token punctuation">.</span><span class="token function">startLoader</span><span class="token punctuation">(</span>currentScreen<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>    <span class="token comment" spellcheck="true">// 见 2.4</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>internalStateHandled<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token comment" spellcheck="true">// If we are not binding synchronously, show a fade in animation when</span>
+                <span class="token comment" spellcheck="true">// the first page bind completes.</span>
+                mDragLayer<span class="token punctuation">.</span><span class="token function">getAlphaProperty</span><span class="token punctuation">(</span>ALPHA_INDEX_LAUNCHER_LOAD<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">setValue</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+            <span class="token comment" spellcheck="true">// Pages bound synchronously.</span>
+            mWorkspace<span class="token punctuation">.</span><span class="token function">setCurrentPage</span><span class="token punctuation">(</span>currentScreen<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+            <span class="token function">setWorkspaceLoading</span><span class="token punctuation">(</span><span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+
+    <span class="token punctuation">}</span>
+
+<span class="token punctuation">}</span>
+</code></pre>
+<h2 id="2-2-LauncherAppState-setLauncher"><a href="#2-2-LauncherAppState-setLauncher" class="headerlink" title="2.2 LauncherAppState.setLauncher()"></a>2.2 LauncherAppState.setLauncher()</h2><pre class=" language-java"><code class="language-java"><span class="token comment" spellcheck="true">// packages/apps/Launcher3/src/com/android/launcher3/LauncherAppState.java</span>
+
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">LauncherAppState</span> <span class="token punctuation">{</span>
+
+    LauncherModel <span class="token function">setLauncher</span><span class="token punctuation">(</span>Launcher launcher<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token function">getLocalProvider</span><span class="token punctuation">(</span>mContext<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">setLauncherProviderChangeListener</span><span class="token punctuation">(</span>launcher<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        mModel<span class="token punctuation">.</span><span class="token function">initialize</span><span class="token punctuation">(</span>launcher<span class="token punctuation">)</span><span class="token punctuation">;</span>    <span class="token comment" spellcheck="true">// 调用 initialize() 方法</span>
+        <span class="token keyword">return</span> mModel<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+<span class="token punctuation">}</span>
+</code></pre>
+<h2 id="2-3-LauncherModel-initialize"><a href="#2-3-LauncherModel-initialize" class="headerlink" title="2.3 LauncherModel.initialize()"></a>2.3 LauncherModel.initialize()</h2><pre class=" language-java"><code class="language-java"><span class="token comment" spellcheck="true">// packages/apps/Launcher3/src/com/android/launcher3/LauncherModel.java</span>
+
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">LauncherModel</span> <span class="token keyword">extends</span> <span class="token class-name">BroadcastReceiver</span>
+        <span class="token keyword">implements</span> <span class="token class-name">LauncherAppsCompat<span class="token punctuation">.</span>OnAppsChangedCallbackCompat</span> <span class="token punctuation">{</span>
+
+    <span class="token comment" spellcheck="true">/**
+     * Set this as the current Launcher activity object for the loader.
+     */</span>
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">initialize</span><span class="token punctuation">(</span>Callbacks callbacks<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">synchronized</span> <span class="token punctuation">(</span>mLock<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            Preconditions<span class="token punctuation">.</span><span class="token function">assertUIThread</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            mCallbacks <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">WeakReference</span><span class="token operator">&lt;</span><span class="token operator">></span><span class="token punctuation">(</span>callbacks<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+
+<span class="token punctuation">}</span>
+</code></pre>
+<p>在 <code>initialize</code> 方法中会将 <code>Callbacks</code>（也就是传入的 Launcher）封装成一个 <code>弱引用对象</code>，因此我们得知 <code>mCallbacks</code> 变量指的就是封装成弱引用对象的 <code>Launcher</code>。</p>
+<p>重新回到 oncreate() 函数，有个 <code>startLoader()</code> 方法！</p>
+<h2 id="2-4-LauncherModel-startLoader"><a href="#2-4-LauncherModel-startLoader" class="headerlink" title="2.4 LauncherModel.startLoader()"></a>2.4 LauncherModel.startLoader()</h2><pre class=" language-java"><code class="language-java"><span class="token comment" spellcheck="true">// packages/apps/Launcher3/src/com/android/launcher3/LauncherModel.java</span>
+
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">LauncherModel</span> <span class="token keyword">extends</span> <span class="token class-name">BroadcastReceiver</span>
+        <span class="token keyword">implements</span> <span class="token class-name">LauncherAppsCompat<span class="token punctuation">.</span>OnAppsChangedCallbackCompat</span> <span class="token punctuation">{</span>
+
+    <span class="token keyword">public</span> <span class="token keyword">boolean</span> <span class="token function">startLoader</span><span class="token punctuation">(</span><span class="token keyword">int</span> synchronousBindPage<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token comment" spellcheck="true">// Enable queue before starting loader. It will get disabled in Launcher#finishBindingItems</span>
+        InstallShortcutReceiver<span class="token punctuation">.</span><span class="token function">enableInstallQueue</span><span class="token punctuation">(</span>InstallShortcutReceiver<span class="token punctuation">.</span>FLAG_LOADER_RUNNING<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">synchronized</span> <span class="token punctuation">(</span>mLock<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token comment" spellcheck="true">// Don't bother to start the thread if we know it's not going to do anything</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>mCallbacks <span class="token operator">!=</span> null <span class="token operator">&amp;&amp;</span> mCallbacks<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">!=</span> null<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token keyword">final</span> Callbacks oldCallbacks <span class="token operator">=</span> mCallbacks<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token comment" spellcheck="true">// Clear any pending bind-runnables from the synchronized load process.</span>
+                mUiExecutor<span class="token punctuation">.</span><span class="token function">execute</span><span class="token punctuation">(</span>oldCallbacks<span class="token operator">:</span><span class="token operator">:</span>clearPendingBinds<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+                <span class="token comment" spellcheck="true">// If there is already one running, tell it to stop.</span>
+                <span class="token function">stopLoader</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                LoaderResults loaderResults <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">LoaderResults</span><span class="token punctuation">(</span>mApp<span class="token punctuation">,</span> sBgDataModel<span class="token punctuation">,</span>
+                        mBgAllAppsList<span class="token punctuation">,</span> synchronousBindPage<span class="token punctuation">,</span> mCallbacks<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token keyword">if</span> <span class="token punctuation">(</span>mModelLoaded <span class="token operator">&amp;&amp;</span> <span class="token operator">!</span>mIsLoaderTaskRunning<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                    <span class="token comment" spellcheck="true">// Divide the set of loaded items into those that we are binding synchronously,</span>
+                    <span class="token comment" spellcheck="true">// and everything else that is to be bound normally (asynchronously).</span>
+                    loaderResults<span class="token punctuation">.</span><span class="token function">bindWorkspace</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                    <span class="token comment" spellcheck="true">// For now, continue posting the binding of AllApps as there are other</span>
+                    <span class="token comment" spellcheck="true">// issues that arise from that.</span>
+                    loaderResults<span class="token punctuation">.</span><span class="token function">bindAllApps</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                    loaderResults<span class="token punctuation">.</span><span class="token function">bindDeepShortcuts</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                    loaderResults<span class="token punctuation">.</span><span class="token function">bindWidgets</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                    <span class="token keyword">return</span> <span class="token boolean">true</span><span class="token punctuation">;</span>
+                <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+                    <span class="token function">startLoaderForResults</span><span class="token punctuation">(</span>loaderResults<span class="token punctuation">)</span><span class="token punctuation">;</span>    <span class="token comment" spellcheck="true">// 调用 startLoaderForResults() 方法</span>
+                <span class="token punctuation">}</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span>
+        <span class="token keyword">return</span> <span class="token boolean">false</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+<span class="token punctuation">}</span>
+</code></pre>
+<h2 id="2-5-LauncherModel-startLoaderForResults"><a href="#2-5-LauncherModel-startLoaderForResults" class="headerlink" title="2.5 LauncherModel.startLoaderForResults()"></a>2.5 LauncherModel.startLoaderForResults()</h2><pre class=" language-java"><code class="language-java"><span class="token comment" spellcheck="true">// packages/apps/Launcher3/src/com/android/launcher3/LauncherModel.java</span>
+
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">LauncherModel</span> <span class="token keyword">extends</span> <span class="token class-name">BroadcastReceiver</span>
+        <span class="token keyword">implements</span> <span class="token class-name">LauncherAppsCompat<span class="token punctuation">.</span>OnAppsChangedCallbackCompat</span> <span class="token punctuation">{</span>
+
+   <span class="token annotation punctuation">@Thunk</span> <span class="token keyword">static</span> <span class="token keyword">final</span> Handler sWorker <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Handler</span><span class="token punctuation">(</span>mWorkerLooper<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">startLoaderForResults</span><span class="token punctuation">(</span>LoaderResults results<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">synchronized</span> <span class="token punctuation">(</span>mLock<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token function">stopLoader</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            mLoaderTask <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">LoaderTask</span><span class="token punctuation">(</span>mApp<span class="token punctuation">,</span> mBgAllAppsList<span class="token punctuation">,</span> sBgDataModel<span class="token punctuation">,</span> results<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+            <span class="token comment" spellcheck="true">// Always post the loader task, instead of running directly (even on same thread) so</span>
+            <span class="token comment" spellcheck="true">// that we exit any nested synchronized blocks</span>
+            sWorker<span class="token punctuation">.</span><span class="token function">post</span><span class="token punctuation">(</span>mLoaderTask<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+
+<span class="token punctuation">}</span>
+</code></pre>
+<h2 id="2-6-LoaderTask-run"><a href="#2-6-LoaderTask-run" class="headerlink" title="2.6 LoaderTask.run()"></a>2.6 LoaderTask.run()</h2><p>当 <code>LoaderTask</code> 所描述的消息被处理时则会调用它的 <code>run()</code> 方法：</p>
+<pre class=" language-java"><code class="language-java"><span class="token comment" spellcheck="true">// packages/apps/Launcher3/src/com/android/launcher3/model/LoaderTask.java</span>
+
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">LoaderTask</span> <span class="token keyword">implements</span> <span class="token class-name">Runnable</span> <span class="token punctuation">{</span>
+
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">run</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">synchronized</span> <span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token comment" spellcheck="true">// Skip fast if we are already stopped.</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>mStopped<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token keyword">return</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span>
+
+        <span class="token keyword">try</span> <span class="token punctuation">(</span>LauncherModel<span class="token punctuation">.</span>LoaderTransaction transaction <span class="token operator">=</span> mApp<span class="token punctuation">.</span><span class="token function">getModel</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">beginLoader</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            TraceHelper<span class="token punctuation">.</span><span class="token function">partitionSection</span><span class="token punctuation">(</span>TAG<span class="token punctuation">,</span> <span class="token string">"step 1.1: loading workspace"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token function">loadWorkspace</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>    <span class="token comment" spellcheck="true">// 加载工作区信息</span>
+
+            <span class="token function">verifyNotStopped</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            TraceHelper<span class="token punctuation">.</span><span class="token function">partitionSection</span><span class="token punctuation">(</span>TAG<span class="token punctuation">,</span> <span class="token string">"step 1.2: bind workspace workspace"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            mResults<span class="token punctuation">.</span><span class="token function">bindWorkspace</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+
+            <span class="token comment" spellcheck="true">// second step</span>
+            TraceHelper<span class="token punctuation">.</span><span class="token function">partitionSection</span><span class="token punctuation">(</span>TAG<span class="token punctuation">,</span> <span class="token string">"step 2.1: loading all apps"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            List<span class="token operator">&lt;</span>LauncherActivityInfo<span class="token operator">></span> allActivityList <span class="token operator">=</span> <span class="token function">loadAllApps</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>    <span class="token comment" spellcheck="true">// 加载系统已经安装的应用程序信息</span>
+
+            TraceHelper<span class="token punctuation">.</span><span class="token function">partitionSection</span><span class="token punctuation">(</span>TAG<span class="token punctuation">,</span> <span class="token string">"step 2.2: Binding all apps"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token function">verifyNotStopped</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            mResults<span class="token punctuation">.</span><span class="token function">bindAllApps</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+
+            <span class="token comment" spellcheck="true">// third step</span>
+            TraceHelper<span class="token punctuation">.</span><span class="token function">partitionSection</span><span class="token punctuation">(</span>TAG<span class="token punctuation">,</span> <span class="token string">"step 3.1: loading deep shortcuts"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token function">loadDeepShortcuts</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+            <span class="token function">verifyNotStopped</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            TraceHelper<span class="token punctuation">.</span><span class="token function">partitionSection</span><span class="token punctuation">(</span>TAG<span class="token punctuation">,</span> <span class="token string">"step 3.2: bind deep shortcuts"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            mResults<span class="token punctuation">.</span><span class="token function">bindDeepShortcuts</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+
+            <span class="token comment" spellcheck="true">// fourth step</span>
+            TraceHelper<span class="token punctuation">.</span><span class="token function">partitionSection</span><span class="token punctuation">(</span>TAG<span class="token punctuation">,</span> <span class="token string">"step 4.1: loading widgets"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            List<span class="token operator">&lt;</span>ComponentWithLabel<span class="token operator">></span> allWidgetsList <span class="token operator">=</span> mBgDataModel<span class="token punctuation">.</span>widgetsModel<span class="token punctuation">.</span><span class="token function">update</span><span class="token punctuation">(</span>mApp<span class="token punctuation">,</span> null<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+            <span class="token function">verifyNotStopped</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            TraceHelper<span class="token punctuation">.</span><span class="token function">partitionSection</span><span class="token punctuation">(</span>TAG<span class="token punctuation">,</span> <span class="token string">"step 4.2: Binding widgets"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            mResults<span class="token punctuation">.</span><span class="token function">bindWidgets</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+
+            transaction<span class="token punctuation">.</span><span class="token function">commit</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">CancellationException</span> e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token comment" spellcheck="true">// Loader stopped, ignore</span>
+            TraceHelper<span class="token punctuation">.</span><span class="token function">partitionSection</span><span class="token punctuation">(</span>TAG<span class="token punctuation">,</span> <span class="token string">"Cancelled"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        TraceHelper<span class="token punctuation">.</span><span class="token function">endSection</span><span class="token punctuation">(</span>TAG<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+<span class="token punctuation">}</span>
+</code></pre>
+<h2 id="2-7-LoaderTask-loadAllApps"><a href="#2-7-LoaderTask-loadAllApps" class="headerlink" title="2.7 LoaderTask.loadAllApps()"></a>2.7 LoaderTask.loadAllApps()</h2><pre class=" language-java"><code class="language-java"><span class="token comment" spellcheck="true">// packages/apps/Launcher3/src/com/android/launcher3/model/LoaderTask.java</span>
+
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">LoaderTask</span> <span class="token keyword">implements</span> <span class="token class-name">Runnable</span> <span class="token punctuation">{</span>
+
+    <span class="token keyword">private</span> List<span class="token operator">&lt;</span>LauncherActivityInfo<span class="token operator">></span> <span class="token function">loadAllApps</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">final</span> List<span class="token operator">&lt;</span>UserHandle<span class="token operator">></span> profiles <span class="token operator">=</span> mUserManager<span class="token punctuation">.</span><span class="token function">getUserProfiles</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        List<span class="token operator">&lt;</span>LauncherActivityInfo<span class="token operator">></span> allActivityList <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ArrayList</span><span class="token operator">&lt;</span><span class="token operator">></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token comment" spellcheck="true">// Clear the list of apps</span>
+        mBgAllAppsList<span class="token punctuation">.</span><span class="token function">clear</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">for</span> <span class="token punctuation">(</span>UserHandle user <span class="token operator">:</span> profiles<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token comment" spellcheck="true">// Query for the set of apps</span>
+            <span class="token keyword">final</span> List<span class="token operator">&lt;</span>LauncherActivityInfo<span class="token operator">></span> apps <span class="token operator">=</span> mLauncherApps<span class="token punctuation">.</span><span class="token function">getActivityList</span><span class="token punctuation">(</span>null<span class="token punctuation">,</span> user<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token comment" spellcheck="true">// Fail if we don't have any apps</span>
+            <span class="token comment" spellcheck="true">// TODO: Fix this. Only fail for the current user.</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>apps <span class="token operator">==</span> null <span class="token operator">||</span> apps<span class="token punctuation">.</span><span class="token function">isEmpty</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token keyword">return</span> allActivityList<span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+            <span class="token keyword">boolean</span> quietMode <span class="token operator">=</span> mUserManager<span class="token punctuation">.</span><span class="token function">isQuietModeEnabled</span><span class="token punctuation">(</span>user<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token comment" spellcheck="true">// Create the ApplicationInfos</span>
+            <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">int</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> apps<span class="token punctuation">.</span><span class="token function">size</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                LauncherActivityInfo app <span class="token operator">=</span> apps<span class="token punctuation">.</span><span class="token function">get</span><span class="token punctuation">(</span>i<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token comment" spellcheck="true">// This builds the icon bitmaps.</span>
+                mBgAllAppsList<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">AppInfo</span><span class="token punctuation">(</span>app<span class="token punctuation">,</span> user<span class="token punctuation">,</span> quietMode<span class="token punctuation">)</span><span class="token punctuation">,</span> app<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+            allActivityList<span class="token punctuation">.</span><span class="token function">addAll</span><span class="token punctuation">(</span>apps<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>FeatureFlags<span class="token punctuation">.</span>LAUNCHER3_PROMISE_APPS_IN_ALL_APPS<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token comment" spellcheck="true">// get all active sessions and add them to the all apps list</span>
+            <span class="token keyword">for</span> <span class="token punctuation">(</span>PackageInstaller<span class="token punctuation">.</span>SessionInfo info <span class="token operator">:</span>
+                    mPackageInstaller<span class="token punctuation">.</span><span class="token function">getAllVerifiedSessions</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                mBgAllAppsList<span class="token punctuation">.</span><span class="token function">addPromiseApp</span><span class="token punctuation">(</span>mApp<span class="token punctuation">.</span><span class="token function">getContext</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+                        PackageInstallerCompat<span class="token punctuation">.</span>PackageInstallInfo<span class="token punctuation">.</span><span class="token function">fromInstallingState</span><span class="token punctuation">(</span>info<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+        <span class="token punctuation">}</span>
+
+        mBgAllAppsList<span class="token punctuation">.</span>added <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ArrayList</span><span class="token operator">&lt;</span><span class="token operator">></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">return</span> allActivityList<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+<span class="token punctuation">}</span>
+</code></pre>
+<p><strong><font color="#ff0000">自此，Launcher 的启动和应用加载的流程源码分析完毕。</font></strong></p>
+
+            </div>
+            <hr>
+
+            
+
+            <!--<link rel="stylesheet" type="text/css" href="/libs/share/css/share.min.css">
+
+<div id="article-share">
+    
+    <div class="social-share" data-disabled="qzone" data-wechat-qrcode-helper="<p>微信里点“发现”->“扫一扫”二维码便可查看分享。</p>"></div>
+    
+</div>
+
+<script src="/libs/share/js/social-share.min.js"></script>-->
+
+            <div class="reprint">
+                <p>
+                    <span class="reprint-tip">
+                        <i class="fa fa-exclamation-circle"></i>&nbsp;&nbsp;转载请注明:
+                    </span>
+                    <a href="https://superandroid.pro" class="b-link-green">Thinking in Android</a>
+                    <i class="fa fa-angle-right fa-lg fa-fw text-color"></i>
+                    <a href="/2020/03/20/android-10-xi-tong-qi-dong-xi-lie-launcher-ying-yong-men-hu/" class="b-link-green">“ 应用门户 ” -- Launcher</a>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    <!--
+
+<article id="prenext-posts" class="prev-next articles">
+    <div class="row article-row">
+        
+        <div class="article col s12 m6 overflow-policy" data-aos="fade-up">
+            <div class="article-badge left-badge text-color">
+                <i class="fa fa-chevron-left"></i>&nbsp;上一篇</div>
+            <div class="card">
+                <a href="/2020/03/26/android-10-xi-tong-qi-dong-xi-lie-guan-ji-liu-cheng/">
+                    <div class="card-image">
+                        
+                        <img src="https://s1.ax1x.com/2020/07/13/UYLiSf.jpg" class="responsive-img" alt="关机流程 -- ShutdownThread">
+                        
+                        <span class="card-title">关机流程 -- ShutdownThread</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text"># 核心源码
+
+
+关键类
+路径
+
+
+
+
+GlobalActions.java
+frameworks/base/services/core/java/com/android/server/policy/GlobalActions.java
+
+</div>
+                    <div class="publish-info">
+                        <span class="publish-date">
+                            <i class="fa fa-clock-o fa-fw icon-date"></i>2020-03-26
+                        </span>
+                        <span class="publish-author">
+                            
+                            <i class="fa fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/进程线程/" class="post-category" target="_blank">
+                                    进程线程
+                                </a>
+                            
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/进程创建/" target="_blank">
+                        <span class="chip bg-color">进程创建</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+        
+        <div class="article col s12 m6 overflow-policy" data-aos="fade-up">
+            <div class="article-badge right-badge text-color">
+                下一篇&nbsp;<i class="fa fa-chevron-right"></i>
+            </div>
+            <div class="card">
+                <a href="/2020/03/13/android-10-xi-tong-qi-dong-xi-lie-systemserver-fu-wu-guan-jia/">
+                    <div class="card-image">
+                        
+                        <img src="https://s1.ax1x.com/2020/07/13/UYLiSf.jpg" class="responsive-img" alt="“ 服务管家 ” -- SystemServer">
+                        
+                        <span class="card-title">“ 服务管家 ” -- SystemServer</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text"># 核心源码
+
+
+关键类
+路径
+
+
+
+
+com_android_internal_os_Zygote.cpp
+frameworks/base/core/jni/com_android_internal_os_Zygote.cpp
+
+
+And</div>
+                    <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="fa fa-clock-o fa-fw icon-date"></i>2020-03-13
+                            </span>
+                        <span class="publish-author">
+                            
+                            <i class="fa fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/系统启动/" class="post-category" target="_blank">
+                                    系统启动
+                                </a>
+                            
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/SystemServer/" target="_blank">
+                        <span class="chip bg-color">SystemServer</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+    </div>
+</article>-->
+</div>
+
+
+<script>
+    $('#articleContent').on('copy', function (e) {
+        // IE8 or earlier browser is 'undefined'
+        if (typeof window.getSelection === 'undefined') return;
+
+        var selection = window.getSelection();
+        // if the selection is short let's not annoy our users.
+        if (('' + selection).length < Number.parseInt('120')) {
+            return;
+        }
+
+        // create a div outside of the visible area and fill it with the selected text.
+        var bodyElement = document.getElementsByTagName('body')[0];
+        var newdiv = document.createElement('div');
+        newdiv.style.position = 'absolute';
+        newdiv.style.left = '-99999px';
+        bodyElement.appendChild(newdiv);
+        newdiv.appendChild(selection.getRangeAt(0).cloneContents());
+
+        // we need a <pre> tag workaround.
+        // otherwise the text inside "pre" loses all the line breaks!
+        if (selection.getRangeAt(0).commonAncestorContainer.nodeName === 'PRE') {
+            newdiv.innerHTML = "<pre>" + newdiv.innerHTML + "</pre>";
+        }
+
+        var url = document.location.href;
+        newdiv.innerHTML += '<br />'
+            + '来源: Thinking in Android<br />'
+            + '作者: Marco<br />'
+            + '链接: <a href="' + url + '">' + url + '</a><br />'
+            + '本文章著作权归作者所有，任何形式的转载都请注明出处。';
+
+        selection.selectAllChildren(newdiv);
+        window.setTimeout(function () {bodyElement.removeChild(newdiv);}, 200);
+    });
+</script>
+
+    
+
+</main>
+
+
+<footer class="page-footer bg-color-foot-marco">
+    <div class="container row center-align">
+        <div class="col s12 m8 l8 copy-right">
+		    &copy; 2018 - 2020&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;In-depth analysis of Android system source code &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<i class="fa fa-graduation-cap" aria-hidden="true"></i>&nbsp;&nbsp;Marco<br>
+            
+			
+                
+                <span id="busuanzi_container_site_pv">
+                    Total visits to this site: <span id="busuanzi_value_site_pv"></span> ,&nbsp;
+                </span>
+				<span id="busuanzi_container_site_uv">
+                    Total visitor: <span id="busuanzi_value_site_uv"></span> .
+                </span>
+			
+		</div>
+        <div class="col s12 m4 l4 social-link social-statis">
+    <a href="https://github.com/pepsimaxin/pepsimaxin.github.io" class="tooltipped" target="_blank" data-tooltip="访问我的GitHub" data-position="top" data-delay="50">
+        <i class="fa fa-github"></i>
+    </a>
+
+
+
+    <a href="mailto:pepsimaxin@163.com" class="tooltipped" target="_blank" data-tooltip="邮件联系我" data-position="top" data-delay="50">
+        <i class="fa fa-envelope"></i>
+    </a>
+
+
+
+
+<!--
+    <a href="https://blog.csdn.net/pepsimaxin" class="tooltipped" data-tooltip="访问我的CSDN" data-position="top" data-delay="50">
+        <i class="fa fa-chain-broken"></i>
+    </a>
+-->
+
+
+    <a href="/atom.xml" class="tooltipped" target="_blank" data-tooltip="RSS 订阅" data-position="top" data-delay="50">
+        <i class="fa fa-rss"></i>
+    </a>
+</div>
+    </div>
+</footer>
+
+<!--<div class="progress-bar"></div>-->
+
+<!-- 搜索遮罩框 -->
+<div id="searchModal" class="modal">
+    <div class="modal-content">
+        <div class="search-header">
+            <span class="title"><i class="fa fa-search"></i>&nbsp;&nbsp;检索博文</span>
+            <input type="search" id="searchInput" name="s" placeholder="请输入搜索的技术关键字" class="search-input">
+        </div>
+        <div id="searchResult"></div>
+    </div>
+</div>
+
+<script src="/js/search.js"></script>
+<script type="text/javascript">
+$(function () {
+    searchFunc("/" + "search.xml", 'searchInput', 'searchResult');
+});
+</script>
+<!-- 回到顶部按钮 -->
+<!--<div id="backTop" class="top-scroll">
+    <a class="btn-floating btn-large waves-effect waves-light" href="#!">
+        <i class="fa fa-angle-up"></i>
+    </a>
+</div>-->
+
+
+<script src="/libs/materialize/materialize.min.js"></script>
+<script src="/libs/masonry/masonry.pkgd.min.js"></script>
+<script src="/libs/aos/aos.js"></script>
+<script src="/libs/scrollprogress/scrollProgress.min.js"></script>
+<script src="/libs/lightGallery/js/lightgallery-all.min.js"></script>
+<script src="/js/matery.js"></script>
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+
+
+
+
+    <script async src="/libs/others/busuanzi.pure.mini.js"></script>
+
+
+</body>
+</html>

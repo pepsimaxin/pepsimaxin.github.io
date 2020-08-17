@@ -349,7 +349,7 @@ packages/apps/Launcher3//src/com/android/launcher3/BaseDraggingActivi">
                     
                     <div class="info-break-policy">
                         <i class="fa fa-clock-o fa-fw"></i>&nbsp;阅读时长 :&nbsp;
-                        54 分钟
+                        53 分钟
                     </div>
                     
                 
@@ -479,9 +479,9 @@ packages/apps/Launcher3//src/com/android/launcher3/BaseDraggingActivi">
 <p><br></p>
 <h1 id="前言"><a href="#前言" class="headerlink" title="# 前言"></a># 前言</h1><p>点击 Launcher 界面的应用图标，运行各种眼花缭乱，功能强大的应用，是我们的日常行为，作为一名系统工程师，非常有必要深入研究一下：<strong><code>当我们点击 APK 图标，直到应用的主界面最后显示出来，这期间从源码角度到底发生了什么，处理逻辑是什么样的？</code></strong></p>
 <p>这个流程个人觉得是非常必要深刻理解的，比如有时当我们点击应用出现了 <code>卡顿</code>、<code>黑白屏</code> 现象，这些是应用本身的问题，还是系统的问题？当你分析此类问题的时候，如果对 Activity 的启动流程不熟悉，分析起来会狠吃力，并且未必能深入分析得到最根本的原因。</p>
-<p>废话不多说，为了更方便并且细致的分析源码流程，我们选取 <code>Launcher 界面点击应用</code> 为切入点进行分析（通过一个特定场景/操作是研究源码最好的做法），接下来直接进入正题。</p>
+<p>为了更方便并且细致的分析源码流程，我们选取 <code>在 Launcher 界面点击应用</code> 为切入点进行分析（通过一个特定场景/操作是研究源码最好的做法），接下来直接进入正题。</p>
 <p><br></p>
-<h1 id="一、Launcher-的-onPause-流程"><a href="#一、Launcher-的-onPause-流程" class="headerlink" title="一、Launcher 的 onPause 流程"></a>一、Launcher 的 onPause 流程</h1><p>我们既然要启动新的 APK 置于前台，那么当前活动必然要被切换到后台，所以首先涉及到的就是 Launcher 的 <code>onPause</code> 流程。</p>
+<h1 id="一、Launcher-的-onPause-流程"><a href="#一、Launcher-的-onPause-流程" class="headerlink" title="一、Launcher 的 onPause 流程"></a>一、Launcher 的 onPause 流程</h1><p>既然要启动新的 APK 置于前台，那么当前活动必然要被切换到后台，所以首先涉及到的就是 Launcher 的 <code>onPause()</code> 流程。</p>
 <h2 id="1-1-ItemClickHandler-onClick"><a href="#1-1-ItemClickHandler-onClick" class="headerlink" title="1.1 ItemClickHandler.onClick()"></a>1.1 ItemClickHandler.onClick()</h2><p>当点击应用程序 Launcher 的某个图标时，会触发回调接口 <code>ItemClickHandler</code>。</p>
 <pre class=" language-java"><code class="language-java"><span class="token comment" spellcheck="true">// packages/apps/Launcher3/src/com/android/launcher3/Launcher.java</span>
 
@@ -555,8 +555,8 @@ packages/apps/Launcher3//src/com/android/launcher3/BaseDraggingActivi">
         <span class="token keyword">if</span> <span class="token punctuation">(</span>v <span class="token operator">!=</span> null <span class="token operator">&amp;&amp;</span> launcher<span class="token punctuation">.</span><span class="token function">getAppTransitionManager</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">supportsAdaptiveIconAnimation</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
             FloatingIconView<span class="token punctuation">.</span><span class="token function">fetchIcon</span><span class="token punctuation">(</span>launcher<span class="token punctuation">,</span> v<span class="token punctuation">,</span> item<span class="token punctuation">,</span> <span class="token boolean">true</span> <span class="token comment" spellcheck="true">/* isOpening */</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
         <span class="token punctuation">}</span>
-        <span class="token comment" spellcheck="true">// 调用 startActivitySafely() 方法</span>
-        launcher<span class="token punctuation">.</span><span class="token function">startActivitySafely</span><span class="token punctuation">(</span>v<span class="token punctuation">,</span> intent<span class="token punctuation">,</span> item<span class="token punctuation">,</span> sourceContainer<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        launcher<span class="token punctuation">.</span><span class="token function">startActivitySafely</span><span class="token punctuation">(</span>v<span class="token punctuation">,</span> intent<span class="token punctuation">,</span> item<span class="token punctuation">,</span> sourceContainer<span class="token punctuation">)</span><span class="token punctuation">;</span>    <span class="token comment" spellcheck="true">// 调用 startActivitySafely() 方法</span>
     <span class="token punctuation">}</span>
 
 <span class="token punctuation">}</span>

@@ -1,0 +1,1202 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+
+
+<head><meta name="generator" content="Hexo 3.8.0">
+    <meta charset="utf-8">
+    <meta name="keywords" content="必须了解的 &#34;JNI&#34;, Thinking in Android">
+    <meta name="description" content="1. 开篇1.1 核心源码（ Android 9.0 ）
+
+
+关键类
+路径
+
+
+
+
+MediaScanner.java
+frameworks/base/media/java/android/media/MediaScanner.java
+
+">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="renderer" content="webkit|ie-stand|ie-comp">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>必须了解的 &#34;JNI&#34; | Thinking in Android</title>
+    <link rel="icon" type="image/png" href="/favicon.png">
+
+    <link rel="stylesheet" type="text/css" href="/libs/awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="/libs/materialize/materialize.min.css">
+    <link rel="stylesheet" type="text/css" href="/libs/aos/aos.css">
+    <link rel="stylesheet" type="text/css" href="/libs/animate/animate.min.css">
+    <link rel="stylesheet" type="text/css" href="/libs/lightGallery/css/lightgallery.min.css">
+    <link rel="stylesheet" type="text/css" href="/css/matery.css">
+    <link rel="stylesheet" type="text/css" href="/css/my.css">
+    <style type="text/css">
+        
+    </style>
+
+    <script src="/libs/jquery/jquery-2.2.0.min.js"></script>
+<link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css"></head>
+
+
+<body>
+
+<header class="navbar-fixed">
+    <nav id="headNav" class="bg-color-header-marco nav-transparent">
+        <div id="navContainer" class="nav-wrapper container">
+            <!--<div class="brand-logo">
+                <a href="/" class="waves-effect waves-light">
+                    
+                    <img src="/medias/logo.png" class="logo-img" alt="LOGO">
+                    
+                    <span class="logo-span">Thinking in Android</span>
+                </a>
+            </div>-->
+            
+
+<a href="#" data-target="mobile-nav" class="sidenav-trigger button-collapse"><i class="fa fa-navicon"></i></a>
+<ul class="right">
+    
+    <li class="hide-on-med-and-down">
+        <a href="/" class="waves-effect waves-light">
+            
+            <i class="fa fa-home"></i>
+            
+            <span>博客首页</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/categories" class="waves-effect waves-light">
+            
+            <i class="fa fa-bookmark"></i>
+            
+            <span>博文分类</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/tags" class="waves-effect waves-light">
+            
+            <i class="fa fa-tags"></i>
+            
+            <span>技术标签</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/categories/四大组件/" class="waves-effect waves-light">
+            
+            <i class="fa fa-cube"></i>
+            
+            <span>四大组件</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/categories/系统启动/" class="waves-effect waves-light">
+            
+            <i class="fa fa-spinner"></i>
+            
+            <span>系统启动</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/categories/框架服务/" class="waves-effect waves-light">
+            
+            <i class="fa fa-superpowers"></i>
+            
+            <span>框架服务</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/categories/核心机制/" class="waves-effect waves-light">
+            
+            <i class="fa fa-link"></i>
+            
+            <span>核心机制</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/categories/性能优化/" class="waves-effect waves-light">
+            
+            <i class="fa fa-yelp"></i>
+            
+            <span>性能优化</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/categories/设计模式/" class="waves-effect waves-light">
+            
+            <i class="fa fa-envira"></i>
+            
+            <span>设计模式</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/about" class="waves-effect waves-light">
+            
+            <i class="fa fa-user-circle-o"></i>
+            
+            <span>作者</span>
+        </a>
+    </li>
+    
+    <li>
+        <a href="#searchModal" class="modal-trigger waves-effect waves-light">
+            <i id="searchIcon" class="fa fa-search" title="检索博文"></i>
+        </a>
+    </li>
+</ul>
+
+<div id="mobile-nav" class="side-nav sidenav">
+
+    <div class="mobile-head bg-color">
+        
+        <img src="/medias/logo.png" class="logo-img circle responsive-img">
+        
+        <div class="logo-name">Thinking in Android</div>
+        <div class="logo-desc">
+            
+            One blog for recorded and shared android system development.
+            
+        </div>
+    </div>
+
+    
+
+    <ul class="menu-list mobile-menu-list">
+        
+        <li>
+            <a href="/" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-home"></i>
+                
+                博客首页
+            </a>
+        </li>
+        
+        <li>
+            <a href="/categories" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-bookmark"></i>
+                
+                博文分类
+            </a>
+        </li>
+        
+        <li>
+            <a href="/tags" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-tags"></i>
+                
+                技术标签
+            </a>
+        </li>
+        
+        <li>
+            <a href="/categories/四大组件/" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-cube"></i>
+                
+                四大组件
+            </a>
+        </li>
+        
+        <li>
+            <a href="/categories/系统启动/" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-spinner"></i>
+                
+                系统启动
+            </a>
+        </li>
+        
+        <li>
+            <a href="/categories/框架服务/" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-superpowers"></i>
+                
+                框架服务
+            </a>
+        </li>
+        
+        <li>
+            <a href="/categories/核心机制/" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-link"></i>
+                
+                核心机制
+            </a>
+        </li>
+        
+        <li>
+            <a href="/categories/性能优化/" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-yelp"></i>
+                
+                性能优化
+            </a>
+        </li>
+        
+        <li>
+            <a href="/categories/设计模式/" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-envira"></i>
+                
+                设计模式
+            </a>
+        </li>
+        
+        <li>
+            <a href="/about" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-user-circle-o"></i>
+                
+                作者
+            </a>
+        </li>
+        
+        
+    </ul>
+</div>
+
+        </div>
+
+        
+    </nav>
+
+</header>
+
+
+
+
+
+<div class="bg-cover pd-header post-cover" style="background-image: url('https://s1.ax1x.com/2020/07/16/UDE9Rs.jpg')">
+    <div class="container">
+        <div class="row">
+            <div class="col s12 m12 l12">
+                <div class="brand">
+                    <div class="description center-align post-title">
+                        必须了解的 &#34;JNI&#34;
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<main class="container content">
+
+    
+    <!-- 文章内容详情 -->
+<div id="artDetail">
+    <div class="card">
+        <div class="card-content article-info">
+            <div class="row tag-cate">
+                <div class="col s7">
+                    
+                    <div class="article-tag">
+                        
+                            <a href="/tags/JNI/" target="_blank">
+                                <span class="chip bg-color">JNI</span>
+                            </a>
+                        
+                    </div>
+                    
+                </div>
+                <div class="col s5 right-align">
+                    
+                    <div class="post-cate">
+                        <i class="fa fa-bookmark fa-fw icon-category"></i>
+                        
+                            <a href="/categories/核心机制/" class="post-category" target="_blank">
+                                核心机制
+                            </a>
+                        
+                    </div>
+                    
+                </div>
+            </div>
+
+            <div class="post-info">
+                <div class="post-date info-break-policy">
+                    <i class="fa fa-calendar-minus-o fa-fw"></i>&nbsp;发布日期 :&nbsp;
+                    2020-07-01
+                </div>
+
+                
+                    
+                    <div class="info-break-policy">
+                        <i class="fa fa-file-word-o fa-fw"></i>&nbsp;文章字数 :&nbsp;
+                        6k
+                    </div>
+                    
+
+                    
+                    <div class="info-break-policy">
+                        <i class="fa fa-clock-o fa-fw"></i>&nbsp;阅读时长 :&nbsp;
+                        24 分钟
+                    </div>
+                    
+                
+				
+				
+                    <div id="busuanzi_container_page_pv" class="info-break-policy">
+                        <i class="fa fa-eye fa-fw"></i>&nbsp;阅读次数 :&nbsp;
+                        <span id="busuanzi_value_page_pv"></span>
+                    </div>
+				
+            </div>
+        </div>
+		<br>
+        <hr class="clearfix">
+        <div class="card-content article-card-content">
+            <div id="articleContent">
+                <h1 id="1-开篇"><a href="#1-开篇" class="headerlink" title="1. 开篇"></a>1. 开篇</h1><h2 id="1-1-核心源码（-Android-9-0-）"><a href="#1-1-核心源码（-Android-9-0-）" class="headerlink" title="1.1 核心源码（ Android 9.0 ）"></a>1.1 核心源码（ Android 9.0 ）</h2><table>
+<thead>
+<tr>
+<th>关键类</th>
+<th>路径</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><font color="#D15FEE">MediaScanner.java</font></td>
+<td>frameworks/base/media/java/android/media/MediaScanner.java</td>
+</tr>
+<tr>
+<td><font color="#D15FEE">android_media_MediaScanner.cpp</font></td>
+<td>frameworks/base/media/jni/android_media_MediaScanner.cpp</td>
+</tr>
+<tr>
+<td><font color="#D15FEE">android_media_MediaPlayer.cpp</font></td>
+<td>frameworks/base/media/jni/android_media_MediaPlayer.cpp</td>
+</tr>
+<tr>
+<td><font color="#D15FEE">AndroidRuntime.cpp</font></td>
+<td>frameworks/base/core/jni/AndroidRuntime.cpp</td>
+</tr>
+</tbody>
+</table>
+<h2 id="1-2-JNI"><a href="#1-2-JNI" class="headerlink" title="1.2 JNI"></a>1.2 JNI</h2><p>JNI 是 “Java Native Interface” 的缩写，中文译为 “Java 本地调用”，通俗地说，JNI 是一种技术，通过这种技术可以做到以下两点：</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;✎ Java 程序中的函数可以调用 Native 语言写的函数，Native 一般指的是 C/C++ 编写函数<strong>（在源码中我们经常能看到从 Java 层跳转到 Native层的函数）</strong>；<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;✎ Native 程序中的函数可以调用 Java 层的函数，也就是说在 C/C++ 程序中可以调用 Java 的函数；</p>
+<p><strong><font color="#ff0000">我们一直说 Java 的优势在于它的平台无关性，那么为什么还要创建一个与 Native 相关的 JNI 技术呢？</font></strong></p>
+<p><strong>JNI 技术的推出主要有以下几个方面的考虑：</strong></p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;✎ 承载 Java 世界的虚拟机是用 Native 语言写的，而虚拟机又运行在具体的平台上，所以虚拟机本身无法做到平台无关。然而，有了 JNI 技术后，就可以对 Java 层屏蔽不同操作系统平台之间的差异了。这样，就能实现 Java 本身的平台无关特性。</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;✎ 在 Java 诞生之前，很多程序都是用 Native 语言编写，后来 Java 受到追捧并且迅速发展。但是作为一门高级语言，无法将软件世界彻底的改变。那么既然 Native 模块实现了许多功能，那么在 Java 中直接通过 JNI 技术去使用它们就可以了。</p>
+<p>所以，我们可以把 <code>JNI 看作一座将 Native 世界和 Java 世界互联起来的一座桥梁</code>（<strong>特殊说明：JNI 层的代码也是用 Native 写的！</strong>）。</p>
+<p>我们看下示意图：</p>
+<p><img src="https://s2.ax1x.com/2019/08/12/ezVMnJ.png" alt="ezVMnJ.png"></p>
+<h2 id="1-3-MediaScanner"><a href="#1-3-MediaScanner" class="headerlink" title="1.3 MediaScanner"></a>1.3 MediaScanner</h2><p>如果你是 Android 系统开发工程师，那么你肯定知道 MediaScanner，本篇文章就拿它来举例，看看它和 JNI 之间是如何关联的。</p>
+<blockquote>
+<p>MediaScanner 是 Android 平台中多媒体系统的重要组成部分，它的功能是扫描媒体文件，得到诸如歌曲时长、歌曲作者等媒体信息，并将他们存入到媒体数据库中，供其他应用程序使用。</p>
+</blockquote>
+<p><strong>MediaScanner 和它的 JNI：</strong></p>
+<p><img src="https://s2.ax1x.com/2019/08/12/ezVGh6.png" alt="ezVGh6.png"></p>
+<p>我们简单说明下这个流程图：</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;✎ Java 世界对应的是 <code>MediaScanner</code>，而这个 MediaScanner 类有一些函数需要由 Native 层来实现（定义了一些 Native 函数，具体实现代码在 Native层）。<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;✎ JNI 层对应的是 <code>libmedia_jni.so</code>。<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ● “media_jni” 是 JNI 库的名字，其中下划线前的 “media” 是 Native 层库的名字，这里就是 “libmedia” 库。下划线后的 “jni” 表示它是一个 JNI 库。<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ● Android 平台基本上都采用 “lib模块名_jni.so” 来命名 JNI 库。<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;✎ Native 层对应的是 <code>libmedia.so</code>，这个库完成了实际的功能。<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;✎ MediaScanner 将通过 JNI 库 libmedia_jni.so 和 Native 层的 libmedia.so 交互。</p>
+<p><br></p>
+<h1 id="2-源码分析-Java层"><a href="#2-源码分析-Java层" class="headerlink" title="2. 源码分析 - Java层"></a>2. 源码分析 - Java层</h1><h2 id="2-1-MediaScanner-java"><a href="#2-1-MediaScanner-java" class="headerlink" title="2.1 MediaScanner.java"></a>2.1 MediaScanner.java</h2><p>我们先来看看 MediaScanner 在 Java 层中关于 JNI 的代码：</p>
+<pre class=" language-java"><code class="language-java"><span class="token keyword">package</span> android<span class="token punctuation">.</span>media<span class="token punctuation">;</span>
+
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">MediaScanner</span> <span class="token keyword">implements</span> <span class="token class-name">AutoCloseable</span> <span class="token punctuation">{</span>
+    <span class="token keyword">static</span> <span class="token punctuation">{</span>                        <span class="token comment" spellcheck="true">// static语句</span>
+        <span class="token comment" spellcheck="true">// media_jni 为 JNI 库的名字，实际加载动态库的时候会将其拓展成 libmedia_jni.so</span>
+        System<span class="token punctuation">.</span><span class="token function">loadLibrary</span><span class="token punctuation">(</span><span class="token string">"media_jni"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>    
+        <span class="token function">native_init</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>              <span class="token comment" spellcheck="true">// 调用 native_init 函数</span>
+    <span class="token punctuation">}</span>
+    <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+
+    <span class="token keyword">private</span> <span class="token keyword">native</span> <span class="token keyword">boolean</span> <span class="token function">processFile</span><span class="token punctuation">(</span>String path<span class="token punctuation">,</span> String mimeType<span class="token punctuation">,</span> MediaScannerClient client<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token comment" spellcheck="true">// 申明一个 native 函数。native 为 Java 的关键字，表示它由 JNI 层实现。</span>
+    <span class="token keyword">private</span> <span class="token keyword">static</span> <span class="token keyword">native</span> <span class="token keyword">final</span> <span class="token keyword">void</span> <span class="token function">native_init</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<p>OK，以上代码列出了两个重要的要点：（1）加载 JNI 库；（2）调用 Java 的 native 函数。</p>
+<h2 id="2-2-加载-JNI-库"><a href="#2-2-加载-JNI-库" class="headerlink" title="2.2 加载 JNI 库"></a>2.2 加载 JNI 库</h2><p>我们前面说到过，如果 Java 要调用 native 函数，就必须通过一个位于 JNI 层的动态库来实现。<strong><font color="#ff0000">那么这个动态库在什么时候、什么地方加载？</font></strong></p>
+<p>原则上，在调用 native 函数之前，我们可以在任何时候、任何地方去加载动态库。但一般通行的做法就是在类的 <code>static 语句</code>中加载，调用 <code>System.loadLibrary</code> 方法就可以了。</p>
+<h2 id="2-3-native-函数"><a href="#2-3-native-函数" class="headerlink" title="2.3 native 函数"></a>2.3 native 函数</h2><p>我们发现 native_init 和 processFile 函数前面都有 Java 的关键字 native，这个就表示函数将由 JNI 层来实现。</p>
+<p>所以在 Java 层面去使用 JNI 只要做两项工作：（1）加载对应的 JNI 库；（2）申明由关键字 native 修饰的函数。</p>
+<h1 id="3-源码分析-JNI层"><a href="#3-源码分析-JNI层" class="headerlink" title="3. 源码分析 - JNI层"></a>3. 源码分析 - JNI层</h1><h2 id="3-1-实现函数"><a href="#3-1-实现函数" class="headerlink" title="3.1 实现函数"></a>3.1 实现函数</h2><p>接下来我们从源码角度分析 Java 层中定义的两个 native 函数在 JNI 层的实现。</p>
+<blockquote>
+<p>native_init 的 JNI 层实现</p>
+</blockquote>
+<pre class=" language-cpp"><code class="language-cpp"><span class="token comment" spellcheck="true">// frameworks/base/media/jni/android_media_MediaScanner.cpp</span>
+
+<span class="token keyword">static</span> <span class="token keyword">const</span> <span class="token keyword">char</span><span class="token operator">*</span> <span class="token keyword">const</span> kClassMediaScanner <span class="token operator">=</span> <span class="token string">"android/media/MediaScanner"</span><span class="token punctuation">;</span>
+
+<span class="token keyword">static</span> <span class="token keyword">void</span>
+<span class="token function">android_media_MediaScanner_native_init</span><span class="token punctuation">(</span>JNIEnv <span class="token operator">*</span>env<span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+    <span class="token function">ALOGV</span><span class="token punctuation">(</span><span class="token string">"native_init"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    jclass <span class="token class-name">clazz</span> <span class="token operator">=</span> env<span class="token operator">-</span><span class="token operator">></span><span class="token function">FindClass</span><span class="token punctuation">(</span>kClassMediaScanner<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>clazz <span class="token operator">==</span> <span class="token constant">NULL</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    fields<span class="token punctuation">.</span>context <span class="token operator">=</span> env<span class="token operator">-</span><span class="token operator">></span><span class="token function">GetFieldID</span><span class="token punctuation">(</span>clazz<span class="token punctuation">,</span> <span class="token string">"mNativeContext"</span><span class="token punctuation">,</span> <span class="token string">"J"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>fields<span class="token punctuation">.</span>context <span class="token operator">==</span> <span class="token constant">NULL</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<blockquote>
+<p>processFile 的 JNI 层实现</p>
+</blockquote>
+<pre class=" language-cpp"><code class="language-cpp"><span class="token comment" spellcheck="true">// frameworks/base/media/jni/android_media_MediaScanner.cpp</span>
+
+<span class="token keyword">static</span> <span class="token keyword">void</span>
+<span class="token function">android_media_MediaScanner_processFile</span><span class="token punctuation">(</span>
+        JNIEnv <span class="token operator">*</span>env<span class="token punctuation">,</span> jobject thiz<span class="token punctuation">,</span> jstring path<span class="token punctuation">,</span>
+        jstring mimeType<span class="token punctuation">,</span> jobject client<span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+    <span class="token comment" spellcheck="true">// Lock already hold by processDirectory</span>
+    MediaScanner <span class="token operator">*</span>mp <span class="token operator">=</span> <span class="token function">getNativeScanner_l</span><span class="token punctuation">(</span>env<span class="token punctuation">,</span> thiz<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+
+    <span class="token keyword">const</span> <span class="token keyword">char</span> <span class="token operator">*</span>pathStr <span class="token operator">=</span> env<span class="token operator">-</span><span class="token operator">></span><span class="token function">GetStringUTFChars</span><span class="token punctuation">(</span>path<span class="token punctuation">,</span> <span class="token constant">NULL</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+
+    env<span class="token operator">-</span><span class="token operator">></span><span class="token function">ReleaseStringUTFChars</span><span class="token punctuation">(</span>path<span class="token punctuation">,</span> pathStr<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>mimeType<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        env<span class="token operator">-</span><span class="token operator">></span><span class="token function">ReleaseStringUTFChars</span><span class="token punctuation">(</span>mimeType<span class="token punctuation">,</span> mimeTypeStr<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+    <span class="token keyword">return</span> result <span class="token operator">!=</span> MEDIA_SCAN_RESULT_ERROR<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<p>我们确实是知道 MediaScanner 的 native 函数是 JNI 层去实现的，但是系统是如何知道 Java 层的 <code>native_init</code> 函数对应的就是 JNI 层的 <code>android_media_MediaScanner_native_init</code> 函数呢？这就涉及到 JNI 函数的注册问题，我们接着往下看！</p>
+<h2 id="3-2-注册-JNI-函数"><a href="#3-2-注册-JNI-函数" class="headerlink" title="3.2 注册 JNI 函数"></a>3.2 注册 JNI 函数</h2><p>不知道你有没有注意到 <code>native_init</code> 函数位于 <code>android.media</code> 这个包中，它的全路径名应该是 <code>android.media.MediaScanner.native_init</code>，而 JNI 层函数的名字是 <code>android_media_MediaScanner_native_init</code>。</p>
+<p>是不是很神奇？名字对应着，唯一的区别就是 <code>&quot;.&quot;</code> 这个符号变成了 <code>&quot;_&quot;</code>。因为在 Native 语言中，符号 “.” 有着特殊的意义，所以 JNI 层需要把 Java 函数名称（包括包名）中的 “.” 换成 “_”。也就是通过这种方式，native_init 找到了自己 JNI 层的本家兄弟 android.media.MediaScanner.native_init。</p>
+<p>现在我们知道了 Java 层 native 函数对应 JNI 层的函数的原理，但有个问题，我们确实知道是调用了哪个函数，但是两个函数是怎么关联起来起来的？这就涉及到 JNI 函数注册的问题。</p>
+<p>JNI 函数有两种注册方式：<strong><font color="#ff0000">（1）静态注册；（2）动态注册。</font></strong></p>
+<h3 id="3-2-1-静态注册"><a href="#3-2-1-静态注册" class="headerlink" title="3.2.1 静态注册"></a>3.2.1 静态注册</h3><p>这种方法很简单，很暴力！直接根据函数名来找对应的 JNI 函数，它需要 Java 的工具程序 javah 参与，整体流程如下：</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;✎ 先编写 Java 代码，然后编译生成 .class 文件。<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;✎ 使用 Java 的工具程序 javah，采用命令 <code>&quot;javah -o output packagename.classname&quot;</code>，这样它会生成一个叫 output.h 的 JNI 层头文件。其中 packagename.classname 是 Java 代码编译后的 class 文件，而在生成的 output.h 文件里，声明了对应的 JNI 层函数，只要实现里面的函数即可。</p>
+<p>这个头文件的名字一般都会使用 <code>packagename_class.h</code> 的样式，例如 <code>MediaScanner</code> 对应的 JNI 层头文件就是 <code>android_media_MediaScanner.h</code>。</p>
+<pre class=" language-cpp"><code class="language-cpp"><span class="token comment" spellcheck="true">/* DO NOT EDIT THIS FILE - it is machine generated*/</span>
+  <span class="token macro property">#<span class="token directive keyword">include</span> <span class="token string">&lt;jni.h></span>        </span><span class="token comment" spellcheck="true">// 必须包含这个头文件，否则编译通不过</span>
+<span class="token comment" spellcheck="true">/* Header for class android_media_MediaScanner */</span>
+
+<span class="token macro property">#<span class="token directive keyword">ifndef</span> _Included_android_media_MediaScanner</span>
+<span class="token macro property">#<span class="token directive keyword">define</span> _Included_android_media_MediaScanner</span>
+<span class="token macro property">#<span class="token directive keyword">ifdef</span> _cplusplus</span>
+<span class="token keyword">extern</span> <span class="token string">"C"</span> <span class="token punctuation">{</span>
+<span class="token macro property">#<span class="token directive keyword">endif</span></span>
+<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+
+<span class="token comment" spellcheck="true">// processFile 对应的 JNI 函数</span>
+JNIEXPORT <span class="token keyword">void</span> JNICALL <span class="token function">Java_android_media_MediaScanner_processFile</span><span class="token punctuation">(</span>JNIEnv <span class="token operator">*</span><span class="token punctuation">,</span> jobject<span class="token punctuation">,</span> jstring<span class="token punctuation">,</span> jstring<span class="token punctuation">,</span> jobject<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+
+<span class="token comment" spellcheck="true">// native_init 对应的 JNI 函数</span>
+JNIEXPORT <span class="token keyword">void</span> JNICALL <span class="token function">Java_android_media_MediaScanner_native_linit</span><span class="token punctuation">(</span>JNIEnv <span class="token operator">*</span><span class="token punctuation">,</span> jclass<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token macro property">#<span class="token directive keyword">ifdef</span> _cplusplus</span>
+<span class="token punctuation">}</span>
+<span class="token macro property">#<span class="token directive keyword">endif</span></span>
+<span class="token macro property">#<span class="token directive keyword">endif</span></span>
+</code></pre>
+<p>从上面代码中可以发现，native_init 和 processFile 的 JNI 层函数被声明成：</p>
+<pre class=" language-cpp"><code class="language-cpp"><span class="token comment" spellcheck="true">// Java 层函数名中如果有一个"_"， 转换成 JNI 后就变成了 "l"</span>
+JNIEXPORT <span class="token keyword">void</span> JNICALL Java_android_media_MediaScanner_processFile
+JNIEXPORT <span class="token keyword">void</span> JNICALL Java_android_media_MediaScanner_native_linit
+</code></pre>
+<p>Ok，那么静态方法中 native 函数是如何找到对应的 JNI 函数的呢？</p>
+<p><strong>比如，当 Java 层调用 native_init 函数时，它会从对应的 JNI 库中寻找 Java_android_media_MediaScanner_native_init 函数，如果没有，就会报错。如果找到，则会为这个 native_init 和 Java_android_media_MediaScanner_native_init 建立一个关联关系，其实就是保存 JNI 层函数的函数指针。以后再调用 native_init 函数时，直接使用这个函数指针就可以了，当然这项工作是由虚拟机完成的。</strong></p>
+<p>从这里可以看出，静态方法就是根据函数名来建立 Java 函数与 JNI 函数之间的关联关系的，而且它要求 JNI 函数的名字必须遵循特定的格式。</p>
+<p><strong><font color="#ff0000">这种方法有三个弊端：</font></strong></p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;✎ 需要编译所有声明了 native 函数的 Java 类，每个所生成的 class 文件都得用 javah 生成一个头文件；<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;✎ javah 生成的 JNI 层函数名特别长，书写起来很不方便；<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;✎ 初次调用 native 函数时需要根据函数名称搜索对应的 JNI 函数来建立关联关系，这样会影响运行效率。</p>
+<p>所以我们是否有办法克服以上三点弊端？</p>
+<p>我们知道静态方法是通过建立函数关联关系，以后再根据这个函数指针去调用对应的 JNI 函数，那么如果我们直接让 native 函数直接知道 JNI 层对应函数的函数指针，不就 ok 了？</p>
+<h3 id="3-2-2-动态注册"><a href="#3-2-2-动态注册" class="headerlink" title="3.2.2 动态注册"></a>3.2.2 动态注册</h3><p>我们知道 Java native 函数和 JNI 函数是一一对应的，这个就像我们 key 对应 value 一样，那么如果有一个结构来保存这种关联关系，通过这个结构直接可以找到彼此的关联，是不是效率就高多了？</p>
+<p>答案是肯定的，动态注册就是这么干的！在 JNI 技术中，用来记录这种一一对应关系的，是一个叫 <code>JNINativeMethod</code> 的结构，其定义如下：</p>
+<pre class=" language-cpp"><code class="language-cpp"><span class="token keyword">typedef</span> <span class="token keyword">struct</span> <span class="token punctuation">{</span>
+    <span class="token keyword">char</span> <span class="token operator">*</span>name<span class="token punctuation">;</span>                  <span class="token comment" spellcheck="true">// Java 中 native 函数的名字，不用携带包的路径，例如：native_init</span>
+    <span class="token keyword">char</span> <span class="token operator">*</span>signature<span class="token punctuation">;</span>             <span class="token comment" spellcheck="true">// Java 中函数的签名信息，用字符串表示，是参数类型和返回值类型的集合</span>
+    <span class="token keyword">void</span> <span class="token operator">*</span>fnPtr<span class="token punctuation">;</span>                 <span class="token comment" spellcheck="true">// JNI 层对应函数的函数指针，注意它是 void* 类型</span>
+<span class="token punctuation">}</span>JNINativeMethod<span class="token punctuation">;</span>
+</code></pre>
+<p>如何使用这个结构体，我们看下 MediaScanner JNI 层是如何做的：</p>
+<pre class=" language-cpp"><code class="language-cpp"><span class="token comment" spellcheck="true">// 定义一个 JNINativeMethod 数组，其成员就是 MediaScanner 中所有 native 函数的一一对应关系。</span>
+<span class="token keyword">static</span> <span class="token keyword">const</span> JNINativeMethod gMethods<span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token punctuation">{</span>
+    <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+
+    <span class="token punctuation">{</span>
+        <span class="token string">"processFile"</span><span class="token punctuation">,</span>                                        <span class="token comment" spellcheck="true">// Java 中 native 函数的函数名</span>
+        <span class="token string">"(Ljava/lang/String;Ljava/lang/String;Landroid/media/MediaScannerClient;)Z"</span><span class="token punctuation">,</span>  <span class="token comment" spellcheck="true">// processFile 的签名信息</span>
+            <span class="token punctuation">(</span><span class="token keyword">void</span> <span class="token operator">*</span><span class="token punctuation">)</span>android_media_MediaScanner_processFile    <span class="token comment" spellcheck="true">// JNI 层对应的函数指针</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+
+    <span class="token punctuation">{</span>
+        <span class="token string">"native_init"</span><span class="token punctuation">,</span>
+        <span class="token string">"()V"</span><span class="token punctuation">,</span>
+            <span class="token punctuation">(</span><span class="token keyword">void</span> <span class="token operator">*</span><span class="token punctuation">)</span>android_media_MediaScanner_native_init
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+
+<span class="token punctuation">}</span><span class="token punctuation">;</span>
+</code></pre>
+<p>是不是一目了然？定义好了，不能直接用啊，当然需要注册一下。</p>
+<pre class=" language-cpp"><code class="language-cpp"><span class="token comment" spellcheck="true">// This function only registers the native methods, and is called from</span>
+<span class="token comment" spellcheck="true">// JNI_OnLoad in android_media_MediaPlayer.cpp</span>
+<span class="token comment" spellcheck="true">// 注册 JNINativeMethod 数组</span>
+<span class="token keyword">int</span> <span class="token function">register_android_media_MediaScanner</span><span class="token punctuation">(</span>JNIEnv <span class="token operator">*</span>env<span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+    <span class="token comment" spellcheck="true">// 调用 AndroidRuntime 的 registerNativeMethods 函数，第二个参数表明是 Java 中的哪个类</span>
+    <span class="token comment" spellcheck="true">// 我们在讲解 Zygote 原理时，聊过创建 Java 虚拟机，注册 JNI 函数的内容</span>
+    <span class="token keyword">return</span> AndroidRuntime<span class="token operator">::</span><span class="token function">registerNativeMethods</span><span class="token punctuation">(</span>env<span class="token punctuation">,</span> kClassMediaScanner<span class="token punctuation">,</span> gMethods<span class="token punctuation">,</span> <span class="token function">NELEM</span><span class="token punctuation">(</span>gMethods<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+</code></pre>
+<p>AndroidRunTime 类提供了一个 <code>registerNativeMethods</code> 函数来完成注册的工作，下面来看下 registerNativeMethods 的实现：</p>
+<pre class=" language-cpp"><code class="language-cpp"><span class="token comment" spellcheck="true">/*
+ * Register native methods using JNI.
+ */</span>
+<span class="token comment" spellcheck="true">/*static*/</span> <span class="token keyword">int</span> AndroidRuntime<span class="token operator">::</span><span class="token function">registerNativeMethods</span><span class="token punctuation">(</span>JNIEnv<span class="token operator">*</span> env<span class="token punctuation">,</span>
+    <span class="token keyword">const</span> <span class="token keyword">char</span><span class="token operator">*</span> className<span class="token punctuation">,</span> <span class="token keyword">const</span> JNINativeMethod<span class="token operator">*</span> gMethods<span class="token punctuation">,</span> <span class="token keyword">int</span> numMethods<span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+    <span class="token comment" spellcheck="true">// 调用 jniRegisterNativeMethods 函数完成注册</span>
+    <span class="token keyword">return</span> <span class="token function">jniRegisterNativeMethods</span><span class="token punctuation">(</span>env<span class="token punctuation">,</span> className<span class="token punctuation">,</span> gMethods<span class="token punctuation">,</span> numMethods<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<p>其实，<code>jniRegisterNativeMethods</code> 是 Android 平台中为了方便 JNI 使用而提供的一个<code>帮助函数</code>：</p>
+<pre class=" language-cpp"><code class="language-cpp"><span class="token keyword">int</span> <span class="token function">jniRegisterNativeMethods</span><span class="token punctuation">(</span>JNIEnv<span class="token operator">*</span> env<span class="token punctuation">,</span> <span class="token keyword">const</span> <span class="token keyword">char</span><span class="token operator">*</span> className<span class="token punctuation">,</span> <span class="token keyword">const</span> JNINativeMethod<span class="token operator">*</span> gMethods<span class="token punctuation">,</span> <span class="token keyword">int</span> numMethods<span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+    jclass <span class="token class-name">clazz</span><span class="token punctuation">;</span>
+    clazz <span class="token operator">=</span> <span class="token punctuation">(</span><span class="token operator">*</span>env<span class="token punctuation">)</span><span class="token operator">-</span><span class="token operator">></span><span class="token function">FindClass</span><span class="token punctuation">(</span>env<span class="token punctuation">,</span> className<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+
+    <span class="token comment" spellcheck="true">// 实际上是调用 JNIEnv 的 RegisterNatives 函数完成注册</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token operator">*</span>env<span class="token punctuation">)</span><span class="token operator">-</span><span class="token operator">></span><span class="token function">RegisterNatives</span><span class="token punctuation">(</span>env<span class="token punctuation">,</span> clazz<span class="token punctuation">,</span> gMethods<span class="token punctuation">,</span> numMethods<span class="token punctuation">)</span> <span class="token operator">&lt;</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> <span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<p>其实动态注册的工作，只用两个函数就能完成，如下：</p>
+<p><strong>（1）&nbsp;<font color="#0000ff">jclass clazz = (*env)-&gt;FindClass(env, className); </font> </strong></p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;env 指向一个 JNIEnv 结构体，它非常重要，后面我们会讨论。classname 为对应的 Java 类名，由于 JNINativeMethod 中使用的函数名并非全路径名，所以要指明是哪个类。</p>
+<p><strong>（2）&nbsp;<font color="#0000ff">(*env)-&gt;RegisterNatives(env, clazz, gMethods, numMethods); </font> </strong></p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;调用 JNIEnv 的 RegisterNatives 函数，注册关联关系。</p>
+<p>现在，你现在知道如果动态注册了，但是有个问题，这些动态注册的函数又是在什么时候和什么地方被调用的？</p>
+<p><strong><font color="#FF0000">当 Java 层通过 System.loadLibrary 加载完 JNI 动态库后，紧接着就会去查找该库中一个叫 JNI_OnLoad 的函数。如果有，就调用它，而动态注册的工作就是在这里完成的。</font> </strong></p>
+<h3 id="3-2-3-JNI-OnLoad"><a href="#3-2-3-JNI-OnLoad" class="headerlink" title="3.2.3 JNI_OnLoad"></a>3.2.3 JNI_OnLoad</h3><p>动态库是 libmedia_jni.so，那么 JNI_OnLoad 函数在哪里实现的？如果你看的比较仔细的话，我相信之前代码中有段注释你应该注意到了。</p>
+<pre class=" language-cpp"><code class="language-cpp"><span class="token comment" spellcheck="true">// This function only registers the native methods, and is called from</span>
+<span class="token comment" spellcheck="true">// JNI_OnLoad in android_media_MediaPlayer.cpp                    // 看这里！ </span>
+<span class="token keyword">int</span> <span class="token function">register_android_media_MediaScanner</span><span class="token punctuation">(</span>JNIEnv <span class="token operator">*</span>env<span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+    <span class="token keyword">return</span> AndroidRuntime<span class="token operator">::</span><span class="token function">registerNativeMethods</span><span class="token punctuation">(</span>env<span class="token punctuation">,</span> kClassMediaScanner<span class="token punctuation">,</span> gMethods<span class="token punctuation">,</span> <span class="token function">NELEM</span><span class="token punctuation">(</span>gMethods<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<p>由于多媒体系统很多地方都使用了 JNI，所以 <code>JNI_OnLoad</code> 被放到了 <code>android_media_MediaPlayer.cpp</code> 中，我们看下代码：</p>
+<pre class=" language-cpp"><code class="language-cpp">jint <span class="token function">JNI_OnLoad</span><span class="token punctuation">(</span>JavaVM<span class="token operator">*</span> vm<span class="token punctuation">,</span> <span class="token keyword">void</span><span class="token operator">*</span> <span class="token comment" spellcheck="true">/* reserved */</span><span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+    <span class="token comment" spellcheck="true">// 该函数的第一个参数类型为 JavaVM，这可是虚拟机在 JNI 层的代表，每个 Java 进程只有一个这样的 JavaVM</span>
+    JNIEnv<span class="token operator">*</span> env <span class="token operator">=</span> <span class="token constant">NULL</span><span class="token punctuation">;</span>
+    jint result <span class="token operator">=</span> <span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">;</span>
+
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>vm<span class="token operator">-</span><span class="token operator">></span><span class="token function">GetEnv</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token keyword">void</span><span class="token operator">*</span><span class="token operator">*</span><span class="token punctuation">)</span> <span class="token operator">&amp;</span>env<span class="token punctuation">,</span> JNI_VERSION_1_4<span class="token punctuation">)</span> <span class="token operator">!=</span> JNI_OK<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">goto</span> bail<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+    <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">register_android_media_MediaScanner</span><span class="token punctuation">(</span>env<span class="token punctuation">)</span> <span class="token operator">&lt;</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token function">ALOGE</span><span class="token punctuation">(</span><span class="token string">"ERROR: MediaScanner native registration failed\n"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">goto</span> bail<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+    <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+
+    <span class="token comment" spellcheck="true">/* success -- return valid version number */</span>
+    result <span class="token operator">=</span> JNI_VERSION_1_4<span class="token punctuation">;</span>
+
+bail<span class="token operator">:</span>
+    <span class="token keyword">return</span> result<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<h2 id="3-3-数据类型转换"><a href="#3-3-数据类型转换" class="headerlink" title="3.3 数据类型转换"></a>3.3 数据类型转换</h2><p>在 Java 中调用 native 函数传递的参数是 Java 数据类型，那么这些参数类型传递到 JNI 层会变成什么类型？</p>
+<p>Java 数据类型分为 <code>基本数据类型</code> 和 <code>引用数据类型</code> 两种，JNI 层也是区别对待两者的。</p>
+<h3 id="3-3-1-基本数据类型的转换"><a href="#3-3-1-基本数据类型的转换" class="headerlink" title="3.3.1 基本数据类型的转换"></a>3.3.1 基本数据类型的转换</h3><table>
+<thead>
+<tr>
+<th>Java 基本类型</th>
+<th>Native 类型</th>
+<th>符号属性</th>
+<th>字长</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>boolean</td>
+<td>jboolean</td>
+<td>无符号</td>
+<td>8位</td>
+</tr>
+<tr>
+<td>byte</td>
+<td>jbyte</td>
+<td>无符号</td>
+<td>8位</td>
+</tr>
+<tr>
+<td>char</td>
+<td>jchar</td>
+<td>无符号</td>
+<td>16位</td>
+</tr>
+<tr>
+<td>short</td>
+<td>jshort</td>
+<td>有符号</td>
+<td>16位</td>
+</tr>
+<tr>
+<td>int</td>
+<td>jint</td>
+<td>有符号</td>
+<td>32位</td>
+</tr>
+<tr>
+<td>long</td>
+<td>jlong</td>
+<td>有符号</td>
+<td>64位</td>
+</tr>
+<tr>
+<td>float</td>
+<td>jfloat</td>
+<td>有符号</td>
+<td>32位</td>
+</tr>
+<tr>
+<td>double</td>
+<td>jdoublt</td>
+<td>有符号</td>
+<td>64位</td>
+</tr>
+</tbody>
+</table>
+<h3 id="3-3-2-引用数据类型的转换"><a href="#3-3-2-引用数据类型的转换" class="headerlink" title="3.3.2 引用数据类型的转换"></a>3.3.2 引用数据类型的转换</h3><table>
+<thead>
+<tr>
+<th>Java 引用类型</th>
+<th>Native 类型</th>
+<th>Java 引用类型</th>
+<th>Native 类型</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>All objects</td>
+<td>jobject</td>
+<td>char[]</td>
+<td>jcharArray</td>
+</tr>
+<tr>
+<td>java.lang.Class 实例</td>
+<td>jclass</td>
+<td>short[]</td>
+<td>jshortArray</td>
+</tr>
+<tr>
+<td>java.lang.String 实例</td>
+<td>jstring</td>
+<td>int[]</td>
+<td>jintArray</td>
+</tr>
+<tr>
+<td>Object[]</td>
+<td>jobjectArray</td>
+<td>long[]</td>
+<td>jlongArray</td>
+</tr>
+<tr>
+<td>boolean[]</td>
+<td>jbooleanArray</td>
+<td>float</td>
+<td>jfloatArray</td>
+</tr>
+<tr>
+<td>byte[]</td>
+<td>jbyteArray</td>
+<td>double[]</td>
+<td>jdoubleArray</td>
+</tr>
+<tr>
+<td>java.lang.Throwable 实例</td>
+<td>jthrowable</td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p><br></p>
+<p>我们举例说明，看下 processFile 函数：</p>
+<pre class=" language-cpp"><code class="language-cpp"><span class="token comment" spellcheck="true">// String --> jstring</span>
+<span class="token comment" spellcheck="true">// MediaScannerClient --> jobject</span>
+<span class="token function">processFile</span><span class="token punctuation">(</span>String path<span class="token punctuation">,</span> String mimeType<span class="token punctuation">,</span> MediaScannerClient client<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token function">android_media_MediaScanner_processFile</span><span class="token punctuation">(</span>JNIEnv <span class="token operator">*</span>env<span class="token punctuation">,</span> jobject thiz<span class="token punctuation">,</span> jstring path<span class="token punctuation">,</span> jstring mimeType<span class="token punctuation">,</span> jobject client<span class="token punctuation">)</span>
+</code></pre>
+<p>我们发现：</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;✎ Java 的 String 类型在 JNI 层对应为 jstring 类型；<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;✎ Java 的 MediaScannerClient 类型在 JNI 层对应为 jobject。</p>
+<p><strong>但是有一个问题</strong>，Java 中的 processFile 中只有三个参数，为什么到了 JNI 层对应的函数却有五个参数？</p>
+<pre class=" language-cpp"><code class="language-cpp"><span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token function">android_media_MediaScanner_processFile</span><span class="token punctuation">(</span>JNIEnv <span class="token operator">*</span>env<span class="token punctuation">,</span> jobject thiz<span class="token punctuation">,</span> jstring path<span class="token punctuation">,</span> jstring mimeType<span class="token punctuation">,</span> jobject client<span class="token punctuation">)</span>
+</code></pre>
+<h2 id="3-4-JNIEnv"><a href="#3-4-JNIEnv" class="headerlink" title="3.4 JNIEnv"></a>3.4 JNIEnv</h2><p><strong><font color="#0000ff">（1）JNIEnv 的概念</font></strong></p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;是一个与线程相关的代表 JNI 环境的结构体，该结构体代表了 Java 在本线程的执行环境。</p>
+<p><strong><font color="#0000ff">（2）JNUEnv 的作用</font></strong></p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;✎ 调用 Java 函数 : JNIEnv 代表 Java 执行环境, 能够使用 JNIEnv 调用 Java 中的代码。</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;✎ 操作 Java 对象 : Java 对象传入 JNI 层就是 Jobject 对象, 须要使用 JNIEnv 来操作这个 Java 对象。</p>
+<p><strong><font color="#0000ff">（3）我们来看一个有趣的现象</font></strong></p>
+<p>前面，我们已经知道 JNIEnv 是一个与线程相关的变量，如果此时线程 A 有一个 JNIEnv 变量， 线程 B 也有一个 JNIEnv 变量，由于线程相关，所以 A 线程不能使用 B 线程的 JNIEnv 结构体变量。</p>
+<p>此时，一个 java 对象通过 JNI 调用动态库中的一个 send() 函数向服务器发送消息，不等服务器消息到来就立即返回，同时把 JNI 接口的指针 JNIEnv *env 和 jobject obj 保存在动态库中的变量里。一段时间后，动态库中的消息接收线程接收到服务器发来的消息，并试图通过保存过的 env 和 obj 来调用先前的 java 对象的方法来处理此消息，<strong><font color="#FF0000">此时程序突然退出(崩溃)</font></strong>。</p>
+<p><strong><font color="#0000ff">（4）为什么？</font></strong></p>
+<p><strong><font color="#FF0000">出错原因</font>：</strong>前台 JAVA 线程发送消息，后台线程处理消息，归属于两个不同的线程，不能使用相同的 JNIEnv 变量。</p>
+<p><strong><font color="#FF0000">怎么解决？</font></strong></p>
+<p>还记得我们前面介绍的 JNI_OnLoad 函数吗？它的第一个参数是 JavaVM，它是虚拟机在 JNI 层的代表！！！</p>
+<pre class=" language-cpp"><code class="language-cpp"><span class="token comment" spellcheck="true">// 全进程只有一个 JavaVM 对象，所以可以在任何地方使用</span>
+jint <span class="token function">JNI_OnLoad</span><span class="token punctuation">(</span>JavaVM<span class="token operator">*</span> vm<span class="token punctuation">,</span> <span class="token keyword">void</span><span class="token operator">*</span> <span class="token comment" spellcheck="true">/* reserved */</span><span class="token punctuation">)</span>
+</code></pre>
+<p>那么也就是说，不论进程有多少线程（不论有多少 JNIEnv），JavaVM 却是独此一份！所以，我们可以利用一个机制：利用全局的 JavaVM 指针得到当前线程的 JNIEnv 指针。</p>
+<p><strong><font color="#0000FF">JavaVM 和 JNIEnv</font></strong>：</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;✎ 调用 JavaVM 的 <code>AttachCurrentThread</code> 函数，就可得到这个线程的 JNIEnv 结构体，这样就可以在后台线程中回调 Java 函数了。<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;✎ 另外，在后台线程退出前，需要调用 JavaVM 的 <code>DetachCurrentThread</code> 函数来释放对应的资源。</p>
+<h2 id="3-5-通过-JNIEnv-操作-jobject"><a href="#3-5-通过-JNIEnv-操作-jobject" class="headerlink" title="3.5 通过 JNIEnv 操作 jobject"></a>3.5 通过 JNIEnv 操作 jobject</h2><p>前面介绍数据类型的时候，我们知道 Java 的引用类型除了少数几个外（Class、String 和 Throwable），最终在 JNI 层都会用 jobject 来表示对象的数据类型，那么该如何操作这个 jobject 呢？</p>
+<p>我们先回顾下 Java 对象是由什么组成的？当然是它的成员变量和成员函数了！那么同理，操作 jobject 的本质就应当是操作这些对象的成员变量和成员函数！那么 jobject 的成员变量和成员函数又是什么？</p>
+<h3 id="3-5-1-取出-jfieldID-和-jmethodID"><a href="#3-5-1-取出-jfieldID-和-jmethodID" class="headerlink" title="3.5.1 取出 jfieldID 和 jmethodID"></a>3.5.1 取出 jfieldID 和 jmethodID</h3><p>在 Java 中，我们知道成员变量和成员函数都是由类定义的，他们是类的属性，那么在 JNI 规则中，也是这么来定义的，用 <code>jfieldID</code> 定义 Java 类的<code>成员变量</code>，用 <code>jmethodID</code> 定义 Java 类的<code>成员函数</code>。</p>
+<p>可通过 JNIEnv 的下面两个函数得到：</p>
+<pre class=" language-cpp"><code class="language-cpp">jfieldID <span class="token function">GetFieldID</span><span class="token punctuation">(</span>jclass <span class="token class-name">clazz</span><span class="token punctuation">,</span> <span class="token keyword">const</span> <span class="token keyword">char</span><span class="token operator">*</span> name<span class="token punctuation">,</span> <span class="token keyword">const</span> <span class="token keyword">char</span><span class="token operator">*</span> sig<span class="token punctuation">)</span>
+jmethodID <span class="token function">GetMethodID</span><span class="token punctuation">(</span>jclass <span class="token class-name">clazz</span><span class="token punctuation">,</span> <span class="token keyword">const</span> <span class="token keyword">char</span><span class="token operator">*</span> name<span class="token punctuation">,</span> <span class="token keyword">const</span> <span class="token keyword">char</span><span class="token operator">*</span> sig<span class="token punctuation">)</span>
+</code></pre>
+<p>其中，jclass 代表 Java 类，name 表示成员函数或成员变量的名字，sig 为这个函数和变量的签名信息（后面会说到）。</p>
+<p>我们来看看在 MediaScanner 中如何使用它们，查看 <code>android_media_MediaScanner.cpp::MyMediaScannerClient</code> 构造函数</p>
+<pre class=" language-cpp"><code class="language-cpp"><span class="token keyword">class</span> <span class="token class-name">MyMediaScannerClient</span> <span class="token operator">:</span> <span class="token keyword">public</span> MediaScannerClient
+<span class="token punctuation">{</span>
+<span class="token keyword">public</span><span class="token operator">:</span>
+    <span class="token function">MyMediaScannerClient</span><span class="token punctuation">(</span>JNIEnv <span class="token operator">*</span>env<span class="token punctuation">,</span> jobject client<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+    <span class="token punctuation">{</span>
+        <span class="token comment" spellcheck="true">// 先找到 android.media.MediaScannerClient 类在 JNI 层中对应的 jclass 实例</span>
+        jclass <span class="token class-name">mediaScannerClientInterface</span> <span class="token operator">=</span> env<span class="token operator">-</span><span class="token operator">></span><span class="token function">FindClass</span><span class="token punctuation">(</span>kClassMediaScannerClient<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>mediaScannerClientInterface <span class="token operator">==</span> <span class="token constant">NULL</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token function">ALOGE</span><span class="token punctuation">(</span><span class="token string">"Class %s not found"</span><span class="token punctuation">,</span> kClassMediaScannerClient<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+            <span class="token comment" spellcheck="true">// 取出 MediaScannerClient 类中函数 scanFile 的 jMethodID</span>
+            mScanFileMethodID <span class="token operator">=</span> env<span class="token operator">-</span><span class="token operator">></span><span class="token function">GetMethodID</span><span class="token punctuation">(</span>
+                                    mediaScannerClientInterface<span class="token punctuation">,</span>
+                                    <span class="token string">"scanFile"</span><span class="token punctuation">,</span>
+                                    <span class="token string">"(Ljava/lang/String;JJZZ)V"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+            <span class="token comment" spellcheck="true">// 取出 MediaScannerClient 类中函数 handleStringTag 的 jMethodID</span>
+            mHandleStringTagMethodID <span class="token operator">=</span> env<span class="token operator">-</span><span class="token operator">></span><span class="token function">GetMethodID</span><span class="token punctuation">(</span>
+                                    mediaScannerClientInterface<span class="token punctuation">,</span>
+                                    <span class="token string">"handleStringTag"</span><span class="token punctuation">,</span>
+                                    <span class="token string">"(Ljava/lang/String;Ljava/lang/String;)V"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+            <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+    <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+    jobject mClient<span class="token punctuation">;</span>
+    jmethodID mScanFileMethodID<span class="token punctuation">;</span>
+    jmethodID mHandleStringTagMethodID<span class="token punctuation">;</span>
+    <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<p>从上面的代码中，将 scanFile 和 handleStringTag 函数的 jMethodID 保存在 MyMediaScannerClient 的成员变量中。为什么这里要把它们保存起来呢？这个问题涉及到一个关于程序运行效率的知识点：</p>
+<p>如果每次操作 jobject 前都要去查询 jmethodID 或 jfieldID，那么将会影响程序运行的效率，所以我们在初始化的时候可以取出这些 ID 并保存起来以供后续使用。</p>
+<h3 id="3-5-2-使用-jfieldID-和-jmethodID"><a href="#3-5-2-使用-jfieldID-和-jmethodID" class="headerlink" title="3.5.2 使用 jfieldID 和 jmethodID"></a>3.5.2 使用 jfieldID 和 jmethodID</h3><p>我们来看看 android_media_MediaScanner.cpp::MyMediaScannerClient 的 scanFile 函数</p>
+<pre class=" language-cpp"><code class="language-cpp">    <span class="token keyword">virtual</span> status_t <span class="token function">scanFile</span><span class="token punctuation">(</span><span class="token keyword">const</span> <span class="token keyword">char</span><span class="token operator">*</span> path<span class="token punctuation">,</span> <span class="token keyword">long</span> <span class="token keyword">long</span> lastModified<span class="token punctuation">,</span>
+            <span class="token keyword">long</span> <span class="token keyword">long</span> fileSize<span class="token punctuation">,</span> <span class="token keyword">bool</span> isDirectory<span class="token punctuation">,</span> <span class="token keyword">bool</span> noMedia<span class="token punctuation">)</span>
+    <span class="token punctuation">{</span>
+        jstring pathStr<span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token punctuation">(</span>pathStr <span class="token operator">=</span> mEnv<span class="token operator">-</span><span class="token operator">></span><span class="token function">NewStringUTF</span><span class="token punctuation">(</span>path<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token operator">==</span> <span class="token constant">NULL</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            mEnv<span class="token operator">-</span><span class="token operator">></span><span class="token function">ExceptionClear</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token keyword">return</span> NO_MEMORY<span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+
+        <span class="token comment" spellcheck="true">/*
+         * 调用 JNIEnv 的 CallVoidMethod 函数
+         * 注意 CallVoidMethod 的参数：
+         *（1）第一个参数是代表 MediaScannerClient 的 jobject 对象
+         *（2）第二个参数是函数 scanFile 的 jmethodID，后面是 Java 中的 scanFile 的参数
+         */</span>
+        mEnv<span class="token operator">-</span><span class="token operator">></span><span class="token function">CallVoidMethod</span><span class="token punctuation">(</span>mClient<span class="token punctuation">,</span> mScanFileMethodID<span class="token punctuation">,</span> pathStr<span class="token punctuation">,</span> lastModified<span class="token punctuation">,</span>
+                fileSize<span class="token punctuation">,</span> isDirectory<span class="token punctuation">,</span> noMedia<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+        mEnv<span class="token operator">-</span><span class="token operator">></span><span class="token function">DeleteLocalRef</span><span class="token punctuation">(</span>pathStr<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">return</span> <span class="token function">checkAndClearExceptionFromCallback</span><span class="token punctuation">(</span>mEnv<span class="token punctuation">,</span> <span class="token string">"scanFile"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+</code></pre>
+<p>通过 JNIEnv 输出 CallVoidMethod，再把 jobject、jMethodID 和对应的参数传进去，JNI 层就能够调用 Java 对象的函数了！</p>
+<p>实际上 JNIEnv 输出了一系列类似 CallVoidMethod 的函数，形式如下：</p>
+<pre class=" language-cpp"><code class="language-cpp">NativeType Call<span class="token operator">&lt;</span>type<span class="token operator">></span><span class="token function">Method</span><span class="token punctuation">(</span>JNIEnv <span class="token operator">*</span>env<span class="token punctuation">,</span> jobject obj<span class="token punctuation">,</span> jmethodID methodID<span class="token punctuation">,</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">)</span>
+</code></pre>
+<p>其中 type 对应 java 函数的返回值类型，例如 CallIntMethod、CallVoidMethod 等。如果想调用 Java 中的 static 函数，则用 JNIEnv 输出的 CallStatic<type>Method 系列函数。</type></p>
+<p>所以，我们可以看出，虽然 jobject 是透明的，但有了 JNIEnv 的帮助，还是能轻松操作 jobject 背后的实际对象的。</p>
+<h2 id="3-6-jstring"><a href="#3-6-jstring" class="headerlink" title="3.6 jstring"></a>3.6 jstring</h2><p>这一节我们单独聊聊 String。Java 中的 String 也是引用类型，不过由于它的使用频率很高，所以在 JNI 规范中单独创建了一个 jstring 类型来表示 Java 中的 String 类型。</p>
+<p>虽然 jstring 是一种独立的数据类型，但是它并没有提供成员函数以便操作。而 C++ 中的 string 类是有自己的成员函数的。那么该如何操作 jstring 呢？还是得依靠 JNIEnv 提供帮助。</p>
+<p>先看几个有关 jstring 的函数：</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;✎ 调用 JNIEnv 的 <code>NewString(const jchar* unicodeChars, jsize len)</code> 可以从 Native 的字符串得到一个 jstring 对象。<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;✎ 调用 JNIEnv 的 <code>NewStringUTF(const char* bytes)</code> 将根据 Native 的一个 UTF-8 字符串得到一个 jstring 对象。<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;✎ 上面两个函数将本地字符串转换成了 Java 的 String 对象，JNIEnv 还提供了 <code>GetStringChars</code> 函数和 <code>GetStringUTFChars</code> 函数，它们可以将 Java String 对象转换成本地字符串。其中 GetStringChars 得到一个 Unicode 字符串，而 GetStringUTFChars 得到一个 UTF-8 字符串。<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;✎ 另外，如果在代码中调用了上面几个函数，在做完相关工作后，就都需要调用 <code>ReleaseStringChars</code> 函数或 <code>ReleaseStringUTFChars</code> 函数来对应地释放资源，否认会导致 <code>JVM内存泄漏</code>。</p>
+<p>我们看段代码加深印象：</p>
+<pre class=" language-cpp"><code class="language-cpp"><span class="token keyword">static</span> <span class="token keyword">void</span>
+<span class="token function">android_media_MediaScanner_processFile</span><span class="token punctuation">(</span>
+        JNIEnv <span class="token operator">*</span>env<span class="token punctuation">,</span> jobject thiz<span class="token punctuation">,</span> jstring path<span class="token punctuation">,</span>
+        jstring mimeType<span class="token punctuation">,</span> jobject client<span class="token punctuation">)</span>
+<span class="token punctuation">{</span>
+    <span class="token comment" spellcheck="true">// Lock already hold by processDirectory</span>
+    MediaScanner <span class="token operator">*</span>mp <span class="token operator">=</span> <span class="token function">getNativeScanner_l</span><span class="token punctuation">(</span>env<span class="token punctuation">,</span> thiz<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+
+    <span class="token keyword">const</span> <span class="token keyword">char</span> <span class="token operator">*</span>mimeTypeStr <span class="token operator">=</span>
+        <span class="token punctuation">(</span>mimeType <span class="token operator">?</span> env<span class="token operator">-</span><span class="token operator">></span><span class="token function">GetStringUTFChars</span><span class="token punctuation">(</span>mimeType<span class="token punctuation">,</span> <span class="token constant">NULL</span><span class="token punctuation">)</span> <span class="token operator">:</span> <span class="token constant">NULL</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>mimeType <span class="token operator">&amp;&amp;</span> mimeTypeStr <span class="token operator">==</span> <span class="token constant">NULL</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>  <span class="token comment" spellcheck="true">// Out of memory</span>
+        <span class="token comment" spellcheck="true">// ReleaseStringUTFChars can be called with an exception pending.</span>
+        env<span class="token operator">-</span><span class="token operator">></span><span class="token function">ReleaseStringUTFChars</span><span class="token punctuation">(</span>path<span class="token punctuation">,</span> pathStr<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">return</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+    <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<h2 id="3-7-JNI-类型签名"><a href="#3-7-JNI-类型签名" class="headerlink" title="3.7 JNI 类型签名"></a>3.7 JNI 类型签名</h2><p>我们看下动态注册中的一段代码：</p>
+<pre class=" language-cpp"><code class="language-cpp"><span class="token keyword">static</span> <span class="token keyword">const</span> JNINativeMethod gMethods<span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token punctuation">{</span>
+    <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+
+    <span class="token punctuation">{</span>
+        <span class="token string">"processFile"</span><span class="token punctuation">,</span>
+        <span class="token comment" spellcheck="true">// processFile的签名信息，这么长的字符串，是什么意思？</span>
+        <span class="token string">"(Ljava/lang/String;Ljava/lang/String;Landroid/media/MediaScannerClient;)V"</span><span class="token punctuation">,</span>
+        <span class="token punctuation">(</span><span class="token keyword">void</span> <span class="token operator">*</span><span class="token punctuation">)</span>android_media_MediaScanner_processFile
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+<span class="token punctuation">}</span><span class="token punctuation">;</span>
+</code></pre>
+<p>上面这段代码我们之前早就见过了，不过<code>&quot;(Ljava/lang/String;Ljava/lang/String;Landroid/media/MediaScannerClient;)V&quot;</code>是什么意思呢？</p>
+<p>我们前面提到过，这个是 Java 中对应函数的签名信息，由参数类型和返回值类型共同组成，有人可能有疑问，这东西是干嘛的？</p>
+<p>我们都知道，Java 支持函数重载，也就是说，可以定义同名但不同参数的函数。但仅仅根据函数名是没法找到具体函数的。为了解决这个问题，JNI 技术中就将参数类型和返回值类型的组合作为一个函数的签名信息，有了签名信息和函数名，就能很顺利地找到 Java 中的函数了。</p>
+<p>JNI 规范定义的函数签名信息看起来很别扭，不过习惯就好了。它的格式是：</p>
+<blockquote>
+<p>(参数 1 类型标识参数 2 类型标识 … 参数 n 类型标识) 返回值类型标识</p>
+</blockquote>
+<p>我们仍然拿 processFile 的例子来看下：</p>
+<pre class=" language-cpp"><code class="language-cpp">    <span class="token punctuation">{</span>
+        <span class="token string">"processFile"</span><span class="token punctuation">,</span>
+        <span class="token comment" spellcheck="true">// Java 中的函数定义为 private native void processFile(String path, String mimeType, MediaScannerClient client);</span>
+        <span class="token comment" spellcheck="true">// 对应的 JNI 函数签名如下：</span>
+        <span class="token string">"(Ljava/lang/String;Ljava/lang/String;Landroid/media/MediaScannerClient;)V"</span><span class="token punctuation">,</span>
+        <span class="token comment" spellcheck="true">// void 类型对应的标示是 V</span>
+        <span class="token comment" spellcheck="true">// 当参数的类型是引用类型时，其格式是 "L包名"，其中包名中的 "."换成 "/"，Ljava/lang/String 表示是一个 Java String 类型</span>
+        <span class="token punctuation">(</span><span class="token keyword">void</span> <span class="token operator">*</span><span class="token punctuation">)</span>android_media_MediaScanner_processFile
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+</code></pre>
+<p><strong>【注意】</strong>：引用类型（除基本类型的数组外）的标识最后都有一个“;”。</p>
+<p>函数签名不仅看起来麻烦，写起来更麻烦，稍微写错一个标点都会导致注册失败，所以在具体编码时，可以定义字符串宏（这边就不多做解释了，可以自行查询了解即可）。</p>
+<p>虽然函数签名信息很容易写错，但是 Java 提供了一个叫 javap 的工具能够帮助我们生成函数或变量的签名信息，它的用法如下：</p>
+<blockquote>
+<p>javap -s -p xxx</p>
+</blockquote>
+<p>其中 xxx 为编译后的 class 文件，s 表示输出内部数据类型的签名信息，p 表示打印所有函数和成员的签名信息，默认只会打印 public 成员和函数的签名信息。</p>
+<h2 id="3-8-垃圾回收及异常处理"><a href="#3-8-垃圾回收及异常处理" class="headerlink" title="3.8 垃圾回收及异常处理"></a>3.8 垃圾回收及异常处理</h2><p>这部分我打算单独放在一篇博文中探讨，结果具体错误进行分析。</p>
+
+            </div>
+            <hr>
+
+            
+
+            <!--<link rel="stylesheet" type="text/css" href="/libs/share/css/share.min.css">
+
+<div id="article-share">
+    
+    <div class="social-share" data-disabled="qzone" data-wechat-qrcode-helper="<p>微信里点“发现”->“扫一扫”二维码便可查看分享。</p>"></div>
+    
+</div>
+
+<script src="/libs/share/js/social-share.min.js"></script>-->
+
+            <div class="reprint">
+                <p>
+                    <span class="reprint-tip">
+                        <i class="fa fa-exclamation-circle"></i>&nbsp;&nbsp;转载请注明:
+                    </span>
+                    <a href="https://superandroid.pro" class="b-link-green">Thinking in Android</a>
+                    <i class="fa fa-angle-right fa-lg fa-fw text-color"></i>
+                    <a href="/2020/07/01/android-10-he-xin-ji-zhi-xi-lie-bi-xu-liao-jie-de-jni/" class="b-link-green">必须了解的 &#34;JNI&#34;</a>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    <!--
+
+<article id="prenext-posts" class="prev-next articles">
+    <div class="row article-row">
+        
+        <div class="article col s12 m6 overflow-policy" data-aos="fade-up">
+            <div class="article-badge left-badge text-color">
+                <i class="fa fa-chevron-left"></i>&nbsp;上一篇</div>
+            <div class="card">
+                <a href="/2021/01/01/thinking-in-android-android-xi-tong-kai-fa-bo-wen-jia-gou-mei-zhou-geng-xin/">
+                    <div class="card-image">
+                        
+                        <img src="/medias/featureimages/android.gif" class="responsive-img" alt="博文架构（Android 10.0）">
+                        
+                        <span class="card-title">博文架构（Android 10.0）</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">《 Thinking in Android 》 – “系统启动” 系列
+
+
+
+【系统启动】
+
+State
+Code
+
+
+
+
+init
+【 Android 10 系统启动 】系列 – init（天字一号进程）
+Update 05.01
+And</div>
+                    <div class="publish-info">
+                        <span class="publish-date">
+                            <i class="fa fa-clock-o fa-fw icon-date"></i>2021-01-01
+                        </span>
+                        <span class="publish-author">
+                            
+                            <i class="fa fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/Android/" class="post-category" target="_blank">
+                                    Android
+                                </a>
+                            
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/框架服务/" target="_blank">
+                        <span class="chip bg-color">框架服务</span>
+                    </a>
+                    
+                    <a href="/tags/核心机制/" target="_blank">
+                        <span class="chip bg-color">核心机制</span>
+                    </a>
+                    
+                    <a href="/tags/性能优化/" target="_blank">
+                        <span class="chip bg-color">性能优化</span>
+                    </a>
+                    
+                    <a href="/tags/设计模式/" target="_blank">
+                        <span class="chip bg-color">设计模式</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+        
+        <div class="article col s12 m6 overflow-policy" data-aos="fade-up">
+            <div class="article-badge right-badge text-color">
+                下一篇&nbsp;<i class="fa fa-chevron-right"></i>
+            </div>
+            <div class="card">
+                <a href="/2020/06/20/android-10-si-da-zu-jian-xi-lie-broadcast-fen-lei/">
+                    <div class="card-image">
+                        
+                        <img src="https://s1.ax1x.com/2020/07/14/UNEzCV.jpg" class="responsive-img" alt="Broadcast -- " 品种 "和" 用法 "">
+                        
+                        <span class="card-title">Broadcast -- " 品种 "和" 用法 "</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary block-with-text">BroadcastReceiver 是 Android 系统的四大组件之一，本质上就是一个全局的监听器，用于监听系统全局的广播消息，可以方便的实现系统中不同组件之间的通信。
+广播一般有两种注册方式，分别为：&quot; 动态注册 &quot</div>
+                    <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="fa fa-clock-o fa-fw icon-date"></i>2020-06-20
+                            </span>
+                        <span class="publish-author">
+                            
+                            <i class="fa fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/四大组件/" class="post-category" target="_blank">
+                                    四大组件
+                                </a>
+                            
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/Broadcast/" target="_blank">
+                        <span class="chip bg-color">Broadcast</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+    </div>
+</article>-->
+</div>
+
+
+<script>
+    $('#articleContent').on('copy', function (e) {
+        // IE8 or earlier browser is 'undefined'
+        if (typeof window.getSelection === 'undefined') return;
+
+        var selection = window.getSelection();
+        // if the selection is short let's not annoy our users.
+        if (('' + selection).length < Number.parseInt('120')) {
+            return;
+        }
+
+        // create a div outside of the visible area and fill it with the selected text.
+        var bodyElement = document.getElementsByTagName('body')[0];
+        var newdiv = document.createElement('div');
+        newdiv.style.position = 'absolute';
+        newdiv.style.left = '-99999px';
+        bodyElement.appendChild(newdiv);
+        newdiv.appendChild(selection.getRangeAt(0).cloneContents());
+
+        // we need a <pre> tag workaround.
+        // otherwise the text inside "pre" loses all the line breaks!
+        if (selection.getRangeAt(0).commonAncestorContainer.nodeName === 'PRE') {
+            newdiv.innerHTML = "<pre>" + newdiv.innerHTML + "</pre>";
+        }
+
+        var url = document.location.href;
+        newdiv.innerHTML += '<br />'
+            + '来源: Thinking in Android<br />'
+            + '作者: Marco<br />'
+            + '链接: <a href="' + url + '">' + url + '</a><br />'
+            + '本文章著作权归作者所有，任何形式的转载都请注明出处。';
+
+        selection.selectAllChildren(newdiv);
+        window.setTimeout(function () {bodyElement.removeChild(newdiv);}, 200);
+    });
+</script>
+
+    
+
+</main>
+
+
+<footer class="page-footer bg-color-foot-marco">
+    <div class="container row center-align">
+        <div class="col s12 m8 l8 copy-right">
+		    &copy; 2018 - 2020&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;In-depth analysis of Android system source code &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<i class="fa fa-graduation-cap" aria-hidden="true"></i>&nbsp;&nbsp;Marco<br>
+            
+			
+                
+                <span id="busuanzi_container_site_pv">
+                    Total visits to this site: <span id="busuanzi_value_site_pv"></span> ,&nbsp;
+                </span>
+				<span id="busuanzi_container_site_uv">
+                    Total visitor: <span id="busuanzi_value_site_uv"></span> .
+                </span>
+			
+		</div>
+        <div class="col s12 m4 l4 social-link social-statis">
+    <a href="https://github.com/pepsimaxin/pepsimaxin.github.io" class="tooltipped" target="_blank" data-tooltip="访问我的GitHub" data-position="top" data-delay="50">
+        <i class="fa fa-github"></i>
+    </a>
+
+
+
+    <a href="mailto:pepsimaxin@163.com" class="tooltipped" target="_blank" data-tooltip="邮件联系我" data-position="top" data-delay="50">
+        <i class="fa fa-envelope"></i>
+    </a>
+
+
+
+
+<!--
+    <a href="https://blog.csdn.net/pepsimaxin" class="tooltipped" data-tooltip="访问我的CSDN" data-position="top" data-delay="50">
+        <i class="fa fa-chain-broken"></i>
+    </a>
+-->
+
+
+    <a href="/atom.xml" class="tooltipped" target="_blank" data-tooltip="RSS 订阅" data-position="top" data-delay="50">
+        <i class="fa fa-rss"></i>
+    </a>
+</div>
+    </div>
+</footer>
+
+<!--<div class="progress-bar"></div>-->
+
+<!-- 搜索遮罩框 -->
+<div id="searchModal" class="modal">
+    <div class="modal-content">
+        <div class="search-header">
+            <span class="title"><i class="fa fa-search"></i>&nbsp;&nbsp;检索博文</span>
+            <input type="search" id="searchInput" name="s" placeholder="请输入搜索的技术关键字" class="search-input">
+        </div>
+        <div id="searchResult"></div>
+    </div>
+</div>
+
+<script src="/js/search.js"></script>
+<script type="text/javascript">
+$(function () {
+    searchFunc("/" + "search.xml", 'searchInput', 'searchResult');
+});
+</script>
+<!-- 回到顶部按钮 -->
+<!--<div id="backTop" class="top-scroll">
+    <a class="btn-floating btn-large waves-effect waves-light" href="#!">
+        <i class="fa fa-angle-up"></i>
+    </a>
+</div>-->
+
+
+<script src="/libs/materialize/materialize.min.js"></script>
+<script src="/libs/masonry/masonry.pkgd.min.js"></script>
+<script src="/libs/aos/aos.js"></script>
+<script src="/libs/scrollprogress/scrollProgress.min.js"></script>
+<script src="/libs/lightGallery/js/lightgallery-all.min.js"></script>
+<script src="/js/matery.js"></script>
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+
+
+
+
+    <script async src="/libs/others/busuanzi.pure.mini.js"></script>
+
+
+</body>
+</html>

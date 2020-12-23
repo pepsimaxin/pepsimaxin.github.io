@@ -468,7 +468,7 @@ $('.bg-cover').css('background-image', 'url(/medias/banner/' + 'background.jpg)'
         },
         xAxis: {
             type: 'category',
-            data: ["2019-08","2019-09","2019-10","2019-11","2019-12","2020-01","2020-02","2020-03","2020-04","2020-05","2020-06","2020-07","2020-08"]
+            data: ["2019-12","2020-01","2020-02","2020-03","2020-04","2020-05","2020-06","2020-07","2020-08","2020-09","2020-10","2020-11","2020-12"]
         },
         yAxis: {
             type: 'value',
@@ -478,7 +478,7 @@ $('.bg-cover').css('background-image', 'url(/medias/banner/' + 'background.jpg)'
                 name: '文章篇数',
                 type: 'line',
                 color: ['#6772e5'],
-                data: [0,0,0,0,0,0,0,5,6,5,6,1,0],
+                data: [0,0,0,5,6,5,6,1,0,0,0,0,0],
                 markPoint: {
                     symbolSize: 45,
                     color: ['#fa755a','#3ecf8e','#82d3f4'],
@@ -520,7 +520,7 @@ $('.bg-cover').css('background-image', 'url(/medias/banner/' + 'background.jpg)'
                 type: 'pie',
                 radius: '50%',
                 color: ['#6772e5', '#ff9e0f', '#fa755a', '#3ecf8e', '#82d3f4', '#ab47bc', '#525f7f', '#f51c47', '#26A69A'],
-                data: [{"name":"四大组件","value":5},{"name":"Android","value":1},{"name":"性能优化","value":1},{"name":"核心机制","value":5},{"name":"框架服务","value":1},{"name":"系统启动","value":4},{"name":"进程线程","value":5},{"name":"系统稳定性","value":1},{"name":"设计模式","value":1}],
+                data: [{"name":"Android","value":1},{"name":"四大组件","value":5},{"name":"性能优化","value":1},{"name":"核心机制","value":5},{"name":"系统启动","value":4},{"name":"框架服务","value":1},{"name":"设计模式","value":1},{"name":"进程线程","value":5},{"name":"系统稳定性","value":1}],
                 itemStyle: {
                     emphasis: {
                         shadowBlur: 10,
@@ -544,7 +544,7 @@ $('.bg-cover').css('background-image', 'url(/medias/banner/' + 'background.jpg)'
         xAxis: [
             {
                 type: 'category',
-                data: ["Activity","启动流程","Handler","进程创建","AsyncTask","启动模式","框架服务","核心机制","性能优化","设计模式"]
+                data: ["Activity","启动流程","Handler","进程创建","AsyncTask","框架服务","核心机制","性能优化","设计模式","启动模式"]
             }
         ],
         yAxis: [
@@ -668,18 +668,6 @@ $('.bg-cover').css('background-image', 'url(/medias/banner/' + 'background.jpg)'
         <div class="tag-chips center-align">
             
             
-            <a href="/tags/Activity/" target="_blank">
-                <span class="chip center-align waves-effect waves-light chip-default">Activity</span>
-            </a>
-            
-            
-            
-            <a href="/tags/启动模式/" target="_blank">
-                <span class="chip center-align waves-effect waves-light chip-default">启动模式</span>
-            </a>
-            
-            
-            
             <a href="/tags/框架服务/" target="_blank">
                 <span class="chip center-align waves-effect waves-light chip-default">框架服务</span>
             </a>
@@ -704,8 +692,26 @@ $('.bg-cover').css('background-image', 'url(/medias/banner/' + 'background.jpg)'
             
             
             
+            <a href="/tags/Activity/" target="_blank">
+                <span class="chip center-align waves-effect waves-light chip-default">Activity</span>
+            </a>
+            
+            
+            
+            <a href="/tags/启动模式/" target="_blank">
+                <span class="chip center-align waves-effect waves-light chip-default">启动模式</span>
+            </a>
+            
+            
+            
             <a href="/tags/生命周期/" target="_blank">
                 <span class="chip center-align waves-effect waves-light chip-default">生命周期</span>
+            </a>
+            
+            
+            
+            <a href="/tags/Broadcast/" target="_blank">
+                <span class="chip center-align waves-effect waves-light chip-default">Broadcast</span>
             </a>
             
             
@@ -728,6 +734,12 @@ $('.bg-cover').css('background-image', 'url(/medias/banner/' + 'background.jpg)'
             
             
             
+            <a href="/tags/事件分发/" target="_blank">
+                <span class="chip center-align waves-effect waves-light chip-default">事件分发</span>
+            </a>
+            
+            
+            
             <a href="/tags/AIDL/" target="_blank">
                 <span class="chip center-align waves-effect waves-light chip-default">AIDL</span>
             </a>
@@ -740,20 +752,32 @@ $('.bg-cover').css('background-image', 'url(/medias/banner/' + 'background.jpg)'
             
             
             
-            <a href="/tags/事件分发/" target="_blank">
-                <span class="chip center-align waves-effect waves-light chip-default">事件分发</span>
-            </a>
-            
-            
-            
             <a href="/tags/JNI/" target="_blank">
                 <span class="chip center-align waves-effect waves-light chip-default">JNI</span>
             </a>
             
             
             
-            <a href="/tags/Broadcast/" target="_blank">
-                <span class="chip center-align waves-effect waves-light chip-default">Broadcast</span>
+            <a href="/tags/Launcher/" target="_blank">
+                <span class="chip center-align waves-effect waves-light chip-default">Launcher</span>
+            </a>
+            
+            
+            
+            <a href="/tags/SystemServer/" target="_blank">
+                <span class="chip center-align waves-effect waves-light chip-default">SystemServer</span>
+            </a>
+            
+            
+            
+            <a href="/tags/Zygote/" target="_blank">
+                <span class="chip center-align waves-effect waves-light chip-default">Zygote</span>
+            </a>
+            
+            
+            
+            <a href="/tags/init/" target="_blank">
+                <span class="chip center-align waves-effect waves-light chip-default">init</span>
             </a>
             
             
@@ -776,20 +800,8 @@ $('.bg-cover').css('background-image', 'url(/medias/banner/' + 'background.jpg)'
             
             
             
-            <a href="/tags/SystemServer/" target="_blank">
-                <span class="chip center-align waves-effect waves-light chip-default">SystemServer</span>
-            </a>
-            
-            
-            
-            <a href="/tags/Zygote/" target="_blank">
-                <span class="chip center-align waves-effect waves-light chip-default">Zygote</span>
-            </a>
-            
-            
-            
-            <a href="/tags/init/" target="_blank">
-                <span class="chip center-align waves-effect waves-light chip-default">init</span>
+            <a href="/tags/单例/" target="_blank">
+                <span class="chip center-align waves-effect waves-light chip-default">单例</span>
             </a>
             
             
@@ -824,20 +836,8 @@ $('.bg-cover').css('background-image', 'url(/medias/banner/' + 'background.jpg)'
             
             
             
-            <a href="/tags/单例/" target="_blank">
-                <span class="chip center-align waves-effect waves-light chip-default">单例</span>
-            </a>
-            
-            
-            
             <a href="/tags/进程被杀/" target="_blank">
                 <span class="chip center-align waves-effect waves-light chip-default">进程被杀</span>
-            </a>
-            
-            
-            
-            <a href="/tags/Launcher/" target="_blank">
-                <span class="chip center-align waves-effect waves-light chip-default">Launcher</span>
             </a>
             
             

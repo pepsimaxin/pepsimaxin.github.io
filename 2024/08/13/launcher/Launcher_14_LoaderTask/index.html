@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="Marco">
+
+
+
+
+
+<title>【 Launcher 白皮书 】-- 深度解析 LoaderTask | Hexo</title>
+
+
+
+    <link rel="icon" href="/favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+<body>
+    <script>
+        // this function is used to check current theme before page loaded.
+        (() => {
+            const currentTheme = window.localStorage && window.localStorage.getItem('theme') || '';
+            const isDark = currentTheme === 'dark';
+            const pagebody = document.getElementsByTagName('body')[0]
+            if (isDark) {
+                pagebody.classList.add('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Dark"
+            } else {
+                pagebody.classList.remove('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Light"
+            }
+        })();
+    </script>
+
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">Marco&#39;s Blog</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">Marco&#39;s Blog</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">Posts</a>
+                
+                    <a class="menu-item" href="/category">Categories</a>
+                
+                    <a class="menu-item" href="/tag">Tags</a>
+                
+                    <a class="menu-item" href="/about">About</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+            <div class="main">
+                <div class="container">
+    
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">【 Launcher 白皮书 】-- 深度解析 LoaderTask</h1>
+            
+                <div class="post-meta">
+                    
+                        Author: <a itemprop="author" rel="author" href="/">Marco</a>
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">August 13, 2024&nbsp;&nbsp;9:32:39</a>
+                        </span>
+                    
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <p>Launcher 被 Android AMS 拉起后，进入自己的生命流程。Launcher.java 中的 onCreate 函数被调用，准备开始加载桌面。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"># 源码路径：<span class="keyword">package</span>/app/Launcher3/src/com/android/launcher3/Launcher.java</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">Launcher</span> <span class="keyword">extends</span> <span class="title class_">StatefulActivity</span>&lt;LauncherState&gt;</span><br><span class="line">        <span class="keyword">implements</span> <span class="title class_">LauncherExterns</span>, Callbacks, InvariantDeviceProfile.OnIDPChangeListener,</span><br><span class="line">        PluginListener&lt;LauncherOverlayPlugin&gt; &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> LauncherModel mModel;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">protected</span> <span class="keyword">void</span> <span class="title function_">onCreate</span><span class="params">(Bundle savedInstanceState)</span> &#123;</span><br><span class="line">        ...</span><br><span class="line">        </span><br><span class="line">        <span class="type">LauncherAppState</span> <span class="variable">app</span> <span class="operator">=</span> LauncherAppState.getInstance(<span class="built_in">this</span>);</span><br><span class="line">        mModel = app.getModel();</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">if</span> (!mModel.addCallbacksAndLoad(<span class="built_in">this</span>)) &#123;</span><br><span class="line">            <span class="keyword">if</span> (!internalStateHandled) &#123;</span><br><span class="line">                # If we are not binding synchronously, pause drawing until initial bind complete,</span><br><span class="line">                # so that the system could <span class="keyword">continue</span> to show the device loading <span class="type">prompt</span></span><br><span class="line">                <span class="variable">mOnInitialBindListener</span> <span class="operator">=</span> Boolean.FALSE::booleanValue;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        ...</span><br><span class="line">    &#125;</span><br><span class="line">        </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>addCallbacksAndLoad() 在 LauncherModel.java 中实现。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"># 源码路径：<span class="keyword">package</span>/app/Launcher3/src/com/android/launcher3/LauncherModel.java</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">LauncherModel</span> <span class="keyword">extends</span> <span class="title class_">LauncherApps</span>.Callback <span class="keyword">implements</span> <span class="title class_">InstallSessionTracker</span>.Callback &#123;</span><br><span class="line"></span><br><span class="line">    /##</span><br><span class="line">     # Adds a callbacks to receive model updates</span><br><span class="line">     # <span class="meta">@return</span> <span class="literal">true</span> <span class="keyword">if</span> workspace load was performed synchronously</span><br><span class="line">     #/</span><br><span class="line">    <span class="keyword">public</span> <span class="type">boolean</span> <span class="title function_">addCallbacksAndLoad</span><span class="params">(<span class="meta">@NonNull</span> <span class="keyword">final</span> Callbacks callbacks)</span> &#123;</span><br><span class="line">        <span class="keyword">synchronized</span> (mLock) &#123;</span><br><span class="line">            addCallbacks(callbacks);</span><br><span class="line">            <span class="keyword">return</span> startLoader(<span class="keyword">new</span> <span class="title class_">Callbacks</span>[] &#123; callbacks &#125;);</span><br><span class="line">    </span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>调用了 startLoader() 函数：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><span class="line"># 源码路径：<span class="keyword">package</span>/app/Launcher3/src/com/android/launcher3/LauncherModel.java</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">class</span> <span class="title class_">LauncherModel</span> <span class="keyword">extends</span> <span class="title class_">LauncherApps</span>.Callback <span class="keyword">implements</span> <span class="title class_">InstallSessionTracker</span>.Callback &#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="type">boolean</span> <span class="title function_">startLoader</span><span class="params">(<span class="meta">@NonNull</span> <span class="keyword">final</span> Callbacks[] newCallbacks)</span> &#123;</span><br><span class="line">        # Enable queue before starting loader. It will get disabled in Launcher#finishBindingItems</span><br><span class="line">        ItemInstallQueue.INSTANCE.get(mApp.getContext())</span><br><span class="line">                .pauseModelPush(ItemInstallQueue.FLAG_LOADER_RUNNING);</span><br><span class="line">        <span class="keyword">synchronized</span> (mLock) &#123;</span><br><span class="line">            # If there is already one running, tell it to stop.</span><br><span class="line">            <span class="type">boolean</span> <span class="variable">wasRunning</span> <span class="operator">=</span> stopLoader();</span><br><span class="line">            <span class="type">boolean</span> <span class="variable">bindDirectly</span> <span class="operator">=</span> mModelLoaded &amp;&amp; !mIsLoaderTaskRunning;</span><br><span class="line">            <span class="type">boolean</span> <span class="variable">bindAllCallbacks</span> <span class="operator">=</span> wasRunning || !bindDirectly || newCallbacks.length == <span class="number">0</span>;</span><br><span class="line">            <span class="keyword">final</span> Callbacks[] callbacksList = bindAllCallbacks ? getCallbacks() : newCallbacks;</span><br><span class="line">    </span><br><span class="line">            <span class="keyword">if</span> (callbacksList.length &gt; <span class="number">0</span>) &#123;</span><br><span class="line">                # Clear any pending bind-runnables from the <span class="keyword">synchronized</span> load process.</span><br><span class="line">                <span class="keyword">for</span> (Callbacks cb : callbacksList) &#123;</span><br><span class="line">                    MAIN_EXECUTOR.execute(cb::clearPendingBinds);</span><br><span class="line">                &#125;</span><br><span class="line">    </span><br><span class="line">                <span class="type">LauncherBinder</span> <span class="variable">launcherBinder</span> <span class="operator">=</span> <span class="keyword">new</span> <span class="title class_">LauncherBinder</span>(</span><br><span class="line">                        mApp, mBgDataModel, mBgAllAppsList, callbacksList);</span><br><span class="line">                # 非首次启动，Launcher 直接从数据库中同步加载</span><br><span class="line">                <span class="keyword">if</span> (bindDirectly) &#123;</span><br><span class="line">                    # Divide the set of loaded items into those that we are binding synchronously,</span><br><span class="line">                    # and everything <span class="keyword">else</span> that is to be bound <span class="title function_">normally</span> <span class="params">(asynchronously)</span>.</span><br><span class="line">                    launcherBinder.bindWorkspace(bindAllCallbacks, <span class="comment">/* isBindSync= */</span> <span class="literal">true</span>);</span><br><span class="line">                    # For now, <span class="keyword">continue</span> posting the binding of AllApps as there are other</span><br><span class="line">                    # issues that arise from that.</span><br><span class="line">                    launcherBinder.bindAllApps();</span><br><span class="line">                    launcherBinder.bindDeepShortcuts();</span><br><span class="line">                    launcherBinder.bindWidgets();</span><br><span class="line">                    launcherBinder.updateIconTheme();</span><br><span class="line">                    <span class="keyword">if</span> (FeatureFlags.CHANGE_MODEL_DELEGATE_LOADING_ORDER.get()) &#123;</span><br><span class="line">                        mModelDelegate.bindAllModelExtras(callbacksList);</span><br><span class="line">                    &#125;</span><br><span class="line">                    <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">                &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                    stopLoader();</span><br><span class="line">                    # 首次启动走这里</span><br><span class="line">                    mLoaderTask = <span class="keyword">new</span> <span class="title class_">LoaderTask</span>(</span><br><span class="line">                            mApp, mBgAllAppsList, mBgDataModel, mModelDelegate, launcherBinder);</span><br><span class="line">    </span><br><span class="line">                    # Always post the loader task, instead of running directly</span><br><span class="line">                    # (even on same thread) so that we exit any nested <span class="keyword">synchronized</span> blocks</span><br><span class="line">                    MODEL_EXECUTOR.post(mLoaderTask);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在 startLoader() 方法中会创建 LauncherBinder 对象。如果是首次启动情况下，会创建 LoaderTask 对象，然后会执行 LoaderTask.run() 方法，利用之前创建的 LauncherBinder 开始加载桌面。</p>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                    <p class="copyright-item">
+                        <span>Author:</span>
+                        <span>Marco</span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>Permalink:</span>
+                        <span><a href="http://example.com/2024/08/13/launcher/Launcher_14_LoaderTask/">http://example.com/2024/08/13/launcher/Launcher_14_LoaderTask/</a></span>
+                    </p>
+                
+                
+                    <p class="copyright-item">
+                        <span>License:</span>
+                        <span>Copyright (c) 2019 <a target="_blank" rel="noopener" href="http://creativecommons.org/licenses/by-nc/4.0/">CC-BY-NC-4.0</a> LICENSE</span>
+                    </p>
+                
+                
+                     <p class="copyright-item">
+                         <span>Slogan:</span>
+                         <span>Do you believe in <strong>DESTINY</strong>?</span>
+                     </p>
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2024/08/13/compose/modifier/">【 深度解析 Compose 的 Modifier 原理 】-- Modifier/CombinedModifier</a>
+            
+            
+        </section>
+
+
+    </article>
+</div>
+
+            </div>
+            <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© Marco | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+
+</html>

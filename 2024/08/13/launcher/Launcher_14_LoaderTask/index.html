@@ -131,9 +131,9 @@
     <div class="tocbot-list">
     </div>
     <div class="tocbot-list-menu">
-        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
-        <a onclick="go_top()">Back to top</a>
-        <a onclick="go_bottom()">Go to bottom</a>
+        <!-- <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a> -->
+        <!-- <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a> -->
     </div>
 </div>
 
@@ -160,7 +160,8 @@
 
     document.ready(function() {
         tocbot.init(obj_merge(tocbot_default_config, {
-            collapseDepth: 1
+            // collapseDepth: 1
+            collapseDepth: 100
         }));
     });
 

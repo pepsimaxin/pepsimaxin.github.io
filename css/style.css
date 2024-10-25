@@ -11337,6 +11337,11 @@ figure.highlight .section {
   min-width: inherit;
   border-radius: inherit;
 }
+figure.highlight .hljs-comment,
+figure.highlight .hljs-quote {
+  color: #00cd00;
+  font-style: normal;
+}
 figure.highlight.foldable div.level-left {
   cursor: pointer;
 }
